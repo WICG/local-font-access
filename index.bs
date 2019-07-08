@@ -1,0 +1,360 @@
+<pre class=metadata>
+Title: Font Enumeration API
+Shortname: FontEnum
+Abstract: This specification documents web browser support for
+    allowing users to grant web sites access to the full set of available
+    system fonts for enumeration and use.
+Status: DREAM
+Editor: Emil A. Eklund, Google Inc. https://google.com, eae@google.com
+Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
+Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
+Assume Explicit For: yes
+Markup Shorthands: markdown yes, css no
+Complain About: accidental-2119 yes, missing-example-ids yes
+Favicon: logo-font-enumeration.png
+</pre>
+<!--
+Repository: inexorabletash/font-enumeration
+Level: 1
+Group: wicg
+ED: https://wicg.github.io/font-enumeration
+Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-enumeration
+-->
+
+<pre class=anchors>
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+    urlPrefix: forms.html
+        type: dfn
+            text: selected files; url: #concept-input-type-file-selected
+            text: file upload; url: #file-upload-state-(type=file)
+    urlPrefix: interaction.html
+        type: dfn
+            text: drag data store; url: #drag-data-store
+            text: drag data store item list; url: #drag-data-store-item-list
+            text: drag data item kind; url: #the-drag-data-item-kind
+            text: read/write mode; url: #concept-dnd-rw
+            text: read-only mode; url: #concept-dnd-ro
+spec: webidl; urlPrefix: https://heycam.github.io/webidl/
+    type: dfn
+        text: asynchronous iterator initialization steps; url: #TBD
+        text: get the next iteration result; url: #TBD
+</pre>
+
+<img src="logo-font-enumeration.svg" alt="logo"
+    style="height: 100px; width: 100px; position: absolute; right: 20px; top: 30px;">
+
+<!-- ============================================================ -->
+# Introduction # {#introduction}
+<!-- ============================================================ -->
+
+This specificaton describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts.
+
+Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
+
+Font enumeration helps by enabling:
+
+* Logging of likely-available fonts to improve server-side font rule generation.
+* Scripts to generate style rules based on "similar" local fonts, perhaps saving a download.
+* Improving styling options for user-generated content, allowing the generation of style rules via more expressive font selection menus.
+
+
+<!-- ============================================================ -->
+# Goals # {#goals}
+<!-- ============================================================ -->
+
+The API should:
+
+* Provide efficient enumeration of all local fonts without blocking the main thread
+* Be availabile from Workers
+* Provide access to named instances and subfamilies (e.g. "semibold", "light")
+* Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
+* Reflect local font access state in the Permissions API
+* Restrict access to local font data to Secure Contexts
+* Provide unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
+* Provide easy identification of variable and colour (COLR, CBDT, sbix) fonts
+* Re-use Web Font types and interfaces to the greatest extent possible
+
+<!--
+The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
+-->
+
+<!-- ============================================================ -->
+# Examples # {#examples}
+<!-- ============================================================ -->
+
+*This section is non-normative.*
+
+<!-- ============================================================ -->
+## Enumerating Local Fonts ## {#example-enumerate-local-fonts}
+<!-- ============================================================ -->
+
+The API allows script to enumerate local fonts, including properties about each font.
+
+<aside class=example id=example-async-query>
+The following code queries the available local fonts, and logs details about each to the console.
+
+```js
+// Asynchronous Query and Iteration
+(async () => { // Async block
+  // This sketch returns individual FontFace instances rather than families:
+  let fontsIterator = navigator.fonts.query({
+                        family: "*",
+                        /* example query params; names inspired by CSS:
+                        style: [ "italic" ],
+                        weight: [ 100, 400, 900, "bold" ],
+                        stretch: [ "condensed", "normal", "expanded" ],
+                        // TODO: Missing query params?
+                        */
+                      });
+
+  for await (let f of fontsIterator) {
+    f.getMetaData().then((m) => {
+      console.log(f.family);         // The given "family" name
+      // NEW metadata:
+      console.log(m.instance);
+      console.log(m.postScriptName);
+      console.log(m.localizedName);
+      console.log(m.ascender);  // TODO: define units and values
+      console.log(m.descender); // TODO: define units and values
+      console.log(m.baseline);  // TODO: define units and values
+      console.log(m.xheight);   // TODO: define units and values
+      console.log(m.isVariable);// TODO: boolean enough?
+      console.log(m.isColor);   // TODO: boolean enough?
+      // ...
+    });
+  }
+})();
+```
+</aside>
+
+<!-- ============================================================ -->
+## Styling With Local Fonts ## {#example-style-with-local-fonts}
+<!-- ============================================================ -->
+
+
+Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name allows the user to select from a richer set of choices:
+
+<aside class=example id=example-query-build-ui>
+
+The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.
+
+```js
+let fontContainer = document.createElement("select");
+fontContainer.onchange = (e) => {
+  console.log("selected:", fontContainer.value);
+  // Use the selected font to style something here.
+
+  document.body.appendChild(fontContainer);
+
+  let baseFontOption = document.createElement("option");
+
+  (async () => { // Async block
+    // May prompt the user:
+    let status = await navigator.permissions.request({ name: "local-fonts" });
+    if (status.state != "granted") {
+      throw new Error("Cannot continue to style with local fonts");
+    }
+    // TODO(slightlyoff): is this expressive enough?
+    for await (let f of navigator.fonts.query({
+                          family: "*",
+                          local: true,
+                        })) {
+      f.getMetaData().then((metadata) => {
+        console.log(f.family);
+        console.log(metadata.instance);
+        console.log(metadata.postScriptName);
+
+        option.text = f.family;
+        option.value = f.family;
+        option.setAttribute("postScriptName", f.postScriptName);
+      });
+    }
+  })();
+};
+```
+</aside>
+
+
+<!-- ============================================================ -->
+# Concepts # {#concepts}
+<!-- ============================================================ -->
+
+
+<xmp class=idl>
+dictionary FontDescription {
+  USVString family;
+  USVString instance;
+  USVString postScriptName;
+  USVString localizedName;
+  double ascender;
+  double descender;
+  double baseline;
+  double xheight;
+  boolean isVariable;
+  boolean isColor;
+};
+</xmp>
+
+A {{FontDescription}} describes a font. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
+
+The {{FontDescription/family}} member corresponds to name ID 1 in the font's `name` table. Example: `"Verdana"`.
+
+The {{FontDescription/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
+
+The {{FontDescription/postScriptName}} member corresponds to name ID 6 in a the font's `name` table. Example: `"Verdana-Bold"`.
+
+The {{FontDescription/localizedName}} member corresponds to name ID 4 in a the font's `name` table. Example: `"Verdana Bold"`.
+
+<aside class=issue>Verify source for all of the above. Encoding? Localization?</aside>
+
+The {{FontDescription/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
+
+<aside class=issue>Units? Verify source?</aside>
+
+The {{FontDescription/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
+
+<aside class=issue>Units? Verify source?</aside>
+
+The {{FontDescription/baseline}} member...
+
+<aside class=issue>Define</aside>
+
+The {{FontDescription/xheight}} member...
+
+<aside class=issue>Define</aside>
+
+The {{FontDescription/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
+
+The {{FontDescription/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
+
+<aside class=issue>User agents that support `SBIX`, `CBDT`, `SVG` etc?</aside>
+
+
+<!-- ============================================================ -->
+# API # {#api}
+<!-- ============================================================ -->
+
+<xmp class=idl>
+[SecureContext]
+interface mixin NavigatorFonts {
+  [SameObject] readonly attribute FontManager fonts;
+};
+Navigator includes NavigatorFonts;
+WorkerNavigator includes NavigatorFonts;
+</xmp>
+
+<xmp class=idl>
+[SecureContext,
+ Exposed=(Window,Worker)]
+interface FontManager {
+  FontIterator query(); // TODO: Arguments?
+};
+</xmp>
+
+<div class=algorithm>
+The <dfn method for=FontManager>query()</dfn> method, when invoked, must run these steps:
+
+1. Let |promise| be a new promise.
+1. Let |origin| be **this**’s [=relevant settings object=]'s [=origin=].
+1. If |origin| is an [=opaque origin=], then reject |promise| with a {{TypeError}}.
+1. Otherwise, run these steps [=in parallel=].
+    1. Let |permission| be the result of [=requesting permission to use=] `"local-fonts"`.
+    1. If |permission| is not `"granted"`, then reject |promise| with "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
+    1. Resolve |promise| with a newly created {{FontIterator}}.
+1. Return |promise|.
+
+</div>
+
+
+<xmp class=idl>
+[SecureContext,
+ Exposed=(Window,Worker)]
+interface FontIterator {
+  /*async_*/iterable<FontDescription>;
+};
+</xmp>
+
+
+
+<div class=algorithm>
+The [=asynchronous iterator initialization steps=] for {{FontIterator}} are as follows:
+
+1. Set **this**.\[[fonts]] to a new empty [=/queue=].
+1. For each local font on the system, [=queue/enqueue=] a {{FontDescription}} describing the font to **this**.\[[fonts]].
+
+</div>
+
+<aside class=note>
+User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
+</aside>
+
+<aside class=issue>
+Make the above more rigorous?
+</aside>
+
+
+<div class=algorithm>
+To [=get the next iteration result=] for {{FontIterator}}, run the following steps:
+
+1. Let |promise| be a new promise.
+1. If **this**.\[[queue]] is [=queue/empty=], then:
+    1. Reject |promise| with undefined.
+1. Otherwise:
+    1. Let |font| be the result of [=queue/dequeuing=] from **this**.\[[queue]].
+    1. Resolve |promise| with |font|.
+1. Return |promise|.
+
+</div>
+
+
+<!-- ============================================================ -->
+# Security Considerations # {#security}
+<!-- ============================================================ -->
+
+There are no known security impacts of this feature.
+
+<!-- ============================================================ -->
+# Privacy Considerations # {#privacy}
+<!-- ============================================================ -->
+
+<!-- ============================================================ -->
+## Fingerprinting ## {#privacy-fingerprinting}
+<!-- ============================================================ -->
+
+The font list includes:
+
+* Fonts included in the operating system distribution.
+* Fonts installed by particular applications installed on the system, for example office suites.
+* Fonts directly installed by the system administrator and/or end user.
+
+This provides several "bits of entropy" to distinguish users.
+
+User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.
+
+<!-- ============================================================ -->
+## Identification ## {#privacy-identification}
+<!-- ============================================================ -->
+
+Users from a particular organization could have specific fonts installed. Employees of "Example Co." could all have an "Example Corporate Typeface" installed by their system administrator, which would allow distinguishing users of a site as employees.
+
+There are services which create fonts based on handwriting samples. If these fonts are given names including personally identifiable information (e.g. "Alice's Handwriting Font"), then personally identifiable information would be made available. This may not be apparent to users if the information is included as properties within the font, not just the font name.
+
+
+<!-- ============================================================ -->
+# Acknowledgements # {#acknowledgements}
+<!-- ============================================================ -->
+
+We'd like to acknowledge the contributions of:
+
+* Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal.
+* Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
+* Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases.
+* Dominik Röttsches and Igor Kopylov for their thoughtful feedback.
+
+Special thanks to Tab Atkins, Jr. for creating and maintaining <a
+href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the
+specification authoring tool used to create this document.
+
+And thanks to
+...
+for suggestions, reviews, and other feedback.
