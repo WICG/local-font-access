@@ -1,3 +1,5 @@
+<img src="https://inexorabletash.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
+
 # Web Font Enumeration Explained
 
 > August 14th, 2018<br>
