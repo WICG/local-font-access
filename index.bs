@@ -9,7 +9,7 @@ Editor: Emil A. Eklund, Google Inc. https://google.com, eae@google.com
 Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
 Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
 Assume Explicit For: yes
-Markup Shorthands: markdown yes, css no
+Markup Shorthands: markdown yes, css yes
 Complain About: accidental-2119 yes, missing-example-ids yes
 Favicon: logo-font-enumeration.png
 </pre>
@@ -22,22 +22,13 @@ Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-enumerati
 -->
 
 <pre class=anchors>
-spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
-    urlPrefix: forms.html
-        type: dfn
-            text: selected files; url: #concept-input-type-file-selected
-            text: file upload; url: #file-upload-state-(type=file)
-    urlPrefix: interaction.html
-        type: dfn
-            text: drag data store; url: #drag-data-store
-            text: drag data store item list; url: #drag-data-store-item-list
-            text: drag data item kind; url: #the-drag-data-item-kind
-            text: read/write mode; url: #concept-dnd-rw
-            text: read-only mode; url: #concept-dnd-ro
 spec: webidl; urlPrefix: https://heycam.github.io/webidl/
     type: dfn
         text: asynchronous iterator initialization steps; url: #TBD
         text: get the next iteration result; url: #TBD
+spec: css-font-loading; urlPrefix: https://drafts.csswg.org/css-font-loading
+    type: dfn
+        text: CSS-connected; url: #css-connected
 </pre>
 
 <img src="logo-font-enumeration.svg" alt="logo"
@@ -108,7 +99,7 @@ The following code queries the available local fonts, and logs details about eac
                       });
 
   for await (let f of fontsIterator) {
-    f.getMetaData().then((m) => {
+    f.getMetadata().then((m) => {
       console.log(f.family);         // The given "family" name
       // NEW metadata:
       console.log(m.instance);
@@ -159,14 +150,14 @@ fontContainer.onchange = (e) => {
                           family: "*",
                           local: true,
                         })) {
-      f.getMetaData().then((metadata) => {
+      f.getMetadata().then((metadata) => {
         console.log(f.family);
         console.log(metadata.instance);
         console.log(metadata.postScriptName);
 
         option.text = f.family;
         option.value = f.family;
-        option.setAttribute("postScriptName", f.postScriptName);
+        option.setAttribute("postScriptName", metadata.postScriptName);
       });
     }
   })();
@@ -179,10 +170,42 @@ fontContainer.onchange = (e) => {
 # Concepts # {#concepts}
 <!-- ============================================================ -->
 
+<aside class=issue>Define any new concepts beyond just the API</aside>
+
+<!-- ============================================================ -->
+# API # {#api}
+<!-- ============================================================ -->
+
+<!-- ============================================================ -->
+## {{FontFace}} Additions ## {#fontface-additions}
+<!-- ============================================================ -->
 
 <xmp class=idl>
-dictionary FontDescription {
-  USVString family;
+[Exposed=(Window,Worker)]
+partial interface FontFace {
+  Promise<FontFaceMetadata> getMetadata();
+};
+</xmp>
+
+<div class=algorithm>
+
+The <dfn method for=FontFace>getMetadata()</dfn> method, when invoked, must run these steps:
+
+1. Let |promise| be a new promise.
+1. Run these steps [=in parallel=]:
+    1. Let |metadata| be a newly created {{FontFaceMetadata}} populated with more details about **this**'s font.
+    1. Resolve |promise| with |metadata|.
+1. Return |promise|.
+
+</div>
+
+<aside class=issue>
+Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
+</aside>
+
+
+<xmp class=idl>
+dictionary FontFaceMetadata {
   USVString instance;
   USVString postScriptName;
   USVString localizedName;
@@ -195,43 +218,43 @@ dictionary FontDescription {
 };
 </xmp>
 
-A {{FontDescription}} describes a font. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
+A {{FontFaceMetadata}} provides details about a font face. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
 
-The {{FontDescription/family}} member corresponds to name ID 1 in the font's `name` table. Example: `"Verdana"`.
+The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
 
-The {{FontDescription/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
+The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in a the font's `name` table. Example: `"Verdana-Bold"`.
 
-The {{FontDescription/postScriptName}} member corresponds to name ID 6 in a the font's `name` table. Example: `"Verdana-Bold"`.
+The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in a the font's `name` table. Example: `"Verdana Bold"`.
 
-The {{FontDescription/localizedName}} member corresponds to name ID 4 in a the font's `name` table. Example: `"Verdana Bold"`.
+<aside class=issue>
+Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
 
-<aside class=issue>Verify source for all of the above. Encoding? Localization?</aside>
+* Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
+* Localization - should each `name` table entry actually be a map (language ID to string), or ...?
 
-The {{FontDescription/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
+</aside>
 
-<aside class=issue>Units? Verify source?</aside>
+The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
 
-The {{FontDescription/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
+The {{FontFaceMetadata/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
 
-<aside class=issue>Units? Verify source?</aside>
+<aside class=issue>Verify units and source for the above.</aside>
 
-The {{FontDescription/baseline}} member...
+The {{FontFaceMetadata/baseline}} member...
 
-<aside class=issue>Define</aside>
+The {{FontFaceMetadata/xheight}} member...
 
-The {{FontDescription/xheight}} member...
+<aside class=issue>Define the source and units for the above.</aside>
 
-<aside class=issue>Define</aside>
+The {{FontFaceMetadata/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
 
-The {{FontDescription/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
+The {{FontFaceMetadata/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
 
-The {{FontDescription/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
-
-<aside class=issue>User agents that support `SBIX`, `CBDT`, `SVG` etc?</aside>
+<aside class=issue>Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this flag?</aside>
 
 
 <!-- ============================================================ -->
-# API # {#api}
+## Font Manager API ## {#font-manager-api}
 <!-- ============================================================ -->
 
 <xmp class=idl>
@@ -241,13 +264,11 @@ interface mixin NavigatorFonts {
 };
 Navigator includes NavigatorFonts;
 WorkerNavigator includes NavigatorFonts;
-</xmp>
 
-<xmp class=idl>
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontManager {
-  FontIterator query(); // TODO: Arguments?
+  FontFaceIterator query(); // TODO: Arguments?
 };
 </xmp>
 
@@ -257,55 +278,73 @@ The <dfn method for=FontManager>query()</dfn> method, when invoked, must run the
 1. Let |promise| be a new promise.
 1. Let |origin| be **this**’s [=relevant settings object=]'s [=origin=].
 1. If |origin| is an [=opaque origin=], then reject |promise| with a {{TypeError}}.
-1. Otherwise, run these steps [=in parallel=].
+1. Otherwise, run these steps [=in parallel=]:
     1. Let |permission| be the result of [=requesting permission to use=] `"local-fonts"`.
     1. If |permission| is not `"granted"`, then reject |promise| with "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
-    1. Resolve |promise| with a newly created {{FontIterator}}.
+    1. Resolve |promise| with a newly created {{FontFaceIterator}}.
 1. Return |promise|.
 
 </div>
 
-
 <xmp class=idl>
 [SecureContext,
  Exposed=(Window,Worker)]
-interface FontIterator {
-  /*async_*/iterable<FontDescription>;
+interface FontFaceIterator {
+  /*async_*/iterable<FontFace>;
 };
 </xmp>
 
-
+All {{FontFaceIterator}} objects contain an internal <dfn attribute for=FontFaceIterator>\[[FontList]]</dfn> slot.
 
 <div class=algorithm>
-The [=asynchronous iterator initialization steps=] for {{FontIterator}} are as follows:
+The [=asynchronous iterator initialization steps=] for {{FontFaceIterator}} are as follows:
 
-1. Set **this**.\[[fonts]] to a new empty [=/queue=].
-1. For each local font on the system, [=queue/enqueue=] a {{FontDescription}} describing the font to **this**.\[[fonts]].
+1. Set **this**'s {{FontFaceIterator/[[FontList]]}} to a new empty [=/queue=].
+1. For each local font |font| on the system, run these steps:
+    1. Let |font face| be a new {{FontFace}} describing |font|. The |font face| is not [=CSS-connected=].
+    1. Set |font face|'s {{FontFace/[[FontStatusPromise]]}} slot to a new fulfilled promise.
+    1. Set |font face|'s {{FontFace/[[Urls]]}} slot to null.
+    1. Set |font face|'s {{FontFace/[[Data]]}} slot to a new {{ArrayBuffer}} of length 0.
+
+        <aside class=issue>
+          Are there further details about the {{FontFace}} objects we need to specify here?
+        </aside>
+
+    1. [=queue/Enqueue=] |font face| to **this**'s {{FontFaceIterator/[[FontList]]}}.
 
 </div>
+
+
 
 <aside class=note>
 User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
 </aside>
 
-<aside class=issue>
-Make the above more rigorous?
-</aside>
-
-
 <div class=algorithm>
-To [=get the next iteration result=] for {{FontIterator}}, run the following steps:
+To [=get the next iteration result=] for {{FontFaceIterator}}, run the following steps:
 
 1. Let |promise| be a new promise.
-1. If **this**.\[[queue]] is [=queue/empty=], then:
+1. If **this**'s {{FontFaceIterator/[[FontList]]}} is [=queue/empty=], then:
     1. Reject |promise| with undefined.
 1. Otherwise:
-    1. Let |font| be the result of [=queue/dequeuing=] from **this**.\[[queue]].
-    1. Resolve |promise| with |font|.
+    1. Let |font face| be the result of [=queue/dequeuing=] from **this**'s {{FontFaceIterator/[[FontList]]}}.
+    1. Resolve |promise| with |font face|.
 1. Return |promise|.
 
 </div>
 
+
+<!-- ============================================================ -->
+# Internationalization Considerations # {#i18n}
+<!-- ============================================================ -->
+
+<aside class=issue>Document internationalization consideration, e.g. string localization</aside>
+
+<!-- ============================================================ -->
+# Accessibility Considerations # {#a11y}
+<!-- ============================================================ -->
+
+There are no known accessibility impacts of this feature.
 
 <!-- ============================================================ -->
 # Security Considerations # {#security}
