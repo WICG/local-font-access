@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 872cce6d3026423d677f3bd5837f1a1a46299a04" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="b65f53ce1159da612f46116c216312f78da4cb4d" name="document-revision">
+  <meta content="f11dc2a400ecf62c6de930d38188a77a4f7c4673" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1579,31 +1579,30 @@ Parts of this work may be from another specification document.  If so, those par
 <pre class="language-js highlight"><c- c1>// Asynchronous Query and Iteration</c->
 <c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
   <c- c1>// This sketch returns individual FontFace instances rather than families:</c->
-  <c- a>let</c-> fontsIterator <c- o>=</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>({</c->
-                        family<c- o>:</c-> <c- u>"*"</c-><c- p>,</c->
-                        <c- d>/* example query params; names inspired by CSS:</c->
-<c- d>                        style: [ "italic" ],</c->
-<c- d>                        weight: [ 100, 400, 900, "bold" ],</c->
-<c- d>                        stretch: [ "condensed", "normal", "expanded" ],</c->
-<c- d>                        // TODO: Missing query params?</c->
-<c- d>                        */</c->
-                      <c- p>});</c->
+  <c- kr>const</c-> fontsIterator <c- o>=</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>({</c->
+                          family<c- o>:</c-> <c- u>"*"</c-><c- p>,</c->
+                          <c- d>/* example query params; names inspired by CSS:</c->
+<c- d>                          style: [ "italic" ],</c->
+<c- d>                          weight: [ 100, 400, 900, "bold" ],</c->
+<c- d>                          stretch: [ "condensed", "normal", "expanded" ],</c->
+<c- d>                          // TODO: Missing query params?</c->
+<c- d>                          */</c->
+                        <c- p>});</c->
 
-  <c- k>for</c-> await <c- p>(</c-><c- a>let</c-> f <c- k>of</c-> fontsIterator<c- p>)</c-> <c- p>{</c->
-    f<c- p>.</c->getMetadata<c- p>().</c->then<c- p>((</c->m<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
-      console<c- p>.</c->log<c- p>(</c->f<c- p>.</c->family<c- p>);</c->         <c- c1>// The given "family" name</c->
-      <c- c1>// NEW metadata:</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->instance<c- p>);</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->postScriptName<c- p>);</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->localizedName<c- p>);</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->ascender<c- p>);</c->  <c- c1>// TODO: define units and values</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->descender<c- p>);</c-> <c- c1>// TODO: define units and values</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->baseline<c- p>);</c->  <c- c1>// TODO: define units and values</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->xheight<c- p>);</c->   <c- c1>// TODO: define units and values</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->isVariable<c- p>);</c-><c- c1>// TODO: boolean enough?</c->
-      console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->isColor<c- p>);</c->   <c- c1>// TODO: boolean enough?</c->
-      <c- c1>// ...</c->
-    <c- p>});</c->
+  <c- k>for</c-> await <c- p>(</c-><c- a>let</c-> face <c- k>of</c-> fontsIterator<c- p>)</c-> <c- p>{</c->
+    <c- kr>const</c-> metadata <c- o>=</c-> await face<c- p>.</c->getMetadata<c- p>();</c->
+    console<c- p>.</c->log<c- p>(</c->f<c- p>.</c->family<c- p>);</c->         <c- c1>// The given "family" name</c->
+    <c- c1>// NEW metadata:</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->instance<c- p>);</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->postScriptName<c- p>);</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->localizedName<c- p>);</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->ascender<c- p>);</c->  <c- c1>// TODO: define units and values</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->descender<c- p>);</c-> <c- c1>// TODO: define units and values</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->baseline<c- p>);</c->  <c- c1>// TODO: define units and values</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->xheight<c- p>);</c->   <c- c1>// TODO: define units and values</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->isVariable<c- p>);</c-><c- c1>// TODO: boolean enough?</c->
+    console<c- p>.</c->log<c- p>(</c->m<c- p>.</c->isColor<c- p>);</c->   <c- c1>// TODO: boolean enough?</c->
+    <c- c1>// ...</c->
   <c- p>}</c->
 <c- p>})();</c->
 </pre>
@@ -1613,42 +1612,39 @@ Parts of this work may be from another specification document.  If so, those par
    <aside class="example" id="example-query-build-ui">
     <a class="self-link" href="#example-query-build-ui"></a> 
     <p>The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.</p>
-<pre class="language-js highlight"><c- a>let</c-> fontContainer <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"select"</c-><c- p>);</c->
-fontContainer<c- p>.</c->onchange <c- o>=</c-> <c- p>(</c->e<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
-  console<c- p>.</c->log<c- p>(</c-><c- u>"selected:"</c-><c- p>,</c-> fontContainer<c- p>.</c->value<c- p>);</c->
+<pre class="language-js highlight"><c- kr>const</c-> fontSelect <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"select"</c-><c- p>);</c->
+fontSelect<c- p>.</c->onchange <c- o>=</c-> e <c- p>=></c-> <c- p>{</c->
+  console<c- p>.</c->log<c- p>(</c-><c- u>"selected:"</c-><c- p>,</c-> fontSelect<c- p>.</c->value<c- p>);</c->
   <c- c1>// Use the selected font to style something here.</c->
-
-  document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontContainer<c- p>);</c->
-
-  <c- a>let</c-> baseFontOption <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"option"</c-><c- p>);</c->
-
-  <c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
-    <c- c1>// May prompt the user:</c->
-    <c- a>let</c-> status <c- o>=</c-> await navigator<c- p>.</c->permissions<c- p>.</c->request<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
-    <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>!=</c-> <c- u>"granted"</c-><c- p>)</c-> <c- p>{</c->
-      <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c-><c- u>"Cannot continue to style with local fonts"</c-><c- p>);</c->
-    <c- p>}</c->
-    <c- c1>// TODO(slightlyoff): is this expressive enough?</c->
-    <c- k>for</c-> await <c- p>(</c-><c- a>let</c-> f <c- k>of</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>({</c->
-                          family<c- o>:</c-> <c- u>"*"</c-><c- p>,</c->
-                          local<c- o>:</c-> <c- kc>true</c-><c- p>,</c->
-                        <c- p>}))</c-> <c- p>{</c->
-      f<c- p>.</c->getMetadata<c- p>().</c->then<c- p>((</c->metadata<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
-        console<c- p>.</c->log<c- p>(</c->f<c- p>.</c->family<c- p>);</c->
-        console<c- p>.</c->log<c- p>(</c->metadata<c- p>.</c->instance<c- p>);</c->
-        console<c- p>.</c->log<c- p>(</c->metadata<c- p>.</c->postScriptName<c- p>);</c->
-
-        option<c- p>.</c->text <c- o>=</c-> f<c- p>.</c->family<c- p>;</c->
-        option<c- p>.</c->value <c- o>=</c-> f<c- p>.</c->family<c- p>;</c->
-        option<c- p>.</c->setAttribute<c- p>(</c-><c- u>"postScriptName"</c-><c- p>,</c-> metadata<c- p>.</c->postScriptName<c- p>);</c->
-      <c- p>});</c->
-    <c- p>}</c->
-  <c- p>})();</c->
 <c- p>};</c->
+
+document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c->
+
+<c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
+  <c- c1>// May prompt the user:</c->
+  <c- kr>const</c-> status <c- o>=</c-> await navigator<c- p>.</c->permissions<c- p>.</c->request<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
+  <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>!=</c-> <c- u>"granted"</c-><c- p>)</c->
+    <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c-><c- u>"Cannot continue to style with local fonts"</c-><c- p>);</c->
+
+  <c- c1>// TODO(slightlyoff): is this expressive enough?</c->
+  <c- k>for</c-> await <c- p>(</c-><c- kr>const</c-> face <c- k>of</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>()</c-> <c- p>{</c->
+    await metadata <c- o>=</c-> face<c- p>.</c->getMetadata<c- p>();</c->
+
+    console<c- p>.</c->log<c- p>(</c->f<c- p>.</c->family<c- p>);</c->
+    console<c- p>.</c->log<c- p>(</c->metadata<c- p>.</c->instance<c- p>);</c->
+    console<c- p>.</c->log<c- p>(</c->metadata<c- p>.</c->postScriptName<c- p>);</c->
+
+    <c- kr>const</c-> option <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"option"</c-><c- p>);</c->
+    option<c- p>.</c->text <c- o>=</c-> f<c- p>.</c->family<c- p>;</c->
+    option<c- p>.</c->value <c- o>=</c-> f<c- p>.</c->family<c- p>;</c->
+    option<c- p>.</c->setAttribute<c- p>(</c-><c- u>"postScriptName"</c-><c- p>,</c-> f<c- p>.</c->postScriptName<c- p>);</c->
+    fontSelect<c- p>.</c->append<c- p>(</c->option<c- p>);</c->
+  <c- p>}</c->
+<c- p>})();</c->
 </pre>
    </aside>
    <h2 class="heading settled" data-level="4" id="concepts"><span class="secno">4. </span><span class="content">Concepts</span><a class="self-link" href="#concepts"></a></h2>
-   <aside class="issue" id="issue-b2a456eb"><a class="self-link" href="#issue-b2a456eb"></a>Define any new concepts beyond just the API</aside>
+   <p class="issue" id="issue-b2a456eb"><a class="self-link" href="#issue-b2a456eb"></a> Define any new concepts beyond just the API</p>
    <h2 class="heading settled" data-level="5" id="api"><span class="secno">5. </span><span class="content">API</span><a class="self-link" href="#api"></a></h2>
    <h3 class="heading settled" data-level="5.1" id="fontface-additions"><span class="secno">5.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface">FontFace</a></code> Additions</span><a class="self-link" href="#fontface-additions"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -1673,7 +1669,7 @@ fontContainer<c- p>.</c->onchange <c- o>=</c-> <c- p>(</c->e<c- p>)</c-> <c- p>=
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <aside class="issue" id="issue-9862fb0b"><a class="self-link" href="#issue-9862fb0b"></a> Should <code class="idl"><a data-link-type="idl" href="#dom-fontface-getmetadata" id="ref-for-dom-fontface-getmetadata①">getMetadata()</a></code> have any restrictions (secure context, permissions)? </aside>
+   <p class="issue" id="issue-9862fb0b"><a class="self-link" href="#issue-9862fb0b"></a> Should <code class="idl"><a data-link-type="idl" href="#dom-fontface-getmetadata" id="ref-for-dom-fontface-getmetadata①">getMetadata()</a></code> have any restrictions (secure context, permissions)?</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-fontfacemetadata"><code><c- g>FontFaceMetadata</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-instance"><code><c- g>instance</c-></code></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-postscriptname"><code><c- g>postScriptName</c-></code></dfn>;
@@ -1690,24 +1686,24 @@ fontContainer<c- p>.</c->onchange <c- o>=</c-> <c- p>(</c->e<c- p>)</c-> <c- p>=
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-instance" id="ref-for-dom-fontfacemetadata-instance">instance</a></code> member corresponds to name ID 2 in the font’s <code>name</code> table. Example: <code>"Bold"</code>.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-postscriptname" id="ref-for-dom-fontfacemetadata-postscriptname">postScriptName</a></code> member corresponds to name ID 6 in a the font’s <code>name</code> table. Example: <code>"Verdana-Bold"</code>.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-localizedname" id="ref-for-dom-fontfacemetadata-localizedname">localizedName</a></code> member corresponds to name ID 4 in a the font’s <code>name</code> table. Example: <code>"Verdana Bold"</code>.</p>
-   <aside class="issue" id="issue-ffa9c749">
-    <a class="self-link" href="#issue-ffa9c749"></a> Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
+   <aside class="issue" id="issue-8c651ba0">
+    <a class="self-link" href="#issue-8c651ba0"></a> Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
     <ul>
      <li data-md>
       <p>Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?</p>
      <li data-md>
-      <p>Localization - should each <code>name</code> table entry actually be a map (language ID to string), or ...?</p>
+      <p>Localization - should each <code>name</code> table entry actually be a map (language ID to string), or just sequence of names?</p>
     </ul>
    </aside>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-ascender" id="ref-for-dom-fontfacemetadata-ascender">ascender</a></code> member corresponds to the <code>ascender</code> member of the <code>hhea</code> table. Example: 2059.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-descender" id="ref-for-dom-fontfacemetadata-descender">descender</a></code> member corresponds to the <code>descender</code> member of the <code>hhea</code> table. Example: -430.</p>
-   <aside class="issue" id="issue-546b88a0"><a class="self-link" href="#issue-546b88a0"></a>Verify units and source for the above.</aside>
+   <p class="issue" id="issue-546b88a0"><a class="self-link" href="#issue-546b88a0"></a> Verify units and source for the above.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-baseline" id="ref-for-dom-fontfacemetadata-baseline">baseline</a></code> member...</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-xheight" id="ref-for-dom-fontfacemetadata-xheight">xheight</a></code> member...</p>
-   <aside class="issue" id="issue-822af946"><a class="self-link" href="#issue-822af946"></a>Define the source and units for the above.</aside>
+   <p class="issue" id="issue-822af946"><a class="self-link" href="#issue-822af946"></a> Define the source and units for the above.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-isvariable" id="ref-for-dom-fontfacemetadata-isvariable">isVariable</a></code> member is true if the font incorporates multiple faces; the presence of a <code>fvar</code> table indicates support.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-iscolor" id="ref-for-dom-fontfacemetadata-iscolor">isColor</a></code> member is true if the font contains multi-colored glyphs; the presence of a <code>COLR</code> table indicates support.</p>
-   <aside class="issue" id="issue-9e922edb"><a class="self-link" href="#issue-9e922edb"></a>Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?</aside>
+   <p class="issue" id="issue-9e922edb"><a class="self-link" href="#issue-9e922edb"></a> Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?</p>
    <h3 class="heading settled" data-level="5.2" id="font-manager-api"><span class="secno">5.2. </span><span class="content">Font Manager API</span><a class="self-link" href="#font-manager-api"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <c- b>mixin</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="navigatorfonts"><code><c- g>NavigatorFonts</c-></code></dfn> {
@@ -1768,13 +1764,13 @@ fontContainer<c- p>.</c->onchange <c- o>=</c-> <c- p>(</c->e<c- p>)</c-> <c- p>=
         <p>Set <var>font face</var>’s <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-urls-slot" id="ref-for-dom-fontface-urls-slot">[[Urls]]</a></code> slot to null.</p>
        <li data-md>
         <p>Set <var>font face</var>’s <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-data-slot" id="ref-for-dom-fontface-data-slot">[[Data]]</a></code> slot to a new <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code> of length 0.</p>
-        <aside class="issue" id="issue-5dd772eb"><a class="self-link" href="#issue-5dd772eb"></a> Are there further details about the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface④">FontFace</a></code> objects we need to specify here? </aside>
+        <p class="issue" id="issue-5dd772eb"><a class="self-link" href="#issue-5dd772eb"></a> Are there further details about the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface④">FontFace</a></code> objects we need to specify here?</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-enqueue" id="ref-for-queue-enqueue">Enqueue</a> <var>font face</var> to <strong>this</strong>'s <code class="idl"><a data-link-type="idl" href="#dom-fontfaceiterator-fontlist-slot" id="ref-for-dom-fontfaceiterator-fontlist-slot①">[[FontList]]</a></code>.</p>
       </ol>
     </ol>
    </div>
-   <aside class="note"> User agents are expected to actually populate the iterator’s queue asynchronously and possibly lazily, although this is not observable. </aside>
+   <p class="note" role="note"><span>Note:</span> User agents are expected to actually populate the iterator’s queue asynchronously and possibly lazily, although this is not observable.</p>
    <div class="algorithm">
      To <a data-link-type="dfn" href="https://heycam.github.io/webidl/#TBD" id="ref-for-TBD①">get the next iteration result</a> for <code class="idl"><a data-link-type="idl" href="#fontfaceiterator" id="ref-for-fontfaceiterator④">FontFaceIterator</a></code>, run the following steps: 
     <ol>
@@ -1799,7 +1795,7 @@ fontContainer<c- p>.</c->onchange <c- o>=</c-> <c- p>(</c->e<c- p>)</c-> <c- p>=
     </ol>
    </div>
    <h2 class="heading settled" data-level="6" id="i18n"><span class="secno">6. </span><span class="content">Internationalization Considerations</span><a class="self-link" href="#i18n"></a></h2>
-   <aside class="issue" id="issue-85d2bf43"><a class="self-link" href="#issue-85d2bf43"></a>Document internationalization consideration, e.g. string localization</aside>
+   <p class="issue" id="issue-85d2bf43"><a class="self-link" href="#issue-85d2bf43"></a> Document internationalization consideration, e.g. string localization</p>
    <h2 class="heading settled" data-level="7" id="a11y"><span class="secno">7. </span><span class="content">Accessibility Considerations</span><a class="self-link" href="#a11y"></a></h2>
    <p>There are no known accessibility impacts of this feature.</p>
    <h2 class="heading settled" data-level="8" id="security"><span class="secno">8. </span><span class="content">Security Considerations</span><a class="self-link" href="#security"></a></h2>
@@ -2289,23 +2285,23 @@ for suggestions, reviews, and other feedback.</p>
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue">Define any new concepts beyond just the API<a href="#issue-b2a456eb"> ↵ </a></div>
-   <div class="issue"> Should <code class="idl"><a data-link-type="idl" href="#dom-fontface-getmetadata">getMetadata()</a></code> have any restrictions (secure context, permissions)? <a href="#issue-9862fb0b"> ↵ </a></div>
+   <div class="issue"> Define any new concepts beyond just the API<a href="#issue-b2a456eb"> ↵ </a></div>
+   <div class="issue"> Should <code class="idl"><a data-link-type="idl" href="#dom-fontface-getmetadata">getMetadata()</a></code> have any restrictions (secure context, permissions)?<a href="#issue-9862fb0b"> ↵ </a></div>
    <div class="issue">
      Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
     <ul>
      <li data-md>
       <p>Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?</p>
      <li data-md>
-      <p>Localization - should each <code>name</code> table entry actually be a map (language ID to string), or ...?</p>
+      <p>Localization - should each <code>name</code> table entry actually be a map (language ID to string), or just sequence of names?</p>
     </ul>
-     <a href="#issue-ffa9c749"> ↵ </a>
+     <a href="#issue-8c651ba0"> ↵ </a>
    </div>
-   <div class="issue">Verify units and source for the above.<a href="#issue-546b88a0"> ↵ </a></div>
-   <div class="issue">Define the source and units for the above.<a href="#issue-822af946"> ↵ </a></div>
-   <div class="issue">Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?<a href="#issue-9e922edb"> ↵ </a></div>
-   <div class="issue"> Are there further details about the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface">FontFace</a></code> objects we need to specify here? <a href="#issue-5dd772eb"> ↵ </a></div>
-   <div class="issue">Document internationalization consideration, e.g. string localization<a href="#issue-85d2bf43"> ↵ </a></div>
+   <div class="issue"> Verify units and source for the above.<a href="#issue-546b88a0"> ↵ </a></div>
+   <div class="issue"> Define the source and units for the above.<a href="#issue-822af946"> ↵ </a></div>
+   <div class="issue"> Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?<a href="#issue-9e922edb"> ↵ </a></div>
+   <div class="issue"> Are there further details about the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface">FontFace</a></code> objects we need to specify here?<a href="#issue-5dd772eb"> ↵ </a></div>
+   <div class="issue"> Document internationalization consideration, e.g. string localization<a href="#issue-85d2bf43"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="dom-fontface-getmetadata">
    <b><a href="#dom-fontface-getmetadata">#dom-fontface-getmetadata</a></b><b>Referenced in:</b>

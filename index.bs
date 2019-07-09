@@ -88,31 +88,30 @@ The following code queries the available local fonts, and logs details about eac
 // Asynchronous Query and Iteration
 (async () => { // Async block
   // This sketch returns individual FontFace instances rather than families:
-  let fontsIterator = navigator.fonts.query({
-                        family: "*",
-                        /* example query params; names inspired by CSS:
-                        style: [ "italic" ],
-                        weight: [ 100, 400, 900, "bold" ],
-                        stretch: [ "condensed", "normal", "expanded" ],
-                        // TODO: Missing query params?
-                        */
-                      });
+  const fontsIterator = navigator.fonts.query({
+                          family: "*",
+                          /* example query params; names inspired by CSS:
+                          style: [ "italic" ],
+                          weight: [ 100, 400, 900, "bold" ],
+                          stretch: [ "condensed", "normal", "expanded" ],
+                          // TODO: Missing query params?
+                          */
+                        });
 
-  for await (let f of fontsIterator) {
-    f.getMetadata().then((m) => {
-      console.log(f.family);         // The given "family" name
-      // NEW metadata:
-      console.log(m.instance);
-      console.log(m.postScriptName);
-      console.log(m.localizedName);
-      console.log(m.ascender);  // TODO: define units and values
-      console.log(m.descender); // TODO: define units and values
-      console.log(m.baseline);  // TODO: define units and values
-      console.log(m.xheight);   // TODO: define units and values
-      console.log(m.isVariable);// TODO: boolean enough?
-      console.log(m.isColor);   // TODO: boolean enough?
-      // ...
-    });
+  for await (let face of fontsIterator) {
+    const metadata = await face.getMetadata();
+    console.log(f.family);         // The given "family" name
+    // NEW metadata:
+    console.log(m.instance);
+    console.log(m.postScriptName);
+    console.log(m.localizedName);
+    console.log(m.ascender);  // TODO: define units and values
+    console.log(m.descender); // TODO: define units and values
+    console.log(m.baseline);  // TODO: define units and values
+    console.log(m.xheight);   // TODO: define units and values
+    console.log(m.isVariable);// TODO: boolean enough?
+    console.log(m.isColor);   // TODO: boolean enough?
+    // ...
   }
 })();
 ```
@@ -130,38 +129,35 @@ Advanced creative tools may wish to use CSS to style text using all available lo
 The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.
 
 ```js
-let fontContainer = document.createElement("select");
-fontContainer.onchange = (e) => {
-  console.log("selected:", fontContainer.value);
+const fontSelect = document.createElement("select");
+fontSelect.onchange = e => {
+  console.log("selected:", fontSelect.value);
   // Use the selected font to style something here.
-
-  document.body.appendChild(fontContainer);
-
-  let baseFontOption = document.createElement("option");
-
-  (async () => { // Async block
-    // May prompt the user:
-    let status = await navigator.permissions.request({ name: "local-fonts" });
-    if (status.state != "granted") {
-      throw new Error("Cannot continue to style with local fonts");
-    }
-    // TODO(slightlyoff): is this expressive enough?
-    for await (let f of navigator.fonts.query({
-                          family: "*",
-                          local: true,
-                        })) {
-      f.getMetadata().then((metadata) => {
-        console.log(f.family);
-        console.log(metadata.instance);
-        console.log(metadata.postScriptName);
-
-        option.text = f.family;
-        option.value = f.family;
-        option.setAttribute("postScriptName", metadata.postScriptName);
-      });
-    }
-  })();
 };
+
+document.body.appendChild(fontSelect);
+
+(async () => { // Async block
+  // May prompt the user:
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state != "granted")
+    throw new Error("Cannot continue to style with local fonts");
+
+  // TODO(slightlyoff): is this expressive enough?
+  for await (const face of navigator.fonts.query() {
+    await metadata = face.getMetadata();
+
+    console.log(f.family);
+    console.log(metadata.instance);
+    console.log(metadata.postScriptName);
+
+    const option = document.createElement("option");
+    option.text = f.family;
+    option.value = f.family;
+    option.setAttribute("postScriptName", f.postScriptName);
+    fontSelect.append(option);
+  }
+})();
 ```
 </aside>
 
@@ -170,7 +166,7 @@ fontContainer.onchange = (e) => {
 # Concepts # {#concepts}
 <!-- ============================================================ -->
 
-<aside class=issue>Define any new concepts beyond just the API</aside>
+Issue: Define any new concepts beyond just the API
 
 <!-- ============================================================ -->
 # API # {#api}
@@ -199,9 +195,7 @@ The <dfn method for=FontFace>getMetadata()</dfn> method, when invoked, must run 
 
 </div>
 
-<aside class=issue>
-Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
-</aside>
+Issue: Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
 
 
 <xmp class=idl>
@@ -230,7 +224,7 @@ The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in a the 
 Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
 
 * Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
-* Localization - should each `name` table entry actually be a map (language ID to string), or ...?
+* Localization - should each `name` table entry actually be a map (language ID to string), or just sequence of names?
 
 </aside>
 
@@ -238,19 +232,19 @@ The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of
 
 The {{FontFaceMetadata/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
 
-<aside class=issue>Verify units and source for the above.</aside>
+Issue: Verify units and source for the above.
 
 The {{FontFaceMetadata/baseline}} member...
 
 The {{FontFaceMetadata/xheight}} member...
 
-<aside class=issue>Define the source and units for the above.</aside>
+Issue: Define the source and units for the above.
 
 The {{FontFaceMetadata/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
 
 The {{FontFaceMetadata/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
 
-<aside class=issue>Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this flag?</aside>
+Issue: Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this flag?
 
 
 <!-- ============================================================ -->
@@ -306,9 +300,7 @@ The [=asynchronous iterator initialization steps=] for {{FontFaceIterator}} are 
     1. Set |font face|'s {{FontFace/[[Urls]]}} slot to null.
     1. Set |font face|'s {{FontFace/[[Data]]}} slot to a new {{ArrayBuffer}} of length 0.
 
-        <aside class=issue>
-          Are there further details about the {{FontFace}} objects we need to specify here?
-        </aside>
+        Issue: Are there further details about the {{FontFace}} objects we need to specify here?
 
     1. [=queue/Enqueue=] |font face| to **this**'s {{FontFaceIterator/[[FontList]]}}.
 
@@ -316,9 +308,7 @@ The [=asynchronous iterator initialization steps=] for {{FontFaceIterator}} are 
 
 
 
-<aside class=note>
-User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
-</aside>
+Note: User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
 
 <div class=algorithm>
 To [=get the next iteration result=] for {{FontFaceIterator}}, run the following steps:
@@ -338,7 +328,7 @@ To [=get the next iteration result=] for {{FontFaceIterator}}, run the following
 # Internationalization Considerations # {#i18n}
 <!-- ============================================================ -->
 
-<aside class=issue>Document internationalization consideration, e.g. string localization</aside>
+Issue: Document internationalization consideration, e.g. string localization
 
 <!-- ============================================================ -->
 # Accessibility Considerations # {#a11y}

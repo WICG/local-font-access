@@ -71,35 +71,30 @@ Font enumeration can help by enabling:
 // Asynchronous Query and Iteration
 (async () => { // Async block
   // This sketch returns individual FontFace instances rather than families:
-  let fontsIterator = navigator.fonts.query({
-                        family: "*",
-                        /* example query params; names inspired by CSS:
-                        style: [ "italic" ],
-                        weight: [ 100, 400, 900, "bold" ],
-                        stretch: [ "condensed", "normal", "expanded" ],
-                        // TODO: Missing query params?
-                        */
-                      });
+  const fontsIterator = navigator.fonts.query({
+                          family: "*",
+                          /* example query params; names inspired by CSS:
+                          style: [ "italic" ],
+                          weight: [ 100, 400, 900, "bold" ],
+                          stretch: [ "condensed", "normal", "expanded" ],
+                          // TODO: Missing query params?
+                          */
+                        });
 
-  // Async Iterator syntax is optional as the return value is a generator
-  // that yields values that conform to the Promise-based `{ value, done }`
-  // protocol:
-  //    https://github.com/tc39/proposal-async-iteration
-  for await (let f of fontsIterator) {
-    f.getMetaData().then((m) => {
-      console.log(f.family);         // The given "family" name
-      // NEW metadata:
-      console.log(m.instance);
-      console.log(m.postScriptName);
-      console.log(m.localizedName);
-      console.log(m.ascender);  // TODO: define units and values
-      console.log(m.descender); // TODO: define units and values
-      console.log(m.baseline);  // TODO: define units and values
-      console.log(m.xheight);   // TODO: define units and values
-      console.log(m.isVariable);// TODO: boolean enough?
-      console.log(m.isColor);   // TODO: boolean enough?
-      // ...
-    });
+  for await (let face of fontsIterator) {
+    const metadata = await face.getMetadata();
+    console.log(f.family);         // The given "family" name
+    // NEW metadata:
+    console.log(m.instance);
+    console.log(m.postScriptName);
+    console.log(m.localizedName);
+    console.log(m.ascender);  // TODO: define units and values
+    console.log(m.descender); // TODO: define units and values
+    console.log(m.baseline);  // TODO: define units and values
+    console.log(m.xheight);   // TODO: define units and values
+    console.log(m.isVariable);// TODO: boolean enough?
+    console.log(m.isColor);   // TODO: boolean enough?
+    // ...
   }
 })();
 ```
@@ -109,38 +104,35 @@ Font enumeration can help by enabling:
 Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name can allow the user to select from a richer set of choices:
 
 ```js
-let fontContainer = document.createElement("select");
-fontContainer.onchange = (e) => {
-  console.log("selected:", fontContainer.value);
+const fontSelect = document.createElement("select");
+fontSelect.onchange = e => {
+  console.log("selected:", fontSelect.value);
   // Use the selected font to style something here.
-
-  document.body.appendChild(fontContainer);
-
-  let baseFontOption = document.createElement("option");
-
-  (async () => { // Async block
-    // May prompt the user:
-    let status = await navigator.permissions.request({ name: "local-fonts" });
-    if (status.state != "granted") {
-      throw new Error("Cannot continue to style with local fonts");
-    }
-    // TODO(slightlyoff): is this expressive enough?
-    for await (let f of navigator.fonts.query({
-                          family: "*",
-                          local: true,
-                        })) {
-      f.getMetaData().then((metadata) => {
-        console.log(f.family);
-        console.log(metadata.instance);
-        console.log(metadata.postScriptName);
-
-        option.text = f.family;
-        option.value = f.family;
-        option.setAttribute("postScriptName", f.postScriptName);
-      });
-    }
-  })();
 };
+
+document.body.appendChild(fontSelect);
+
+(async () => { // Async block
+  // May prompt the user:
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state != "granted")
+    throw new Error("Cannot continue to style with local fonts");
+
+  // TODO(slightlyoff): is this expressive enough?
+  for await (const face of navigator.fonts.query() {
+    await metadata = face.getMetadata();
+
+    console.log(f.family);
+    console.log(metadata.instance);
+    console.log(metadata.postScriptName);
+
+    const option = document.createElement("option");
+    option.text = f.family;
+    option.value = f.family;
+    option.setAttribute("postScriptName", f.postScriptName);
+    fontSelect.append(option);
+  }
+})();
 ```
 
 ## Detailed design discussion
