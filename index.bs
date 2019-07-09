@@ -38,7 +38,7 @@ spec: css-font-loading; urlPrefix: https://drafts.csswg.org/css-font-loading
 # Introduction # {#introduction}
 <!-- ============================================================ -->
 
-This specificaton describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts.
+This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts.
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
 
