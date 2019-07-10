@@ -1,9 +1,7 @@
 <pre class=metadata>
 Title: Font Enumeration API
 Shortname: FontEnum
-Abstract: This specification documents web browser support for
-    allowing users to grant web sites access to the full set of available
-    system fonts for enumeration and use.
+Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration and use.
 Status: DREAM
 Editor: Emil A. Eklund, Google Inc. https://google.com, eae@google.com
 Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
@@ -26,7 +24,7 @@ spec: webidl; urlPrefix: https://heycam.github.io/webidl/
     type: dfn
         text: asynchronous iterator initialization steps; url: #TBD
         text: get the next iteration result; url: #TBD
-spec: css-font-loading; urlPrefix: https://drafts.csswg.org/css-font-loading
+spec: css-font-loading-3; urlPrefix: https://drafts.csswg.org/css-font-loading
     type: dfn
         text: CSS-connected; url: #css-connected
 </pre>
@@ -56,7 +54,7 @@ Font enumeration helps by enabling:
 The API should:
 
 * Provide efficient enumeration of all local fonts without blocking the main thread
-* Be availabile from Workers
+* Be available from Workers
 * Provide access to named instances and subfamilies (e.g. "semibold", "light")
 * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
 * Reflect local font access state in the Permissions API
@@ -76,7 +74,7 @@ The ability to uniquely identify a specific font in the case of conflicting name
 *This section is non-normative.*
 
 <!-- ============================================================ -->
-## Enumerating Local Fonts ## {#example-enumerate-local-fonts}
+## Enumerating local fonts ## {#example-enumerate-local-fonts}
 <!-- ============================================================ -->
 
 The API allows script to enumerate local fonts, including properties about each font.
@@ -87,6 +85,11 @@ The following code queries the available local fonts, and logs details about eac
 ```js
 // Asynchronous Query and Iteration
 (async () => { // Async block
+  // May prompt the user:
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state != "granted")
+    throw new Error("Cannot enumerate local fonts");
+
   // This sketch returns individual FontFace instances rather than families:
   const fontsIterator = navigator.fonts.query({
                           family: "*",
@@ -118,7 +121,7 @@ The following code queries the available local fonts, and logs details about eac
 </aside>
 
 <!-- ============================================================ -->
-## Styling With Local Fonts ## {#example-style-with-local-fonts}
+## Styling with local fonts ## {#example-style-with-local-fonts}
 <!-- ============================================================ -->
 
 
@@ -167,6 +170,14 @@ document.body.appendChild(fontSelect);
 <!-- ============================================================ -->
 
 Issue: Define any new concepts beyond just the API
+
+<!-- ============================================================ -->
+# Local font access permission # {#permission}
+<!-- ============================================================ -->
+
+Enumeration of local fonts requires a permission to be granted.
+
+The <dfn for=PermissionName enum-value>"`local-fonts`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
 
 <!-- ============================================================ -->
 # API # {#api}
@@ -273,8 +284,8 @@ The <dfn method for=FontManager>query()</dfn> method, when invoked, must run the
 1. Let |origin| be **this**’s [=relevant settings object=]'s [=origin=].
 1. If |origin| is an [=opaque origin=], then reject |promise| with a {{TypeError}}.
 1. Otherwise, run these steps [=in parallel=]:
-    1. Let |permission| be the result of [=requesting permission to use=] `"local-fonts"`.
-    1. If |permission| is not `"granted"`, then reject |promise| with "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
+    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
+    1. If |permission| is not {{PermissionState/"granted"}}, then reject |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Resolve |promise| with a newly created {{FontFaceIterator}}.
 1. Return |promise|.
 
@@ -325,25 +336,25 @@ To [=get the next iteration result=] for {{FontFaceIterator}}, run the following
 
 
 <!-- ============================================================ -->
-# Internationalization Considerations # {#i18n}
+# Internationalization considerations # {#i18n}
 <!-- ============================================================ -->
 
 Issue: Document internationalization consideration, e.g. string localization
 
 <!-- ============================================================ -->
-# Accessibility Considerations # {#a11y}
+# Accessibility considerations # {#a11y}
 <!-- ============================================================ -->
 
 There are no known accessibility impacts of this feature.
 
 <!-- ============================================================ -->
-# Security Considerations # {#security}
+# Security considerations # {#security}
 <!-- ============================================================ -->
 
 There are no known security impacts of this feature.
 
 <!-- ============================================================ -->
-# Privacy Considerations # {#privacy}
+# Privacy considerations # {#privacy}
 <!-- ============================================================ -->
 
 <!-- ============================================================ -->
@@ -380,9 +391,7 @@ We'd like to acknowledge the contributions of:
 * Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases.
 * Dominik Röttsches and Igor Kopylov for their thoughtful feedback.
 
-Special thanks to Tab Atkins, Jr. for creating and maintaining <a
-href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the
-specification authoring tool used to create this document.
+Special thanks to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
 
 And thanks to
 ...

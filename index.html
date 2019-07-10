@@ -1029,7 +1029,7 @@ Possible extra rowspan handling
 		}
 	/* } */
 
-	@supports (display:grid) {
+	@supports (display:grid) and (display:contents) {
 		/* Use #toc over .toc to override non-@supports rules. */
 		#toc {
 			display: grid;
@@ -1212,9 +1212,9 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 872cce6d3026423d677f3bd5837f1a1a46299a04" name="generator">
+  <meta content="Bikeshed version a3b64e58e069c2e8a9ffcadffb76601231663a47" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="f631f4892876caa0127b4eec13ae064a561bd011" name="document-revision">
+  <meta content="f317ef44d2dde251f0fc6ce9837d9292fd24f6f6" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1484,10 +1484,7 @@ Parts of this work may be from another specification document.  If so, those par
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>This specification documents web browser support for
-
-    allowing users to grant web sites access to the full set of available
-    system fonts for enumeration and use.</p>
+   <p>This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration and use.</p>
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
@@ -1498,26 +1495,27 @@ Parts of this work may be from another specification document.  If so, those par
     <li>
      <a href="#examples"><span class="secno">3</span> <span class="content">Examples</span></a>
      <ol class="toc">
-      <li><a href="#example-enumerate-local-fonts"><span class="secno">3.1</span> <span class="content">Enumerating Local Fonts</span></a>
-      <li><a href="#example-style-with-local-fonts"><span class="secno">3.2</span> <span class="content">Styling With Local Fonts</span></a>
+      <li><a href="#example-enumerate-local-fonts"><span class="secno">3.1</span> <span class="content">Enumerating local fonts</span></a>
+      <li><a href="#example-style-with-local-fonts"><span class="secno">3.2</span> <span class="content">Styling with local fonts</span></a>
      </ol>
     <li><a href="#concepts"><span class="secno">4</span> <span class="content">Concepts</span></a>
+    <li><a href="#permission"><span class="secno">5</span> <span class="content">Local font access permission</span></a>
     <li>
-     <a href="#api"><span class="secno">5</span> <span class="content">API</span></a>
+     <a href="#api"><span class="secno">6</span> <span class="content">API</span></a>
      <ol class="toc">
-      <li><a href="#fontface-additions"><span class="secno">5.1</span> <span class="content"><code class="idl"><span>FontFace</span></code> Additions</span></a>
-      <li><a href="#font-manager-api"><span class="secno">5.2</span> <span class="content">Font Manager API</span></a>
+      <li><a href="#fontface-additions"><span class="secno">6.1</span> <span class="content"><code class="idl"><span>FontFace</span></code> Additions</span></a>
+      <li><a href="#font-manager-api"><span class="secno">6.2</span> <span class="content">Font Manager API</span></a>
      </ol>
-    <li><a href="#i18n"><span class="secno">6</span> <span class="content">Internationalization Considerations</span></a>
-    <li><a href="#a11y"><span class="secno">7</span> <span class="content">Accessibility Considerations</span></a>
-    <li><a href="#security"><span class="secno">8</span> <span class="content">Security Considerations</span></a>
+    <li><a href="#i18n"><span class="secno">7</span> <span class="content">Internationalization considerations</span></a>
+    <li><a href="#a11y"><span class="secno">8</span> <span class="content">Accessibility considerations</span></a>
+    <li><a href="#security"><span class="secno">9</span> <span class="content">Security considerations</span></a>
     <li>
-     <a href="#privacy"><span class="secno">9</span> <span class="content">Privacy Considerations</span></a>
+     <a href="#privacy"><span class="secno">10</span> <span class="content">Privacy considerations</span></a>
      <ol class="toc">
-      <li><a href="#privacy-fingerprinting"><span class="secno">9.1</span> <span class="content">Fingerprinting</span></a>
-      <li><a href="#privacy-identification"><span class="secno">9.2</span> <span class="content">Identification</span></a>
+      <li><a href="#privacy-fingerprinting"><span class="secno">10.1</span> <span class="content">Fingerprinting</span></a>
+      <li><a href="#privacy-identification"><span class="secno">10.2</span> <span class="content">Identification</span></a>
      </ol>
-    <li><a href="#acknowledgements"><span class="secno">10</span> <span class="content">Acknowledgements</span></a>
+    <li><a href="#acknowledgements"><span class="secno">11</span> <span class="content">Acknowledgements</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -1554,7 +1552,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li data-md>
      <p>Provide efficient enumeration of all local fonts without blocking the main thread</p>
     <li data-md>
-     <p>Be availabile from Workers</p>
+     <p>Be available from Workers</p>
     <li data-md>
      <p>Provide access to named instances and subfamilies (e.g. "semibold", "light")</p>
     <li data-md>
@@ -1572,12 +1570,17 @@ Parts of this work may be from another specification document.  If so, those par
    </ul>
    <h2 class="heading settled" data-level="3" id="examples"><span class="secno">3. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
    <p><em>This section is non-normative.</em></p>
-   <h3 class="heading settled" data-level="3.1" id="example-enumerate-local-fonts"><span class="secno">3.1. </span><span class="content">Enumerating Local Fonts</span><a class="self-link" href="#example-enumerate-local-fonts"></a></h3>
+   <h3 class="heading settled" data-level="3.1" id="example-enumerate-local-fonts"><span class="secno">3.1. </span><span class="content">Enumerating local fonts</span><a class="self-link" href="#example-enumerate-local-fonts"></a></h3>
    <p>The API allows script to enumerate local fonts, including properties about each font.</p>
    <aside class="example" id="example-async-query">
     <a class="self-link" href="#example-async-query"></a> The following code queries the available local fonts, and logs details about each to the console. 
 <pre class="language-js highlight"><c- c1>// Asynchronous Query and Iteration</c->
 <c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
+  <c- c1>// May prompt the user:</c->
+  <c- kr>const</c-> status <c- o>=</c-> await navigator<c- p>.</c->permissions<c- p>.</c->request<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
+  <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>!=</c-> <c- u>"granted"</c-><c- p>)</c->
+    <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c-><c- u>"Cannot enumerate local fonts"</c-><c- p>);</c->
+
   <c- c1>// This sketch returns individual FontFace instances rather than families:</c->
   <c- kr>const</c-> fontsIterator <c- o>=</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>({</c->
                           family<c- o>:</c-> <c- u>"*"</c-><c- p>,</c->
@@ -1607,7 +1610,7 @@ Parts of this work may be from another specification document.  If so, those par
 <c- p>})();</c->
 </pre>
    </aside>
-   <h3 class="heading settled" data-level="3.2" id="example-style-with-local-fonts"><span class="secno">3.2. </span><span class="content">Styling With Local Fonts</span><a class="self-link" href="#example-style-with-local-fonts"></a></h3>
+   <h3 class="heading settled" data-level="3.2" id="example-style-with-local-fonts"><span class="secno">3.2. </span><span class="content">Styling with local fonts</span><a class="self-link" href="#example-style-with-local-fonts"></a></h3>
    <p>Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name allows the user to select from a richer set of choices:</p>
    <aside class="example" id="example-query-build-ui">
     <a class="self-link" href="#example-query-build-ui"></a> 
@@ -1645,8 +1648,11 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
    </aside>
    <h2 class="heading settled" data-level="4" id="concepts"><span class="secno">4. </span><span class="content">Concepts</span><a class="self-link" href="#concepts"></a></h2>
    <p class="issue" id="issue-b2a456eb"><a class="self-link" href="#issue-b2a456eb"></a> Define any new concepts beyond just the API</p>
-   <h2 class="heading settled" data-level="5" id="api"><span class="secno">5. </span><span class="content">API</span><a class="self-link" href="#api"></a></h2>
-   <h3 class="heading settled" data-level="5.1" id="fontface-additions"><span class="secno">5.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface">FontFace</a></code> Additions</span><a class="self-link" href="#fontface-additions"></a></h3>
+   <h2 class="heading settled" data-level="5" id="permission"><span class="secno">5. </span><span class="content">Local font access permission</span><a class="self-link" href="#permission"></a></h2>
+   <p>Enumeration of local fonts requires a permission to be granted.</p>
+   <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-local-fonts"><code>"<code>local-fonts</code>"</code></dfn> <a data-link-type="dfn" href="https://w3c.github.io/permissions/#powerful-feature" id="ref-for-powerful-feature">powerful feature</a>’s permission-related flags, algorithms, and types are defaulted.</p>
+   <h2 class="heading settled" data-level="6" id="api"><span class="secno">6. </span><span class="content">API</span><a class="self-link" href="#api"></a></h2>
+   <h3 class="heading settled" data-level="6.1" id="fontface-additions"><span class="secno">6.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface">FontFace</a></code> Additions</span><a class="self-link" href="#fontface-additions"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface①"><c- g>FontFace</c-></a> {
   <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="#dictdef-fontfacemetadata" id="ref-for-dictdef-fontfacemetadata"><c- n>FontFaceMetadata</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-fontface-getmetadata" id="ref-for-dom-fontface-getmetadata"><c- g>getMetadata</c-></a>();
@@ -1704,7 +1710,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-isvariable" id="ref-for-dom-fontfacemetadata-isvariable">isVariable</a></code> member is true if the font incorporates multiple faces; the presence of a <code>fvar</code> table indicates support.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-iscolor" id="ref-for-dom-fontfacemetadata-iscolor">isColor</a></code> member is true if the font contains multi-colored glyphs; the presence of a <code>COLR</code> table indicates support.</p>
    <p class="issue" id="issue-9e922edb"><a class="self-link" href="#issue-9e922edb"></a> Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?</p>
-   <h3 class="heading settled" data-level="5.2" id="font-manager-api"><span class="secno">5.2. </span><span class="content">Font Manager API</span><a class="self-link" href="#font-manager-api"></a></h3>
+   <h3 class="heading settled" data-level="6.2" id="font-manager-api"><span class="secno">6.2. </span><span class="content">Font Manager API</span><a class="self-link" href="#font-manager-api"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <c- b>mixin</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="navigatorfonts"><code><c- g>NavigatorFonts</c-></code></dfn> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SameObject" id="ref-for-SameObject"><c- g>SameObject</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#fontmanager" id="ref-for-fontmanager"><c- n>FontManager</c-></a> <dfn class="idl-code" data-dfn-for="NavigatorFonts" data-dfn-type="attribute" data-export data-readonly data-type="FontManager" id="dom-navigatorfonts-fonts"><code><c- g>fonts</c-></code><a class="self-link" href="#dom-navigatorfonts-fonts"></a></dfn>;
@@ -1731,9 +1737,9 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
       <p>Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>permission</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/permissions/#request-permission-to-use" id="ref-for-request-permission-to-use">requesting permission to use</a> <code>"local-fonts"</code>.</p>
+        <p>Let <var>permission</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/permissions/#request-permission-to-use" id="ref-for-request-permission-to-use">requesting permission to use</a> <code class="idl"><a data-link-type="idl" href="#dom-permissionname-local-fonts" id="ref-for-dom-permissionname-local-fonts">"local-fonts"</a></code>.</p>
        <li data-md>
-        <p>If <var>permission</var> is not <code>"granted"</code>, then reject <var>promise</var> with "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, and abort these steps.</p>
+        <p>If <var>permission</var> is not <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted">"granted"</a></code>, then reject <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, and abort these steps.</p>
        <li data-md>
         <p>Resolve <var>promise</var> with a newly created <code class="idl"><a data-link-type="idl" href="#fontfaceiterator" id="ref-for-fontfaceiterator①">FontFaceIterator</a></code>.</p>
       </ol>
@@ -1794,14 +1800,14 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="6" id="i18n"><span class="secno">6. </span><span class="content">Internationalization Considerations</span><a class="self-link" href="#i18n"></a></h2>
+   <h2 class="heading settled" data-level="7" id="i18n"><span class="secno">7. </span><span class="content">Internationalization considerations</span><a class="self-link" href="#i18n"></a></h2>
    <p class="issue" id="issue-85d2bf43"><a class="self-link" href="#issue-85d2bf43"></a> Document internationalization consideration, e.g. string localization</p>
-   <h2 class="heading settled" data-level="7" id="a11y"><span class="secno">7. </span><span class="content">Accessibility Considerations</span><a class="self-link" href="#a11y"></a></h2>
+   <h2 class="heading settled" data-level="8" id="a11y"><span class="secno">8. </span><span class="content">Accessibility considerations</span><a class="self-link" href="#a11y"></a></h2>
    <p>There are no known accessibility impacts of this feature.</p>
-   <h2 class="heading settled" data-level="8" id="security"><span class="secno">8. </span><span class="content">Security Considerations</span><a class="self-link" href="#security"></a></h2>
+   <h2 class="heading settled" data-level="9" id="security"><span class="secno">9. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
    <p>There are no known security impacts of this feature.</p>
-   <h2 class="heading settled" data-level="9" id="privacy"><span class="secno">9. </span><span class="content">Privacy Considerations</span><a class="self-link" href="#privacy"></a></h2>
-   <h3 class="heading settled" data-level="9.1" id="privacy-fingerprinting"><span class="secno">9.1. </span><span class="content">Fingerprinting</span><a class="self-link" href="#privacy-fingerprinting"></a></h3>
+   <h2 class="heading settled" data-level="10" id="privacy"><span class="secno">10. </span><span class="content">Privacy considerations</span><a class="self-link" href="#privacy"></a></h2>
+   <h3 class="heading settled" data-level="10.1" id="privacy-fingerprinting"><span class="secno">10.1. </span><span class="content">Fingerprinting</span><a class="self-link" href="#privacy-fingerprinting"></a></h3>
    <p>The font list includes:</p>
    <ul>
     <li data-md>
@@ -1813,10 +1819,10 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
    </ul>
    <p>This provides several "bits of entropy" to distinguish users.</p>
    <p>User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.</p>
-   <h3 class="heading settled" data-level="9.2" id="privacy-identification"><span class="secno">9.2. </span><span class="content">Identification</span><a class="self-link" href="#privacy-identification"></a></h3>
+   <h3 class="heading settled" data-level="10.2" id="privacy-identification"><span class="secno">10.2. </span><span class="content">Identification</span><a class="self-link" href="#privacy-identification"></a></h3>
    <p>Users from a particular organization could have specific fonts installed. Employees of "Example Co." could all have an "Example Corporate Typeface" installed by their system administrator, which would allow distinguishing users of a site as employees.</p>
    <p>There are services which create fonts based on handwriting samples. If these fonts are given names including personally identifiable information (e.g. "Alice’s Handwriting Font"), then personally identifiable information would be made available. This may not be apparent to users if the information is included as properties within the font, not just the font name.</p>
-   <h2 class="heading settled" data-level="10" id="acknowledgements"><span class="secno">10. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
+   <h2 class="heading settled" data-level="11" id="acknowledgements"><span class="secno">11. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
    <p>We’d like to acknowledge the contributions of:</p>
    <ul>
     <li data-md>
@@ -1828,8 +1834,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
     <li data-md>
      <p>Dominik Röttsches and Igor Kopylov for their thoughtful feedback.</p>
    </ul>
-   <p>Special thanks to Tab Atkins, Jr. for creating and maintaining <a href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the
-specification authoring tool used to create this document.</p>
+   <p>Special thanks to Tab Atkins, Jr. for creating and maintaining <a href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the specification authoring tool used to create this document.</p>
    <p>And thanks to
 ...
 for suggestions, reviews, and other feedback.</p>
@@ -1983,202 +1988,210 @@ for suggestions, reviews, and other feedback.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#dom-fontfacemetadata-ascender">ascender</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-baseline">baseline</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-descender">descender</a><span>, in §5.1</span>
-   <li><a href="#fontfaceiterator">FontFaceIterator</a><span>, in §5.2</span>
-   <li><a href="#dictdef-fontfacemetadata">FontFaceMetadata</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfaceiterator-fontlist-slot">[[FontList]]</a><span>, in §5.2</span>
-   <li><a href="#fontmanager">FontManager</a><span>, in §5.2</span>
-   <li><a href="#dom-navigatorfonts-fonts">fonts</a><span>, in §5.2</span>
-   <li><a href="#dom-fontface-getmetadata">getMetadata()</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-instance">instance</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-iscolor">isColor</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-isvariable">isVariable</a><span>, in §5.1</span>
-   <li><a href="#dom-fontfacemetadata-localizedname">localizedName</a><span>, in §5.1</span>
-   <li><a href="#navigatorfonts">NavigatorFonts</a><span>, in §5.2</span>
-   <li><a href="#dom-fontfacemetadata-postscriptname">postScriptName</a><span>, in §5.1</span>
-   <li><a href="#dom-fontmanager-query">query()</a><span>, in §5.2</span>
-   <li><a href="#dom-fontfacemetadata-xheight">xheight</a><span>, in §5.1</span>
+   <li><a href="#dom-fontfacemetadata-ascender">ascender</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfacemetadata-baseline">baseline</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfacemetadata-descender">descender</a><span>, in §6.1</span>
+   <li><a href="#fontfaceiterator">FontFaceIterator</a><span>, in §6.2</span>
+   <li><a href="#dictdef-fontfacemetadata">FontFaceMetadata</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfaceiterator-fontlist-slot">[[FontList]]</a><span>, in §6.2</span>
+   <li><a href="#fontmanager">FontManager</a><span>, in §6.2</span>
+   <li><a href="#dom-navigatorfonts-fonts">fonts</a><span>, in §6.2</span>
+   <li><a href="#dom-fontface-getmetadata">getMetadata()</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfacemetadata-instance">instance</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfacemetadata-iscolor">isColor</a><span>, in §6.1</span>
+   <li><a href="#dom-fontfacemetadata-isvariable">isVariable</a><span>, in §6.1</span>
+   <li><a href="#dom-permissionname-local-fonts">"local-fonts"</a><span>, in §5</span>
+   <li><a href="#dom-fontfacemetadata-localizedname">localizedName</a><span>, in §6.1</span>
+   <li><a href="#navigatorfonts">NavigatorFonts</a><span>, in §6.2</span>
+   <li><a href="#dom-fontfacemetadata-postscriptname">postScriptName</a><span>, in §6.1</span>
+   <li><a href="#dom-fontmanager-query">query()</a><span>, in §6.2</span>
+   <li><a href="#dom-fontfacemetadata-xheight">xheight</a><span>, in §6.1</span>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-css-connected">
-   <a href="https://drafts.csswg.org/css-font-loading#css-connected">https://drafts.csswg.org/css-font-loading#css-connected</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-css-connected">5.2. Font Manager API</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-fontface">
    <a href="https://drafts.csswg.org/css-font-loading-3/#fontface">https://drafts.csswg.org/css-font-loading-3/#fontface</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fontface">5.1. FontFace Additions</a> <a href="#ref-for-fontface①">(2)</a>
-    <li><a href="#ref-for-fontface②">5.2. Font Manager API</a> <a href="#ref-for-fontface③">(2)</a> <a href="#ref-for-fontface④">(3)</a>
+    <li><a href="#ref-for-fontface">6.1. FontFace Additions</a> <a href="#ref-for-fontface①">(2)</a>
+    <li><a href="#ref-for-fontface②">6.2. Font Manager API</a> <a href="#ref-for-fontface③">(2)</a> <a href="#ref-for-fontface④">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fontface-data-slot">
    <a href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-data-slot">https://drafts.csswg.org/css-font-loading-3/#dom-fontface-data-slot</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontface-data-slot">5.2. Font Manager API</a>
+    <li><a href="#ref-for-dom-fontface-data-slot">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fontface-fontstatuspromise-slot">
    <a href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-fontstatuspromise-slot">https://drafts.csswg.org/css-font-loading-3/#dom-fontface-fontstatuspromise-slot</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontface-fontstatuspromise-slot">5.2. Font Manager API</a>
+    <li><a href="#ref-for-dom-fontface-fontstatuspromise-slot">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fontface-urls-slot">
    <a href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-urls-slot">https://drafts.csswg.org/css-font-loading-3/#dom-fontface-urls-slot</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontface-urls-slot">5.2. Font Manager API</a>
+    <li><a href="#ref-for-dom-fontface-urls-slot">6.2. Font Manager API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-css-connected">
+   <a href="https://drafts.csswg.org/css-font-loading#css-connected">https://drafts.csswg.org/css-font-loading#css-connected</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-css-connected">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigator">
    <a href="https://html.spec.whatwg.org/multipage/system-state.html#navigator">https://html.spec.whatwg.org/multipage/system-state.html#navigator</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigator">5.2. Font Manager API</a>
+    <li><a href="#ref-for-navigator">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-workernavigator">
    <a href="https://html.spec.whatwg.org/multipage/workers.html#workernavigator">https://html.spec.whatwg.org/multipage/workers.html#workernavigator</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-workernavigator">5.2. Font Manager API</a>
+    <li><a href="#ref-for-workernavigator">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-in-parallel">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-in-parallel">5.1. FontFace Additions</a>
-    <li><a href="#ref-for-in-parallel①">5.2. Font Manager API</a>
+    <li><a href="#ref-for-in-parallel">6.1. FontFace Additions</a>
+    <li><a href="#ref-for-in-parallel①">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin-opaque">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque">https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-origin-opaque">5.2. Font Manager API</a>
+    <li><a href="#ref-for-concept-origin-opaque">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin">https://html.spec.whatwg.org/multipage/origin.html#concept-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-origin">5.2. Font Manager API</a>
+    <li><a href="#ref-for-concept-origin">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-relevant-settings-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-relevant-settings-object">5.2. Font Manager API</a>
+    <li><a href="#ref-for-relevant-settings-object">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue-dequeue">
    <a href="https://infra.spec.whatwg.org/#queue-dequeue">https://infra.spec.whatwg.org/#queue-dequeue</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-queue-dequeue">5.2. Font Manager API</a>
+    <li><a href="#ref-for-queue-dequeue">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-empty">
    <a href="https://infra.spec.whatwg.org/#list-empty">https://infra.spec.whatwg.org/#list-empty</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-empty">5.2. Font Manager API</a>
+    <li><a href="#ref-for-list-empty">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue-enqueue">
    <a href="https://infra.spec.whatwg.org/#queue-enqueue">https://infra.spec.whatwg.org/#queue-enqueue</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-queue-enqueue">5.2. Font Manager API</a>
+    <li><a href="#ref-for-queue-enqueue">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue">
    <a href="https://infra.spec.whatwg.org/#queue">https://infra.spec.whatwg.org/#queue</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-queue">5.2. Font Manager API</a>
+    <li><a href="#ref-for-queue">6.2. Font Manager API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-permissionstate-granted">
+   <a href="https://w3c.github.io/permissions/#dom-permissionstate-granted">https://w3c.github.io/permissions/#dom-permissionstate-granted</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-permissionstate-granted">6.2. Font Manager API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-powerful-feature">
+   <a href="https://w3c.github.io/permissions/#powerful-feature">https://w3c.github.io/permissions/#powerful-feature</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-powerful-feature">5. Local font access permission</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-request-permission-to-use">
    <a href="https://w3c.github.io/permissions/#request-permission-to-use">https://w3c.github.io/permissions/#request-permission-to-use</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-request-permission-to-use">5.2. Font Manager API</a>
+    <li><a href="#ref-for-request-permission-to-use">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-ArrayBuffer">
    <a href="https://heycam.github.io/webidl/#idl-ArrayBuffer">https://heycam.github.io/webidl/#idl-ArrayBuffer</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-ArrayBuffer">5.2. Font Manager API</a>
+    <li><a href="#ref-for-idl-ArrayBuffer">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMException">
    <a href="https://heycam.github.io/webidl/#idl-DOMException">https://heycam.github.io/webidl/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-DOMException">5.2. Font Manager API</a>
+    <li><a href="#ref-for-idl-DOMException">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
    <a href="https://heycam.github.io/webidl/#Exposed">https://heycam.github.io/webidl/#Exposed</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-Exposed">5.1. FontFace Additions</a>
-    <li><a href="#ref-for-Exposed①">5.2. Font Manager API</a> <a href="#ref-for-Exposed②">(2)</a>
+    <li><a href="#ref-for-Exposed">6.1. FontFace Additions</a>
+    <li><a href="#ref-for-Exposed①">6.2. Font Manager API</a> <a href="#ref-for-Exposed②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-notallowederror">
    <a href="https://heycam.github.io/webidl/#notallowederror">https://heycam.github.io/webidl/#notallowederror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-notallowederror">5.2. Font Manager API</a>
+    <li><a href="#ref-for-notallowederror">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-SameObject">
    <a href="https://heycam.github.io/webidl/#SameObject">https://heycam.github.io/webidl/#SameObject</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-SameObject">5.2. Font Manager API</a>
+    <li><a href="#ref-for-SameObject">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-SecureContext">
    <a href="https://heycam.github.io/webidl/#SecureContext">https://heycam.github.io/webidl/#SecureContext</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-SecureContext">5.2. Font Manager API</a> <a href="#ref-for-SecureContext①">(2)</a> <a href="#ref-for-SecureContext②">(3)</a>
+    <li><a href="#ref-for-SecureContext">6.2. Font Manager API</a> <a href="#ref-for-SecureContext①">(2)</a> <a href="#ref-for-SecureContext②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">5.2. Font Manager API</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
    <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-USVString">5.1. FontFace Additions</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a>
+    <li><a href="#ref-for-idl-USVString">6.1. FontFace Additions</a> <a href="#ref-for-idl-USVString①">(2)</a> <a href="#ref-for-idl-USVString②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-TBD">
    <a href="https://heycam.github.io/webidl/#TBD">https://heycam.github.io/webidl/#TBD</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-TBD">5.2. Font Manager API</a> <a href="#ref-for-TBD①">(2)</a>
+    <li><a href="#ref-for-TBD">6.2. Font Manager API</a> <a href="#ref-for-TBD①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
    <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-boolean">5.1. FontFace Additions</a> <a href="#ref-for-idl-boolean①">(2)</a>
+    <li><a href="#ref-for-idl-boolean">6.1. FontFace Additions</a> <a href="#ref-for-idl-boolean①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-double">
    <a href="https://heycam.github.io/webidl/#idl-double">https://heycam.github.io/webidl/#idl-double</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-double">5.1. FontFace Additions</a> <a href="#ref-for-idl-double①">(2)</a> <a href="#ref-for-idl-double②">(3)</a> <a href="#ref-for-idl-double③">(4)</a>
+    <li><a href="#ref-for-idl-double">6.1. FontFace Additions</a> <a href="#ref-for-idl-double①">(2)</a> <a href="#ref-for-idl-double②">(3)</a> <a href="#ref-for-idl-double③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-TBD">
    <a href="https://heycam.github.io/webidl/#TBD">https://heycam.github.io/webidl/#TBD</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-TBD">5.2. Font Manager API</a> <a href="#ref-for-TBD①">(2)</a>
+    <li><a href="#ref-for-TBD">6.2. Font Manager API</a> <a href="#ref-for-TBD①">(2)</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
-   <li>
-    <a data-link-type="biblio">[css-font-loading]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-css-connected" style="color:initial">css-connected</span>
-    </ul>
    <li>
     <a data-link-type="biblio">[css-font-loading-3]</a> defines the following terms:
     <ul>
@@ -2186,6 +2199,7 @@ for suggestions, reviews, and other feedback.</p>
      <li><span class="dfn-paneled" id="term-for-dom-fontface-data-slot" style="color:initial">[[Data]]</span>
      <li><span class="dfn-paneled" id="term-for-dom-fontface-fontstatuspromise-slot" style="color:initial">[[FontStatusPromise]]</span>
      <li><span class="dfn-paneled" id="term-for-dom-fontface-urls-slot" style="color:initial">[[Urls]]</span>
+     <li><span class="dfn-paneled" id="term-for-css-connected" style="color:initial">css-connected</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -2208,6 +2222,8 @@ for suggestions, reviews, and other feedback.</p>
    <li>
     <a data-link-type="biblio">[permissions]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-permissionstate-granted" style="color:initial">"granted"</span>
+     <li><span class="dfn-paneled" id="term-for-powerful-feature" style="color:initial">powerful feature</span>
      <li><span class="dfn-paneled" id="term-for-request-permission-to-use" style="color:initial">requesting permission to use</span>
     </ul>
    <li>
@@ -2303,100 +2319,106 @@ for suggestions, reviews, and other feedback.</p>
    <div class="issue"> Are there further details about the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface">FontFace</a></code> objects we need to specify here?<a href="#issue-5dd772eb"> ↵ </a></div>
    <div class="issue"> Document internationalization consideration, e.g. string localization<a href="#issue-85d2bf43"> ↵ </a></div>
   </div>
+  <aside class="dfn-panel" data-for="dom-permissionname-local-fonts">
+   <b><a href="#dom-permissionname-local-fonts">#dom-permissionname-local-fonts</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-permissionname-local-fonts">6.2. Font Manager API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="dom-fontface-getmetadata">
    <b><a href="#dom-fontface-getmetadata">#dom-fontface-getmetadata</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontface-getmetadata">5.1. FontFace Additions</a> <a href="#ref-for-dom-fontface-getmetadata①">(2)</a>
+    <li><a href="#ref-for-dom-fontface-getmetadata">6.1. FontFace Additions</a> <a href="#ref-for-dom-fontface-getmetadata①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-fontfacemetadata">
    <b><a href="#dictdef-fontfacemetadata">#dictdef-fontfacemetadata</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-fontfacemetadata">5.1. FontFace Additions</a> <a href="#ref-for-dictdef-fontfacemetadata①">(2)</a> <a href="#ref-for-dictdef-fontfacemetadata②">(3)</a>
+    <li><a href="#ref-for-dictdef-fontfacemetadata">6.1. FontFace Additions</a> <a href="#ref-for-dictdef-fontfacemetadata①">(2)</a> <a href="#ref-for-dictdef-fontfacemetadata②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-instance">
    <b><a href="#dom-fontfacemetadata-instance">#dom-fontfacemetadata-instance</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-instance">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-instance">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-postscriptname">
    <b><a href="#dom-fontfacemetadata-postscriptname">#dom-fontfacemetadata-postscriptname</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-postscriptname">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-postscriptname">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-localizedname">
    <b><a href="#dom-fontfacemetadata-localizedname">#dom-fontfacemetadata-localizedname</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-localizedname">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-localizedname">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-ascender">
    <b><a href="#dom-fontfacemetadata-ascender">#dom-fontfacemetadata-ascender</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-ascender">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-ascender">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-descender">
    <b><a href="#dom-fontfacemetadata-descender">#dom-fontfacemetadata-descender</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-descender">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-descender">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-baseline">
    <b><a href="#dom-fontfacemetadata-baseline">#dom-fontfacemetadata-baseline</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-baseline">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-baseline">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-xheight">
    <b><a href="#dom-fontfacemetadata-xheight">#dom-fontfacemetadata-xheight</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-xheight">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-xheight">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-isvariable">
    <b><a href="#dom-fontfacemetadata-isvariable">#dom-fontfacemetadata-isvariable</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-isvariable">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-isvariable">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfacemetadata-iscolor">
    <b><a href="#dom-fontfacemetadata-iscolor">#dom-fontfacemetadata-iscolor</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfacemetadata-iscolor">5.1. FontFace Additions</a>
+    <li><a href="#ref-for-dom-fontfacemetadata-iscolor">6.1. FontFace Additions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="navigatorfonts">
    <b><a href="#navigatorfonts">#navigatorfonts</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigatorfonts">5.2. Font Manager API</a> <a href="#ref-for-navigatorfonts①">(2)</a>
+    <li><a href="#ref-for-navigatorfonts">6.2. Font Manager API</a> <a href="#ref-for-navigatorfonts①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fontmanager">
    <b><a href="#fontmanager">#fontmanager</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fontmanager">5.2. Font Manager API</a>
+    <li><a href="#ref-for-fontmanager">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontmanager-query">
    <b><a href="#dom-fontmanager-query">#dom-fontmanager-query</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontmanager-query">5.2. Font Manager API</a>
+    <li><a href="#ref-for-dom-fontmanager-query">6.2. Font Manager API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fontfaceiterator">
    <b><a href="#fontfaceiterator">#fontfaceiterator</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fontfaceiterator">5.2. Font Manager API</a> <a href="#ref-for-fontfaceiterator①">(2)</a> <a href="#ref-for-fontfaceiterator②">(3)</a> <a href="#ref-for-fontfaceiterator③">(4)</a> <a href="#ref-for-fontfaceiterator④">(5)</a>
+    <li><a href="#ref-for-fontfaceiterator">6.2. Font Manager API</a> <a href="#ref-for-fontfaceiterator①">(2)</a> <a href="#ref-for-fontfaceiterator②">(3)</a> <a href="#ref-for-fontfaceiterator③">(4)</a> <a href="#ref-for-fontfaceiterator④">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontfaceiterator-fontlist-slot">
    <b><a href="#dom-fontfaceiterator-fontlist-slot">#dom-fontfaceiterator-fontlist-slot</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fontfaceiterator-fontlist-slot">5.2. Font Manager API</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot①">(2)</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot②">(3)</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot③">(4)</a>
+    <li><a href="#ref-for-dom-fontfaceiterator-fontlist-slot">6.2. Font Manager API</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot①">(2)</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot②">(3)</a> <a href="#ref-for-dom-fontfaceiterator-fontlist-slot③">(4)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
