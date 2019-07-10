@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version a3b64e58e069c2e8a9ffcadffb76601231663a47" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="6a32be35d330b8300008ec19a4b3336fd50066fb" name="document-revision">
+  <meta content="77d1a2d8e04c466744fa609cfd0755ddbe89bbee" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1803,9 +1803,9 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
    </div>
    <p class="issue" id="issue-9862fb0b"><a class="self-link" href="#issue-9862fb0b"></a> Should <code class="idl"><a data-link-type="idl" href="#dom-fontface-getmetadata" id="ref-for-dom-fontface-getmetadata②">getMetadata()</a></code> have any restrictions (secure context, permissions)?</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-fontfacemetadata"><code><c- g>FontFaceMetadata</c-></code></dfn> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-instance"><code><c- g>instance</c-></code></dfn>;
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-instance"><code><c- g>instance</c-></code></dfn>; // Call this "subfamilyName" instead?
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-postscriptname"><code><c- g>postScriptName</c-></code></dfn>;
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-localizedname"><code><c- g>localizedName</c-></code></dfn>;
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-fontfacemetadata-localizedname"><code><c- g>localizedName</c-></code></dfn>; // Call this "fullName" instead?
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double"><c- b>double</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="double " id="dom-fontfacemetadata-ascender"><code><c- g>ascender</c-></code></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double①"><c- b>double</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="double " id="dom-fontfacemetadata-descender"><code><c- g>descender</c-></code></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double②"><c- b>double</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceMetadata" data-dfn-type="dict-member" data-export data-type="double " id="dom-fontfacemetadata-baseline"><code><c- g>baseline</c-></code></dfn>;
@@ -1815,9 +1815,9 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
 };
 </pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#dictdef-fontfacemetadata" id="ref-for-dictdef-fontfacemetadata②">FontFaceMetadata</a></code> provides details about a font face. The descriptions below assume the font is an OpenType <a data-link-type="biblio" href="#biblio-opentype">[OPENTYPE]</a> font.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-instance" id="ref-for-dom-fontfacemetadata-instance">instance</a></code> member corresponds to name ID 2 in the font’s <code>name</code> table. Example: <code>"Bold"</code>.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-postscriptname" id="ref-for-dom-fontfacemetadata-postscriptname">postScriptName</a></code> member corresponds to name ID 6 in the font’s <code>name</code> table. Example: <code>"Verdana-Bold"</code>.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-localizedname" id="ref-for-dom-fontfacemetadata-localizedname">localizedName</a></code> member corresponds to name ID 4 in the font’s <code>name</code> table. Example: <code>"Verdana Bold"</code>.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-instance" id="ref-for-dom-fontfacemetadata-instance">instance</a></code> member corresponds to name ID 2 in the font’s <code>name</code> table (the font subfamily name.) Example: <code>"Bold"</code>.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-postscriptname" id="ref-for-dom-fontfacemetadata-postscriptname">postScriptName</a></code> member corresponds to name ID 6 in the font’s <code>name</code> table (the PostScript name.) Example: <code>"Arial-Bold"</code>.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-localizedname" id="ref-for-dom-fontfacemetadata-localizedname">localizedName</a></code> member corresponds to name ID 4 in the font’s <code>name</code> table (the full font name.) Example: <code>"Arial Bold"</code>.</p>
    <aside class="issue" id="issue-8c651ba0">
     <a class="self-link" href="#issue-8c651ba0"></a> Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
     <ul>
@@ -1827,6 +1827,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
       <p>Localization - should each <code>name</code> table entry actually be a map (language ID to string), or just sequence of names?</p>
     </ul>
    </aside>
+   <p class="issue" id="issue-1b2cd231"><a class="self-link" href="#issue-1b2cd231"></a> Include <code>name</code> ID 3 (Unique identifier) as well?</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-ascender" id="ref-for-dom-fontfacemetadata-ascender">ascender</a></code> member corresponds to the <code>ascender</code> member of the <code>hhea</code> table. Example: 2059.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-descender" id="ref-for-dom-fontfacemetadata-descender">descender</a></code> member corresponds to the <code>descender</code> member of the <code>hhea</code> table. Example: -430.</p>
    <p class="issue" id="issue-546b88a0"><a class="self-link" href="#issue-546b88a0"></a> Verify units and source for the above.</p>
@@ -2323,9 +2324,9 @@ for suggestions, reviews, and other feedback.</p>
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-fontfacemetadata"><code><c- g>FontFaceMetadata</c-></code></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-fontfacemetadata-instance"><code><c- g>instance</c-></code></a>;
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-fontfacemetadata-instance"><code><c- g>instance</c-></code></a>; // Call this "subfamilyName" instead?
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-fontfacemetadata-postscriptname"><code><c- g>postScriptName</c-></code></a>;
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-fontfacemetadata-localizedname"><code><c- g>localizedName</c-></code></a>;
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②①"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-fontfacemetadata-localizedname"><code><c- g>localizedName</c-></code></a>; // Call this "fullName" instead?
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double④"><c- b>double</c-></a> <a data-type="double " href="#dom-fontfacemetadata-ascender"><code><c- g>ascender</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double①①"><c- b>double</c-></a> <a data-type="double " href="#dom-fontfacemetadata-descender"><code><c- g>descender</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-double" id="ref-for-idl-double②①"><c- b>double</c-></a> <a data-type="double " href="#dom-fontfacemetadata-baseline"><code><c- g>baseline</c-></code></a>;
@@ -2350,6 +2351,7 @@ for suggestions, reviews, and other feedback.</p>
     </ul>
      <a href="#issue-8c651ba0"> ↵ </a>
    </div>
+   <div class="issue"> Include <code>name</code> ID 3 (Unique identifier) as well?<a href="#issue-1b2cd231"> ↵ </a></div>
    <div class="issue"> Verify units and source for the above.<a href="#issue-546b88a0"> ↵ </a></div>
    <div class="issue"> Define the source and units for the above.<a href="#issue-822af946"> ↵ </a></div>
    <div class="issue"> Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?<a href="#issue-9e922edb"> ↵ </a></div>

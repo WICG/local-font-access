@@ -336,9 +336,9 @@ Issue: Should {{FontFace/getMetadata()}} have any restrictions (secure context, 
 
 <xmp class=idl>
 dictionary FontFaceMetadata {
-  USVString instance;
+  USVString instance; // Call this "subfamilyName" instead?
   USVString postScriptName;
-  USVString localizedName;
+  USVString localizedName; // Call this "fullName" instead?
   double ascender;
   double descender;
   double baseline;
@@ -350,11 +350,11 @@ dictionary FontFaceMetadata {
 
 A {{FontFaceMetadata}} provides details about a font face. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
 
-The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
+The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table (the font subfamily name.) Example: `"Bold"`.
 
-The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table. Example: `"Verdana-Bold"`.
+The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table (the PostScript name.) Example: `"Arial-Bold"`.
 
-The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table. Example: `"Verdana Bold"`.
+The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table (the full font name.) Example: `"Arial Bold"`.
 
 <aside class=issue>
 Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
@@ -363,6 +363,8 @@ Verify source for all of the above. See [Microsoft Typography](https://docs.micr
 * Localization - should each `name` table entry actually be a map (language ID to string), or just sequence of names?
 
 </aside>
+
+Issue: Include `name` ID 3 (Unique identifier) as well?
 
 The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
 
