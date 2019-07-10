@@ -216,9 +216,9 @@ A {{FontFaceMetadata}} provides details about a font face. The descriptions belo
 
 The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
 
-The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in a the font's `name` table. Example: `"Verdana-Bold"`.
+The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table. Example: `"Verdana-Bold"`.
 
-The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in a the font's `name` table. Example: `"Verdana Bold"`.
+The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table. Example: `"Verdana Bold"`.
 
 <aside class=issue>
 Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
