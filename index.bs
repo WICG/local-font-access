@@ -29,6 +29,25 @@ spec: css-font-loading-3; urlPrefix: https://drafts.csswg.org/css-font-loading
         text: CSS-connected; url: #css-connected
 </pre>
 
+<style>
+/* Default ED/WD stylesheets set "both"; not needed for logo floated right */
+div.head h1 { clear: left; }
+
+dl.domintro dt {
+    font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
+
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+}
+dl.domintro dt a {
+    color: inherit; border-bottom-style: none;
+}
+dl.domintro dt code {
+    font-size: inherit;
+}
+</style>
+
+
 <img src="logo-font-enumeration.svg" alt="logo"
     style="height: 100px; width: 100px; position: absolute; right: 20px; top: 30px;">
 
@@ -179,88 +198,34 @@ Enumeration of local fonts requires a permission to be granted.
 
 The <dfn for=PermissionName enum-value>"`local-fonts`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
 
+
+<aside class=example id=example-request-permission>
+Permission to enumerate local fonts can be requested using the `navigator.permissions` API:
+
+```js
+const status = await navigator.permissions.request({ name: "local-fonts" });
+if (status.state === "granted")
+  console.log("permission was granted 👍");
+else
+  console.log("permission was denied 👎")
+```
+</aside>
+
 <!-- ============================================================ -->
 # API # {#api}
 <!-- ============================================================ -->
 
 <!-- ============================================================ -->
-## {{FontFace}} Additions ## {#fontface-additions}
+## Font manager ## {#font-manager-api}
 <!-- ============================================================ -->
 
-<xmp class=idl>
-[Exposed=(Window,Worker)]
-partial interface FontFace {
-  Promise<FontFaceMetadata> getMetadata();
-};
-</xmp>
+<dl class="domintro note">
 
-<div class=algorithm>
+  : for await (const |fontFace| of navigator . fonts . {{FontManager/query()}} { ... }
+  :: Iterate over the available fonts. Each time through the loop, |fontFace| will be a new {{FontFace}} object.
 
-The <dfn method for=FontFace>getMetadata()</dfn> method, when invoked, must run these steps:
+</dl>
 
-1. Let |promise| be a new promise.
-1. Run these steps [=in parallel=]:
-    1. Let |metadata| be a newly created {{FontFaceMetadata}} populated with more details about **this**'s font.
-    1. Resolve |promise| with |metadata|.
-1. Return |promise|.
-
-</div>
-
-Issue: Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
-
-
-<xmp class=idl>
-dictionary FontFaceMetadata {
-  USVString instance;
-  USVString postScriptName;
-  USVString localizedName;
-  double ascender;
-  double descender;
-  double baseline;
-  double xheight;
-  boolean isVariable;
-  boolean isColor;
-};
-</xmp>
-
-A {{FontFaceMetadata}} provides details about a font face. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
-
-The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
-
-The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table. Example: `"Verdana-Bold"`.
-
-The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table. Example: `"Verdana Bold"`.
-
-<aside class=issue>
-Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
-
-* Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
-* Localization - should each `name` table entry actually be a map (language ID to string), or just sequence of names?
-
-</aside>
-
-The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
-
-The {{FontFaceMetadata/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
-
-Issue: Verify units and source for the above.
-
-The {{FontFaceMetadata/baseline}} member...
-
-The {{FontFaceMetadata/xheight}} member...
-
-Issue: Define the source and units for the above.
-
-The {{FontFaceMetadata/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
-
-The {{FontFaceMetadata/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
-
-Issue: Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this flag?
-
-
-<!-- ============================================================ -->
-## Font Manager API ## {#font-manager-api}
-<!-- ============================================================ -->
 
 <xmp class=idl>
 [SecureContext]
@@ -333,6 +298,89 @@ To [=get the next iteration result=] for {{FontFaceIterator}}, run the following
 1. Return |promise|.
 
 </div>
+
+
+<!-- ============================================================ -->
+## {{FontFace}} additions ## {#fontface-additions}
+<!-- ============================================================ -->
+
+<dl class="domintro note">
+
+  : await |metadata| = |fontFace| . {{FontFace/getMetadata()}}
+  :: Request additional metadata about a {{FontFace}}. The returned object |metadata| contains properties describing |fontFace| in more detail.
+
+</dl>
+
+
+<xmp class=idl>
+[Exposed=(Window,Worker)]
+partial interface FontFace {
+  Promise<FontFaceMetadata> getMetadata();
+};
+</xmp>
+
+<div class=algorithm>
+
+The <dfn method for=FontFace>getMetadata()</dfn> method, when invoked, must run these steps:
+
+1. Let |promise| be a new promise.
+1. Run these steps [=in parallel=]:
+    1. Let |metadata| be a newly created {{FontFaceMetadata}} populated with more details about **this**'s font.
+    1. Resolve |promise| with |metadata|.
+1. Return |promise|.
+
+</div>
+
+Issue: Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
+
+
+<xmp class=idl>
+dictionary FontFaceMetadata {
+  USVString instance;
+  USVString postScriptName;
+  USVString localizedName;
+  double ascender;
+  double descender;
+  double baseline;
+  double xheight;
+  boolean isVariable;
+  boolean isColor;
+};
+</xmp>
+
+A {{FontFaceMetadata}} provides details about a font face. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
+
+The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table. Example: `"Bold"`.
+
+The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table. Example: `"Verdana-Bold"`.
+
+The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table. Example: `"Verdana Bold"`.
+
+<aside class=issue>
+Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
+
+* Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
+* Localization - should each `name` table entry actually be a map (language ID to string), or just sequence of names?
+
+</aside>
+
+The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
+
+The {{FontFaceMetadata/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
+
+Issue: Verify units and source for the above.
+
+The {{FontFaceMetadata/baseline}} member...
+
+The {{FontFaceMetadata/xheight}} member...
+
+Issue: Define the source and units for the above.
+
+The {{FontFaceMetadata/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
+
+The {{FontFaceMetadata/isColor}} member is true if the font contains multi-colored glyphs; the presence of a `COLR` table indicates support.
+
+Issue: Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this flag?
 
 
 <!-- ============================================================ -->
