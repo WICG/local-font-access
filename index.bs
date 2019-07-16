@@ -260,7 +260,7 @@ The <dfn method for=FontManager>query()</dfn> method, when invoked, must run the
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontFaceIterator {
-  /*async_*/iterable<FontFace>;
+  /*async*/ iterable<FontFace>;
 };
 </xmp>
 

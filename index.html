@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version a3b64e58e069c2e8a9ffcadffb76601231663a47" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="77d1a2d8e04c466744fa609cfd0755ddbe89bbee" name="document-revision">
+  <meta content="c64c6b546364117be57bb5df3b9ea35f5e172afa" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1478,7 +1478,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Font Enumeration API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2019-07-10">10 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2019-07-16">16 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -1493,7 +1493,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 10 July 2019,
+In addition, as of 16 July 2019,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1723,7 +1723,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fontfaceiterator"><code><c- g>FontFaceIterator</c-></code></dfn> {
-  /*async_*/<c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface①"><c- n>FontFace</c-></a>>;
+  /*async*/ <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface①"><c- n>FontFace</c-></a>>;
 };
 </pre>
    <p>All <code class="idl"><a data-link-type="idl" href="#fontfaceiterator" id="ref-for-fontfaceiterator②">FontFaceIterator</a></code> objects contain an internal <dfn class="dfn-paneled idl-code" data-dfn-for="FontFaceIterator" data-dfn-type="attribute" data-export id="dom-fontfaceiterator-fontlist-slot"><code>[[FontList]]</code></dfn> slot.</p>
@@ -2315,7 +2315,7 @@ for suggestions, reviews, and other feedback.</p>
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②①"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a href="#fontfaceiterator"><code><c- g>FontFaceIterator</c-></code></a> {
-  /*async_*/<c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface①①"><c- n>FontFace</c-></a>>;
+  /*async*/ <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface①①"><c- n>FontFace</c-></a>>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed②①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
