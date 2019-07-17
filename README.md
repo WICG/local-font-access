@@ -1,6 +1,6 @@
 <img src="https://inexorabletash.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
 
-# Web Font Enumeration Explained
+# Font Enumeration Explained
 
 > August 14th, 2018<br>
 > Last Update: July 8th, 2019
@@ -41,10 +41,10 @@ A successful API should enable:
  * Restrict access to local font data to Secure Contexts
  * Availability from Workers
 
-#### Possible Goals
+#### Possible/Future Goals
 
  * Registration of new font families via the Tables API (extensibility)
- * Rich metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers.
+ * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using via the [font-table-access API](https://github.com/inexorabletash/font-table-access) even if not exposed during enumeration.
 
 ### Non-goals
 
@@ -71,27 +71,17 @@ Font enumeration can help by enabling:
 // Asynchronous Query and Iteration
 (async () => { // Async block
   // This sketch returns individual FontFace instances rather than families:
-  const fontsIterator = navigator.fonts.query({
-                          family: "*",
-                          /* example query params; names inspired by CSS:
-                          style: [ "italic" ],
-                          weight: [ 100, 400, 900, "bold" ],
-                          stretch: [ "condensed", "normal", "expanded" ],
-                          // TODO: Missing query params?
-                          */
-                        });
+  // In the future, query() could take filters e.g. family name, and/or options
+  // e.g. locale.
+  const fontsIterator = navigator.fonts.query();
 
   for await (let face of fontsIterator) {
     const metadata = await face.getMetadata();
     console.log(f.family);         // The given "family" name
     // NEW metadata:
-    console.log(m.instance);
+    console.log(m.instanceName);
     console.log(m.postScriptName);
-    console.log(m.localizedName);
-    console.log(m.ascender);  // TODO: define units and values
-    console.log(m.descender); // TODO: define units and values
-    console.log(m.baseline);  // TODO: define units and values
-    console.log(m.xheight);   // TODO: define units and values
+    console.log(m.fullName);
     console.log(m.isVariable);// TODO: boolean enough?
     console.log(m.isColor);   // TODO: boolean enough?
     // ...
@@ -123,7 +113,7 @@ document.body.appendChild(fontSelect);
     await metadata = face.getMetadata();
 
     console.log(f.family);
-    console.log(metadata.instance);
+    console.log(metadata.instanceName);
     console.log(metadata.postScriptName);
 
     const option = document.createElement("option");

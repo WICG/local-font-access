@@ -110,27 +110,18 @@ The following code queries the available local fonts, and logs details about eac
     throw new Error("Cannot enumerate local fonts");
 
   // This sketch returns individual FontFace instances rather than families:
-  const fontsIterator = navigator.fonts.query({
-                          family: "*",
-                          /* example query params; names inspired by CSS:
-                          style: [ "italic" ],
-                          weight: [ 100, 400, 900, "bold" ],
-                          stretch: [ "condensed", "normal", "expanded" ],
-                          // TODO: Missing query params?
-                          */
-                        });
+  // In the future, query() could take filters e.g. family name, and/or options
+  // e.g. locale.
+  const fontsIterator = navigator.fonts.query();
 
   for await (let face of fontsIterator) {
     const metadata = await face.getMetadata();
     console.log(f.family);         // The given "family" name
+
     // NEW metadata:
-    console.log(m.instance);
+    console.log(m.instanceName);
     console.log(m.postScriptName);
-    console.log(m.localizedName);
-    console.log(m.ascender);  // TODO: define units and values
-    console.log(m.descender); // TODO: define units and values
-    console.log(m.baseline);  // TODO: define units and values
-    console.log(m.xheight);   // TODO: define units and values
+    console.log(m.fullName);
     console.log(m.isVariable);// TODO: boolean enough?
     console.log(m.isColor);   // TODO: boolean enough?
     // ...
@@ -170,7 +161,7 @@ document.body.appendChild(fontSelect);
     await metadata = face.getMetadata();
 
     console.log(f.family);
-    console.log(metadata.instance);
+    console.log(metadata.instanceName);
     console.log(metadata.postScriptName);
 
     const option = document.createElement("option");
@@ -222,7 +213,7 @@ else
 <dl class="domintro note">
 
   : for await (const |fontFace| of navigator . fonts . {{FontManager/query()}} { ... }
-  :: Iterate over the available fonts. Each time through the loop, |fontFace| will be a new {{FontFace}} object.
+  :: Asynchronously iterate over the available fonts. Each time through the loop, |fontFace| will be a new {{FontFace}} object.
 
 </dl>
 
@@ -234,11 +225,19 @@ interface mixin NavigatorFonts {
 };
 Navigator includes NavigatorFonts;
 WorkerNavigator includes NavigatorFonts;
+</xmp>
 
+<div class=algorithm>
+Each [=/environment settings object=] has an associated {{FontManager}} object.
+
+The <dfn attribute for=NavigatorFonts>fonts</dfn> attribute's getter must return **this**'s [=/relevant settings object=]'s {{FontManager}} object.
+</div>
+
+<xmp class=idl>
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontManager {
-  FontFaceIterator query(); // TODO: Arguments?
+  FontFaceIterator query();
 };
 </xmp>
 
@@ -246,8 +245,7 @@ interface FontManager {
 The <dfn method for=FontManager>query()</dfn> method, when invoked, must run these steps:
 
 1. Let |promise| be a new promise.
-1. Let |origin| be **this**’s [=relevant settings object=]'s [=origin=].
-1. If |origin| is an [=opaque origin=], then reject |promise| with a {{TypeError}}.
+1. If **this**’s [=relevant settings object=]'s [=origin=] is an [=opaque origin=], then reject |promise| with a {{TypeError}}.
 1. Otherwise, run these steps [=in parallel=]:
     1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then reject |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
@@ -274,14 +272,15 @@ The [=asynchronous iterator initialization steps=] for {{FontFaceIterator}} are 
     1. Let |font face| be a new {{FontFace}} describing |font|. The |font face| is not [=CSS-connected=].
     1. Set |font face|'s {{FontFace/[[FontStatusPromise]]}} slot to a new fulfilled promise.
     1. Set |font face|'s {{FontFace/[[Urls]]}} slot to null.
-    1. Set |font face|'s {{FontFace/[[Data]]}} slot to a new {{ArrayBuffer}} of length 0.
+    1. Set |font face|'s {{FontFace/[[Data]]}} slot to null.
+
+        Issue: Modify the definition of {{FontFace}} to allow {{FontFace/[[Urls]]}} and {{FontFace/[[Data]]}} to both be null.
 
         Issue: Are there further details about the {{FontFace}} objects we need to specify here?
 
     1. [=queue/Enqueue=] |font face| to **this**'s {{FontFaceIterator/[[FontList]]}}.
 
 </div>
-
 
 
 Note: User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
@@ -291,7 +290,7 @@ To [=get the next iteration result=] for {{FontFaceIterator}}, run the following
 
 1. Let |promise| be a new promise.
 1. If **this**'s {{FontFaceIterator/[[FontList]]}} is [=queue/empty=], then:
-    1. Reject |promise| with undefined.
+    1. Resolve |promise| with undefined.
 1. Otherwise:
     1. Let |font face| be the result of [=queue/dequeuing=] from **this**'s {{FontFaceIterator/[[FontList]]}}.
     1. Resolve |promise| with |font face|.
@@ -309,13 +308,15 @@ To [=get the next iteration result=] for {{FontFaceIterator}}, run the following
   : await |metadata| = |fontFace| . {{FontFace/getMetadata()}}
   :: Request additional metadata about a {{FontFace}}. The returned object |metadata| contains properties describing |fontFace| in more detail.
 
+      This method is only usable for local fonts, and will throw an exception if called for a web font.
+
 </dl>
 
 
 <xmp class=idl>
 [Exposed=(Window,Worker)]
 partial interface FontFace {
-  Promise<FontFaceMetadata> getMetadata();
+  [SecureContext] Promise<FontFaceMetadata> getMetadata();
 };
 </xmp>
 
@@ -324,25 +325,21 @@ partial interface FontFace {
 The <dfn method for=FontFace>getMetadata()</dfn> method, when invoked, must run these steps:
 
 1. Let |promise| be a new promise.
-1. Run these steps [=in parallel=]:
+1. If either of **this**'s {{FontFace/[[Urls]]}} or {{FontFace/[[Data]]}} slots are not null, then  reject |promise| with a {{TypeError}}.
+1. Otherwise, run these steps [=in parallel=]:
+    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
+    1. If |permission| is not {{PermissionState/"granted"}}, then reject |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Let |metadata| be a newly created {{FontFaceMetadata}} populated with more details about **this**'s font.
     1. Resolve |promise| with |metadata|.
 1. Return |promise|.
 
 </div>
 
-Issue: Should {{FontFace/getMetadata()}} have any restrictions (secure context, permissions)?
-
-
 <xmp class=idl>
 dictionary FontFaceMetadata {
-  USVString instance; // Call this "subfamilyName" instead?
+  USVString instanceName;
   USVString postScriptName;
-  USVString localizedName; // Call this "fullName" instead?
-  double ascender;
-  double descender;
-  double baseline;
-  double xheight;
+  USVString fullName;
   boolean isVariable;
   boolean isColor;
 };
@@ -350,33 +347,21 @@ dictionary FontFaceMetadata {
 
 A {{FontFaceMetadata}} provides details about a font face. The descriptions below assume the font is an OpenType [[!OPENTYPE]] font.
 
-The {{FontFaceMetadata/instance}} member corresponds to name ID 2 in the font's `name` table (the font subfamily name.) Example: `"Bold"`.
+The {{FontFaceMetadata/instanceName}} member corresponds to name ID 2 in the font's `name` table (the font subfamily name.) Example: `"Bold"`.
 
 The {{FontFaceMetadata/postScriptName}} member corresponds to name ID 6 in the font's `name` table (the PostScript name.) Example: `"Arial-Bold"`.
 
-The {{FontFaceMetadata/localizedName}} member corresponds to name ID 4 in the font's `name` table (the full font name.) Example: `"Arial Bold"`.
+The {{FontFaceMetadata/fullName}} member corresponds to name ID 4 in the font's `name` table (the full font name.) Example: `"Arial Bold"`.
 
 <aside class=issue>
 Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
 
 * Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
-* Localization - should each `name` table entry actually be a map (language ID to string), or just sequence of names?
+* Localization - we will provide "en-us"-equivalent labels here - define that behavior.
 
 </aside>
 
 Issue: Include `name` ID 3 (Unique identifier) as well?
-
-The {{FontFaceMetadata/ascender}} member corresponds to the `ascender` member of the `hhea` table. Example: 2059.
-
-The {{FontFaceMetadata/descender}} member corresponds to the `descender` member of the `hhea` table. Example: -430.
-
-Issue: Verify units and source for the above.
-
-The {{FontFaceMetadata/baseline}} member...
-
-The {{FontFaceMetadata/xheight}} member...
-
-Issue: Define the source and units for the above.
 
 The {{FontFaceMetadata/isVariable}} member is true if the font incorporates multiple faces; the presence of a `fvar` table indicates support.
 
@@ -390,6 +375,19 @@ Issue: Should user agents that support `SBIX`, `CBDT`, `SVG` etc also set this f
 <!-- ============================================================ -->
 
 Issue: Document internationalization consideration, e.g. string localization
+
+<!-- ============================================================ -->
+## Font Names ## {#i18n-names}
+<!-- ============================================================ -->
+
+The `name` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both "en" and "zh-Hant-HK".
+
+The {{FontFaceMetadata}} properties {{FontFaceMetadata/instanceName}}, {{FontFaceMetadata/postScriptName}}, and {{FontFaceMetadata/fullName}} are provided by this API simply as strings, using the "en" locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
+
+Web applications that need to provide names in other language can request and parse the `name` table directly using the [Font Table Access API](https://inexorabletash.github.io/font-table-access).
+
+Note: In the future, we could define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to "en" if not present.
+
 
 <!-- ============================================================ -->
 # Accessibility considerations # {#a11y}
@@ -438,11 +436,12 @@ We'd like to acknowledge the contributions of:
 
 * Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal.
 * Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
-* Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases.
-* Dominik Röttsches and Igor Kopylov for their thoughtful feedback.
+* Tab Atkins, Jr. and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases.
 
-Special thanks to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
+Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
 
 And thanks to
-...
+Chase Phillips,
+Dominik Röttsches, and
+Igor Kopylov
 for suggestions, reviews, and other feedback.
