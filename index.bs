@@ -74,7 +74,6 @@ The API should:
 
 * Provide efficient enumeration of all local fonts without blocking the main thread
 * Be available from Workers
-* Provide access to named instances and subfamilies (e.g. "semibold", "light")
 * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
 * Reflect local font access state in the Permissions API
 * Restrict access to local font data to Secure Contexts

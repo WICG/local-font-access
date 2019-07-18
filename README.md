@@ -29,22 +29,24 @@ This document focuses on the former API - a **font-enumeration API**.
 
 ### Goals
 
-A successful API should enable:
+A successful API should:
 
- * An efficient enumeration of all local fonts without blocking the main thread
- * Access to named instances and subfamilies (e.g. "semibold", "light")
- * Multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
- * The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
- * Unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
- * Easy identification of [variable](https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts/) and colour ([COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/colr), [CBDT](https://docs.microsoft.com/en-us/typography/opentype/spec/cbdt), [sbix](https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6sbix.html)) fonts
+ * Provide efficient enumeration of all local fonts without blocking the main thread
+ * Be availabile from Workers
+ * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
+ * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
  * Restrict access to local font data to Secure Contexts
- * Availability from Workers
+ * Re-use Web Font types and interfaces to the greatest extent possible
 
 #### Possible/Future Goals
 
- * Registration of new font families via the Tables API (extensibility)
+ * Direct access to localized font names (can be done via table API)
+ * Easy identification of [variable](https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts/) and colour ([COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/colr), [CBDT](https://docs.microsoft.com/en-us/typography/opentype/spec/cbdt), [sbix](https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6sbix.html)) fonts (can be done via table API)
+ * Registration of new font families (extensibility)
  * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using via the [font-table-access API](https://github.com/inexorabletash/font-table-access) even if not exposed during enumeration.
+ * Signals when system font configuration changes (fonts added/removed); some designers work with tools that swap font portfolios at the system level
+ * Provide access to named instances and subfamilies (e.g. "semibold", "light") ?
 
 ### Non-goals
 
@@ -129,9 +131,9 @@ document.body.appendChild(fontSelect);
 
 Several aspects of this design need validation:
 
+  - What precisely is being iterated over needs to be identified. Is it over files on disk, families, or other groupings that a system level enumeration API provides? There is not a 1:1 relationship between files and named instances.
   - Grouping of related fonts and variants into a parent object is difficult. Some families can be represented by one file or many, and the definition of a "family" is heuristic to start with. Is grouping needed? Design currently leaves this open to future additions.
   - `FontFace` objects provide a lot of metadata synchronously, by default. Is this a problem?
-  - Many aspects of the `navigator.fonts.query()` method signature are shaky. Are these the right options?
   - This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
 
 ### Privacy and Security Considerations
