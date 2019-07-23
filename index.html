@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version a3b64e58e069c2e8a9ffcadffb76601231663a47" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="6e20fc34fb165f738cc75077f22fd3f253db1a4f" name="document-revision">
+  <meta content="d314be71e16daccd3fec8ded7f865775a0044cba" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1478,7 +1478,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Font Enumeration API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2019-07-18">18 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2019-07-23">23 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -1493,7 +1493,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 18 July 2019,
+In addition, as of 23 July 2019,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1836,7 +1836,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
    <p>The <code>name</code> table in OpenType <a data-link-type="biblio" href="#biblio-opentype">[OPENTYPE]</a> fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a>. For example, a font could have family name strings defined for both "en" and "zh-Hant-HK".</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dictdef-fontfacemetadata" id="ref-for-dictdef-fontfacemetadata③">FontFaceMetadata</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-instancename" id="ref-for-dom-fontfacemetadata-instancename①">instanceName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-postscriptname" id="ref-for-dom-fontfacemetadata-postscriptname①">postScriptName</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontfacemetadata-fullname" id="ref-for-dom-fontfacemetadata-fullname①">fullName</a></code> are provided by this API simply as strings, using the "en" locale. This matches the behavior of the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface⑧">FontFace</a></code> <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-family" id="ref-for-dom-fontface-family">family</a></code> property.</p>
    <p>Web applications that need to provide names in other language can request and parse the <code>name</code> table directly using the <a href="https://inexorabletash.github.io/font-table-access">Font Table Access API</a>.</p>
-   <p class="note" role="note"><span>Note:</span> In the future, we could define an option to the <code class="idl"><a data-link-type="idl" href="#dom-fontmanager-query" id="ref-for-dom-fontmanager-query②">query()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to "en" if not present.</p>
+   <p class="issue" id="issue-54c4653b"><a class="self-link" href="#issue-54c4653b"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-fontmanager-query" id="ref-for-dom-fontmanager-query②">query()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to "en" if not present?</p>
    <h2 class="heading settled" data-level="8" id="a11y"><span class="secno">8. </span><span class="content">Accessibility considerations</span><a class="self-link" href="#a11y"></a></h2>
    <p>There are no known accessibility impacts of this feature.</p>
    <h2 class="heading settled" data-level="9" id="security"><span class="secno">9. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
@@ -2358,6 +2358,7 @@ for suggestions, reviews, and other feedback.</p>
    <div class="issue"> Include <code>name</code> ID 3 (Unique identifier) as well?<a href="#issue-1b2cd231"> ↵ </a></div>
    <div class="issue"> Should user agents that support <code>SBIX</code>, <code>CBDT</code>, <code>SVG</code> etc also set this flag?<a href="#issue-9e922edb"> ↵ </a></div>
    <div class="issue"> Document internationalization consideration, e.g. string localization<a href="#issue-85d2bf43"> ↵ </a></div>
+   <div class="issue"> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-fontmanager-query">query()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to "en" if not present?<a href="#issue-54c4653b"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="dom-permissionname-local-fonts">
    <b><a href="#dom-permissionname-local-fonts">#dom-permissionname-local-fonts</a></b><b>Referenced in:</b>

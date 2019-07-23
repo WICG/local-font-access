@@ -27,6 +27,8 @@ Taken together, these APIs provide high-end tools access to the same underlying 
 
 This document focuses on the former API - a **font-enumeration API**.
 
+> NOTE: Long term, we expect that this proposal would merge into an existing CSS-related spec rather than stand on its own.
+
 ### Goals
 
 A successful API should:
@@ -131,10 +133,15 @@ document.body.appendChild(fontSelect);
 
 Several aspects of this design need validation:
 
-  - What precisely is being iterated over needs to be identified. Is it over files on disk, families, or other groupings that a system level enumeration API provides? There is not a 1:1 relationship between files and named instances.
-  - Grouping of related fonts and variants into a parent object is difficult. Some families can be represented by one file or many, and the definition of a "family" is heuristic to start with. Is grouping needed? Design currently leaves this open to future additions.
-  - `FontFace` objects provide a lot of metadata synchronously, by default. Is this a problem?
-  - This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
+* What precisely is being iterated over needs to be identified. Is it over files on disk, families, or other groupings that a system level enumeration API provides? There is not a 1:1 relationship between files and named instances.
+* Grouping of related fonts and variants into a parent object is difficult. Some families can be represented by one file or many, and the definition of a "family" is heuristic to start with. Is grouping needed? Design currently leaves this open to future additions.
+* `FontFace` objects provide a lot of metadata synchronously, by default. While this sketch provides additional metadata asynchronously, is using `FontFace` with the sync data subset a problem?
+* This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
+
+Other issues that feedback is needed on:
+
+* Font "name" propertes in OpenType are quite logically a map of (language tag → string) rather than just a string. The sketch just provides a single name (the "en" variant or first?) - should we introduce a map? Or have `query()` take a language tag? Or defer for now?
+
 
 ### Privacy and Security Considerations
 
@@ -150,17 +157,26 @@ For example, the Tor Browser or Brave may choose to only provide a set of defaul
 
 This might be the wrong thing to do! Hopefully vendors can weigh in more thoroughly on this point.
 
+### Metadata Properties
+
+Including a subset of useful font metrics (`ascender`, `descender`, `xheight`, `baseline`) in the metadata was considered. Some are complicated (`baseline`), others more straightforward but may not be of practical use, especially if the full pipeline involves passing tables into Harfbuzz/FreeType for rendering. They are not included in the latest version of the sketch.
+
+For `isColor` there are multiple standards (`SBIX`, `CBDT`, `SVG` etc), although each user agent likely supports a subset. In this sketch, we assume the flag is true if there is a table supported by the user agent. However, the presence of a table may not be of practical use even if it is easy to detect.
+
+Similarly, `isVariable` can be easily defined, but may not be of use.
+
+
 ## References & acknowledgements
 
 The following references have been invaluable:
 
-  - [MSDN DirectWrite overview](https://docs.microsoft.com/en-us/windows/desktop/directwrite/introducing-directwrite#accessing-the-font-system)
-  - [OpenType Specification](https://docs.microsoft.com/en-us/typography/opentype/spec/)
-  - [OpenType Font Table overview](https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2)
+* [MSDN DirectWrite overview](https://docs.microsoft.com/en-us/windows/desktop/directwrite/introducing-directwrite#accessing-the-font-system)
+* [OpenType Specification](https://docs.microsoft.com/en-us/typography/opentype/spec/)
+* [OpenType Font Table overview](https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2)
 
 We'd like to acknowledge the contributions of:
 
-  - Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal
-  - Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
-  - Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
-  - Dominik Röttsches and Igor Kopylov for their thoughtful feedback
+* Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal
+* Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
+* Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
+* Dominik Röttsches and Igor Kopylov for their thoughtful feedback

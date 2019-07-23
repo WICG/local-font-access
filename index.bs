@@ -385,7 +385,7 @@ The {{FontFaceMetadata}} properties {{FontFaceMetadata/instanceName}}, {{FontFac
 
 Web applications that need to provide names in other language can request and parse the `name` table directly using the [Font Table Access API](https://inexorabletash.github.io/font-table-access).
 
-Note: In the future, we could define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to "en" if not present.
+Issue: Should we define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to "en" if not present?
 
 
 <!-- ============================================================ -->
