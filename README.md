@@ -157,6 +157,24 @@ For example, the Tor Browser or Brave may choose to only provide a set of defaul
 
 This might be the wrong thing to do! Hopefully vendors can weigh in more thoroughly on this point.
 
+### Add a browser/OS-provided font chooser
+
+The proposed API exposes some more bits about the user via the web that could
+improve fingerprinting efforts.  The bits are based on the presence or lack of
+presence of certain fonts in the enumeration-returned list.
+
+An alternative to the API that only exposes a single user-selected font was
+considered.  This alternative enumeration API would trigger a
+browser/OS-provided font chooser and, from that chooser, the user would select
+a single font.  This would reduce the bits exposed to help mitigate
+fingerprinting at the cost of significant new functionality.
+
+We've heard interest from partners in a full-fledged enumeration API to get
+access to the list of available fonts on the system, and haven't heard interest
+in a font-chooser approach to the enumeration API.  However, we're keeping the
+alternative in mind as we balance the need for new functionality with privacy
+concerns.
+
 ### Metadata Properties
 
 Including a subset of useful font metrics (`ascender`, `descender`, `xheight`, `baseline`) in the metadata was considered. Some are complicated (`baseline`), others more straightforward but may not be of practical use, especially if the full pipeline involves passing tables into Harfbuzz/FreeType for rendering. They are not included in the latest version of the sketch.
