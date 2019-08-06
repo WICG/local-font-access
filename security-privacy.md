@@ -32,6 +32,10 @@ User agents should make the risks of granting the permission clear to users.
 
 ## 2.5. Does this specification introduce new state for an origin that persists across browsing sessions?
 
+Yes, user agents could persist the `local-fonts` permission grant, but at least in the Chrome implementation, this permission grant will only be persistent for installed PWAs. The drive-by web will only have enough state to allow it to re-prompt for access, but the access itself won't be persistent.
+
+Furthermore, the user will be able to revoke permission to clear the state that was persisted, similarly to how other permissions work.
+
 ## 2.6. What information from the underlying platform, e.g. configuration data, is exposed by this specification to an origin?
 
 The font list includes:
