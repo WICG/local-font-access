@@ -8,6 +8,7 @@
 > Alex Russell <code>&lt;slightlyoff@google.com&gt;</code><br>
 > Emil A Eklund <code>&lt;eae@google.com&gt;</code><br>
 > Josh Bell <code>&lt;jsbell@google.com&gt;</code><br>
+> Chase Phillips <code>&lt;cmp@google.com&gt;</code><br>
 
 ## What’s all this then?
 
