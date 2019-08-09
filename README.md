@@ -3,7 +3,7 @@
 # Font Enumeration Explained
 
 > August 14th, 2018<br>
-> Last Update: July 8th, 2019
+> Last Update: August 6th, 2019
 >
 > Alex Russell <code>&lt;slightlyoff@google.com&gt;</code><br>
 > Emil A Eklund <code>&lt;eae@google.com&gt;</code><br>
@@ -22,9 +22,9 @@ One stumbling block has been an inability to access and use the full variety of 
 We propose two cooperating APIs to help address this gap:
 
  * A font-enumeration API (this proposal) which may, optionally, allow users to grant access to the full set of available system fonts in addition to network fonts
- * A [font-table-access API](https://github.com/inexorabletash/font-table-access) which provides low-level (byte-oriented) access to the various [TrueType/OpenType](https://docs.microsoft.com/en-us/typography/opentype/spec/otff#font-tables) tables of both local and remotely-loaded fonts
+ * A [font-table-access API](https://github.com/inexorabletash/font-table-access) which provides low-level (byte-oriented) access to the various [TrueType/OpenType](https://docs.microsoft.com/en-us/typography/opentype/spec/otff#font-tables) tables of local fonts
 
-Taken together, these APIs provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Such as the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+Taken together, these APIs provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 This document focuses on the former API - a **font-enumeration API**.
 
@@ -35,17 +35,17 @@ This document focuses on the former API - a **font-enumeration API**.
 A successful API should:
 
  * Provide efficient enumeration of all local fonts without blocking the main thread
- * Be availabile from Workers
- * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
+ * Be available from Workers
+ * Allow multiple levels of privacy preservation; e.g. full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
- * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
+ * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
  * Restrict access to local font data to Secure Contexts
  * Re-use Web Font types and interfaces to the greatest extent possible
 
 #### Possible/Future Goals
 
  * Direct access to localized font names (can be done via table API)
- * Easy identification of [variable](https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts/) and colour ([COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/colr), [CBDT](https://docs.microsoft.com/en-us/typography/opentype/spec/cbdt), [sbix](https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6sbix.html)) fonts (can be done via table API)
+ * Easy identification of [variable](https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts/) and color ([COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/colr), [CBDT](https://docs.microsoft.com/en-us/typography/opentype/spec/cbdt), [sbix](https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6sbix.html)) fonts (can be done via table API)
  * Registration of new font families (extensibility)
  * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using via the [font-table-access API](https://github.com/inexorabletash/font-table-access) even if not exposed during enumeration.
  * Signals when system font configuration changes (fonts added/removed); some designers work with tools that swap font portfolios at the system level
@@ -60,7 +60,7 @@ This API will not try to:
 
 ## Key scenarios
 
-> Note: Earlier versions of this document attempted to sketch out two versions of each API; one based on `FontFaceSource` and the other the fully-asynchronous verison that survives in this doc. While attractive from a re-use perspective, [`FontFaceSource`](https://drafts.csswg.org/css-font-loading/#font-face-source) (and the implied global `window.fonts`) implies synchronous iteration over a potentially unbounded (and perhaps slow) set of files, and each item may require synchronous IPCs and I/O. This, combined with the lack of implementations of `FontFaceSource` caused us to abandon this approach.
+> Note: Earlier versions of this document attempted to sketch out two versions of each API; one based on `FontFaceSource` and the other the fully-asynchronous version that survives in this doc. While attractive from a re-use perspective, [`FontFaceSource`](https://drafts.csswg.org/css-font-loading/#font-face-source) (and the implied global `window.fonts`) implies synchronous iteration over a potentially unbounded (and perhaps slow) set of files, and each item may require synchronous IPCs and I/O. This, combined with the lack of implementations of `FontFaceSource` caused us to abandon this approach.
 
 ### Enumerating Local Fonts
 
