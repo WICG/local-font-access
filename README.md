@@ -110,7 +110,7 @@ document.body.appendChild(fontSelect);
 (async () => { // Async block
   // May prompt the user:
   const status = await navigator.permissions.request({ name: "local-fonts" });
-  if (status.state != "granted")
+  if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
   // TODO(slightlyoff): is this expressive enough?
