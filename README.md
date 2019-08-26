@@ -75,6 +75,11 @@ Font enumeration can help by enabling:
 ```js
 // Asynchronous Query and Iteration
 (async () => { // Async block
+  // May prompt the user:
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state !== "granted")
+    throw new Error("Cannot continue to style with local fonts");
+
   // This sketch returns individual FontFace instances rather than families:
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
