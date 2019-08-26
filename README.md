@@ -39,7 +39,7 @@ A successful API should:
  * Allow multiple levels of privacy preservation; e.g. full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
  * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
- * Restrict access to local font data to Secure Contexts
+ * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
  * Re-use Web Font types and interfaces to the greatest extent possible
 
 #### Possible/Future Goals
