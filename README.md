@@ -146,9 +146,9 @@ Other issues that feedback is needed on:
 
 ### Privacy and Security Considerations
 
-The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.
+* The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser.
 
-For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser.
+* Some users (mostly in big organizations) have custom web fonts installed.  Listing these could provide highly identifying information about the user's company.
 
 ## Considered alternatives
 
