@@ -76,7 +76,18 @@ A user agent may decline to grant permissions requested by third-party contexts.
 
 ## 2.14. How does this specification work in the context of a user agent’s Private Browsing or "incognito" mode?
 
-The user agent could automatically deny the permission request. The user agent could also grant the permission request, but provide "anonymous" data, e.g. a fixed set of fonts, rather than enumerating the actual local fonts.
+Some possibilities for incognito-specific behaviors have been considered:
+
+* The user agent could automatically deny the permission request.
+* The user agent could grant the permission request, but provide "anonymous" data, e.g. a fixed set of fonts, rather than providing access to the actual local fonts.
+
+While eliminating the ability for accessing local fonts, these choices can unintentionally expose that the user is in incognito mode.  For example,
+automatically rejecting may indicate to a web page that, while a given UA normally supports the API, the rejection may hint that the UA has turned
+off the API due to being in incognito mode.
+
+Many permission-based web capabilities are exposed in incognito mode, so there's precedent that capabilities themselves are not problematic in incognito mode.  Other capabilities
+can identify the user (e.g. file upload) which also aren't limited by incognito mode.  Finally, eliminating capabilities from incognito mode reduces incognito mode's usefulness,
+which itself could impact the value of that feature.  Based on this, an incognito mode session is most likely best served by continuing to offer these local font access APIs.
 
 ## 2.15. Does this specification have a "Security Considerations" and "Privacy Considerations" section?
 
