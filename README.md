@@ -34,7 +34,8 @@ This document focuses on the former API - a **font-enumeration API**.
 
 A successful API should:
 
- * Provide efficient enumeration of all local fonts without blocking the main thread
+ * Where allowed, provide efficient enumeration of all local fonts without blocking the main thread
+ * Ensure UAs are free to return anything they like. If a browser implementation prefers, they may choose to only provide a set of default fonts built into the browser.
  * Be available from Workers
  * Allow multiple levels of privacy preservation; e.g. full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
