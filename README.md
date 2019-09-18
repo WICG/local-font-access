@@ -3,7 +3,7 @@
 # Font Enumeration Explained
 
 > August 14th, 2018<br>
-> Last Update: August 6th, 2019
+> Last Update: September 18th, 2019
 >
 > Alex Russell <code>&lt;slightlyoff@google.com&gt;</code><br>
 > Emil A Eklund <code>&lt;eae@google.com&gt;</code><br>
@@ -42,6 +42,7 @@ A successful API should:
  * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
  * Re-use Web Font types and interfaces to the greatest extent possible
+ * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by Unicode code point given font names
 
 #### Possible/Future Goals
 
@@ -86,6 +87,7 @@ Font enumeration can help by enabling:
   // e.g. locale.
   const fontsIterator = navigator.fonts.query();
 
+  // The returned list of fonts must be sorted by font name.
   for await (let face of fontsIterator) {
     const metadata = await face.getMetadata();
     console.log(f.family);         // The given "family" name
@@ -155,6 +157,8 @@ Other issues that feedback is needed on:
 * The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser.
 
 * Some users (mostly in big organizations) have custom web fonts installed.  Listing these could provide highly identifying information about the user's company.
+
+* Wherever possible, these APIs are designed to only expose exactly the information needed to enable the mentioned use cases.  System APIs may produce a list of installed fonts not in a random or a sorted order, but in the order of font installation.  Returning exactly the list of installed fonts given by such a system API can expose additional entropy bits, and use cases we want to enable aren't assisted by retaining this ordering.  As a result, this API requires that the returned data be sorted before being returned.
 
 ## Considered alternatives
 

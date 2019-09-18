@@ -14,6 +14,8 @@ The feature will require the user to grant permission before providing the data 
 
 The feature exposes the names and a handful of additional properties of each font. For example, the name, "PostScript" name, metrics, color and variability information. These are needed by Web applications that will present a list of fonts to users - e.g. illustration tools - to group and classify options. Some of these properties would also be available indirectly e.g. through measurement APIs.
 
+System APIs may in some cases expose more than the minimum amount of information necessary.  For example, a list of fonts given by system APIs may be returned in the order in which the fonts were installed.  This API intends to remove this additional information by sorting the returned result by Unicode code point given font names.
+
 ## 2.3. How does this specification deal with personal information or personally-identifiable information or information derived thereof?
 
 There are services which create fonts based on handwriting samples. If these fonts are given names including personally identifiable information (e.g. "Alice's Handwriting Font"), then personally identifiable information would be made available. This may not be apparent to users if the information is included as properties within the font, not just the font name.
