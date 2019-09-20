@@ -90,13 +90,13 @@ Font enumeration can help by enabling:
   // The returned list of fonts must be sorted by font name.
   for await (let face of fontsIterator) {
     const metadata = await face.getMetadata();
-    console.log(f.family);         // The given "family" name
+    console.log(face.family);         // The given "family" name
     // NEW metadata:
-    console.log(m.instanceName);
-    console.log(m.postScriptName);
-    console.log(m.fullName);
-    console.log(m.isVariable);// TODO: boolean enough?
-    console.log(m.isColor);   // TODO: boolean enough?
+    console.log(metadata.instanceName);
+    console.log(metadata.postScriptName);
+    console.log(metadata.fullName);
+    console.log(metadata.isVariable);// TODO: boolean enough?
+    console.log(metadata.isColor);   // TODO: boolean enough?
     // ...
   }
 })();
@@ -125,14 +125,14 @@ document.body.appendChild(fontSelect);
   for await (const face of navigator.fonts.query() {
     await metadata = face.getMetadata();
 
-    console.log(f.family);
+    console.log(face.family);
     console.log(metadata.instanceName);
     console.log(metadata.postScriptName);
 
     const option = document.createElement("option");
-    option.text = f.family;
-    option.value = f.family;
-    option.setAttribute("postScriptName", f.postScriptName);
+    option.text = face.family;
+    option.value = face.family;
+    option.setAttribute("postScriptName", face.postScriptName);
     fontSelect.append(option);
   }
 })();
