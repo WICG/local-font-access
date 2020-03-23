@@ -1,14 +1,15 @@
 <img src="https://inexorabletash.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
 
-# Font Enumeration Explained
+# Local Font Access Explained
 
 > August 14th, 2018<br>
-> Last Update: September 18th, 2019
+> Last Update: March 23rd, 2020
 >
-> Alex Russell <code>&lt;slightlyoff@google.com&gt;</code><br>
-> Emil A Eklund <code>&lt;eae@google.com&gt;</code><br>
-> Josh Bell <code>&lt;jsbell@google.com&gt;</code><br>
-> Chase Phillips <code>&lt;cmp@google.com&gt;</code><br>
+> Alex Russell `<slightlyoff@google.com>`<br>
+> Emil A Eklund `<eae@google.com>`<br>
+> Josh Bell `<jsbell@google.com>`<br>
+> Chase Phillips `<cmp@google.com>`<br>
+> Olivier Yiptong `<oyiptong@google.com>`<br>
 
 ## What’s all this then?
 
@@ -19,14 +20,12 @@ One stumbling block has been an inability to access and use the full variety of 
  * System font engines (and browser stacks) may handle the parsing and display of certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce fidelity.
  * Developers may have legacy font stacks for their applications which they are bringing to the web. To use these engines, they usually require direct access to font data; something Web Fonts do not provide.
 
-We propose two cooperating APIs to help address this gap:
+We propose a two-part API to help address this gap:
 
- * A font-enumeration API (this proposal) which may, optionally, allow users to grant access to the full set of available system fonts in addition to network fonts
- * A [font-table-access API](https://github.com/inexorabletash/font-table-access) which provides low-level (byte-oriented) access to the various [TrueType/OpenType](https://docs.microsoft.com/en-us/typography/opentype/spec/otff#font-tables) tables of local fonts
+ * A font enumeration API which may, optionally, allow users to grant access to the full set of available system fonts in addition to network fonts.
+ * From each enumeration result, the ability to request low-level (byte-oriented) access to the various [TrueType/OpenType](https://docs.microsoft.com/en-us/typography/opentype/spec/otff#font-tables) tables.
 
-Taken together, these APIs provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
-
-This document focuses on the former API - a **font-enumeration API**.
+Taken together, these provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 > NOTE: Long term, we expect that this proposal would merge into an existing CSS-related spec rather than stand on its own.
 
@@ -40,18 +39,21 @@ A successful API should:
  * Allow multiple levels of privacy preservation; e.g. full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
  * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
+ * Enable access to all [browser-allowed font tables](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) (may vary per browser)
+ * Enable a memory efficient implementation, avoiding leaks and copies by design
+ * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned tables
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
- * Re-use Web Font types and interfaces to the greatest extent possible
  * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by Unicode code point given font names
+
 
 #### Possible/Future Goals
 
  * Direct access to localized font names (can be done via table API)
- * Easy identification of [variable](https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts/) and color ([COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/colr), [CBDT](https://docs.microsoft.com/en-us/typography/opentype/spec/cbdt), [sbix](https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6sbix.html)) fonts (can be done via table API)
+ * Access to font tables for web (network-loaded) fonts
  * Registration of new font families (extensibility)
  * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using via the [font-table-access API](https://github.com/inexorabletash/font-table-access) even if not exposed during enumeration.
  * Signals when system font configuration changes (fonts added/removed); some designers work with tools that swap font portfolios at the system level
- * Provide access to named instances and subfamilies (e.g. "semibold", "light") ?
+ * Provide access to named instances and subfamilies (e.g. "semibold", "light")
 
 ### Non-goals
 
@@ -59,6 +61,10 @@ This API will not try to:
 
  * Fully describe how font loading works within the web platform. Fonts are a complex topic and Web Font loading implicates aspects of layout and style recalculation which are not at this time pluggable. As this design isn't addressing those aspects, we will not describe font application or CSS recalculation semantics
  * Standardize font family detection or grouping
+ * Describe or provide full access to an existing WOFF/TTF/PS parser.
+ * Provide access to the underlying WOFF/TTF/PS font files or describe their locations on disk.
+ * Provide a guarantee that the set of available tables or their content matches the font on disk byte to byte.
+ * Normalize differences in processed font tables across browser implementations. The font tables that will be exposed will have been processed by browser-provided parsers, but we will not describe or constrain them except to say that their output will continue to be in a valid OpenType format. For instance, if a library like [OTS](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) reduces the available information for a font, this spec will not require implementations to do more than they already would or provide alternative ways of getting such information back from the source font files.
 
 ## Key scenarios
 
@@ -80,24 +86,17 @@ Font enumeration can help by enabling:
   // May prompt the user:
   const status = await navigator.permissions.request({ name: "local-fonts" });
   if (status.state !== "granted")
-    throw new Error("Cannot continue to style with local fonts");
+    throw new Error("Cannot enumerate local fonts");
 
   // This sketch returns individual FontFace instances rather than families:
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
-  const fontsIterator = navigator.fonts.query();
+  const fonts_iterator = navigator.fonts.query();
 
-  // The returned list of fonts must be sorted by font name.
-  for await (let face of fontsIterator) {
-    const metadata = await face.getMetadata();
-    console.log(face.family);         // The given "family" name
-    // NEW metadata:
-    console.log(metadata.instanceName);
-    console.log(metadata.postScriptName);
+  for await (const metadata of fonts_iterator) {
+    console.log(metadata.postscriptName);
     console.log(metadata.fullName);
-    console.log(metadata.isVariable);// TODO: boolean enough?
-    console.log(metadata.isColor);   // TODO: boolean enough?
-    // ...
+    console.log(metadata.family);
   }
 })();
 ```
@@ -107,13 +106,13 @@ Font enumeration can help by enabling:
 Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name can allow the user to select from a richer set of choices:
 
 ```js
-const fontSelect = document.createElement("select");
-fontSelect.onchange = e => {
-  console.log("selected:", fontSelect.value);
+const font_select = document.createElement("select");
+font_select.onchange = e => {
+  console.log("selected:", font_select.value);
   // Use the selected font to style something here.
 };
 
-document.body.appendChild(fontSelect);
+document.body.appendChild(font_select);
 
 (async () => { // Async block
   // May prompt the user:
@@ -121,24 +120,69 @@ document.body.appendChild(fontSelect);
   if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
-  // TODO(slightlyoff): is this expressive enough?
-  for await (const face of navigator.fonts.query() {
-    await metadata = face.getMetadata();
-
-    console.log(face.family);
-    console.log(metadata.instanceName);
-    console.log(metadata.postScriptName);
-
+  for await (const metadata of navigator.fonts.query()) {
     const option = document.createElement("option");
-    option.text = face.family;
-    option.value = face.family;
-    option.setAttribute("postScriptName", face.postScriptName);
-    fontSelect.append(option);
+    option.text = metadata.fullName;
+    option.value = metadata.fullName;
+    option.setAttribute("postscriptName", metadata.postscriptName);
+    font_select.append(option);
   }
 })();
 ```
 
-## Detailed design discussion
+### Accessing Font Tables
+
+Here we use enumeration and new APIs on `FontFace` to access specific OpenType tables of local fonts; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
+
+```js
+(async () => { // Async block
+  // May prompt the user
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state !== "granted")
+    throw new Error("Cannot continue to style with local fonts");
+
+  for await (const metadata of navigator.fonts.query()) {
+    // Looking for a specific font:
+    if (metadata.postscriptName !== "Consolas")
+      continue;
+
+    // 'getTables()' returns Blobs of table data. The default is
+    // to return all available tables. See:
+    //    https://docs.microsoft.com/en-us/typography/opentype/spec/
+    // Here we ask for a subset of the tables:
+    const tables = await f.getTables([ "glyf", "cmap", "head" ]);
+
+    // 'tables' is a Map of table names to Blobs
+    const blob = tables.get("head");
+
+    // Slice out only the bytes we need.
+    const bytes = new DataView(await blob.slice(0, 4).arrayBuffer());
+
+    // Parse out the version number of our font:
+    //    https://docs.microsoft.com/en-us/typography/opentype/spec/head
+    const major = bytes.getInt16(0);
+    const minor = bytes.getInt16(2);
+    console.log("Consolas version:", (major + (minor/10)));
+  }
+})();
+```
+
+## Detailed design discussion (tables)
+
+Several aspects of this design need validation:
+
+* The arguments to `getTables()` could easily be done a dozen different ways. Feedback appreciated.
+* This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
+* It isn't strictly clear that providing table-by-table access is the best choice.
+* The specifics of table filtering (i.e. what tables/subtables are included) is left up to user agents.
+
+
+Other issues that feedback is needed on:
+
+* Enumeration order of the returned table map needs to be defined.
+
+
+## Detailed design discussion (enumeration)
 
 Several aspects of this design need validation:
 
@@ -154,7 +198,7 @@ Other issues that feedback is needed on:
 
 ### Privacy and Security Considerations
 
-* The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser.
+* The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser. Similarly, UAs are not required to provide table data exactly as it appears on disk. Chrome, e.g., will only provide access to table data after sanitization via [OTS](https://github.com/khaledhosny/ots) and will fail to reflect certain tables entirely.
 
 * Some users (mostly in big organizations) have custom web fonts installed.  Listing these could provide highly identifying information about the user's company.
 
