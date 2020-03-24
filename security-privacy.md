@@ -4,7 +4,9 @@ Questions from https://www.w3.org/TR/security-privacy-questionnaire/
 
 ## 2.1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-This feature intentionally reveals a list of local fonts to the Web site. This can include common fonts, fonts purchased from type foundries, or even custom fonts such as personal handwriting fonts.
+This feature intentionally reveals a list of local fonts to the Web site, and optionally tables within each font. This can include common fonts, fonts purchased from type foundries, or even custom fonts such as personal handwriting fonts.
+
+In addition, the data returned in the tables can include metadata about the font, as well as the actual font contents.  Providing access to this information is necessary in order to correctly render text using the font.
 
 Browsers currently provide for the use of local fonts, but not enumeration. For example, the CSS `font-family` property can be used to request the use of a local font by name. If the font is not available, the browser will provide a fallback. Through the use of measurement APIs, it is usually possible to determine if the requested font or a fallback was used. Given a dictionary of font names, this can be used to determine which are available on a user's system.
 
@@ -47,6 +49,15 @@ The font list includes:
 * Fonts directly installed by the system administrator and/or end user.
 
 This will identify the operating system and version and potentially some installed applications.
+
+Font table access provides overall access to the raw data stored in a font's tables.  This information includes all of the information about a specific font, including:
+
+* Metadata contained in a font's tables, including its various names, color and variability data, and copyright information
+* The raw table data used in OpenType fonts (e.g. the cmap table, etc)
+* The raw table data used in TrueType or CFF fonts (e.g. 'CFF2' or 'glyf' tables, etc)
+* Any other valid tables contained in the font beyond what may be required for traditional font rendering
+
+From this information, it may be possible to identify the operating system and version and potentially some installed applications.
 
 ## 2.7. Does this specification allow an origin access to sensors on a user’s device
 
