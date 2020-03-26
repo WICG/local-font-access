@@ -27,6 +27,8 @@ We propose a two-part API to help address this gap:
 
 Taken together, these provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
+Note that this implies that the web application provides its own shaper and libraries for Unicode, bidirectional text, text segmentation, and so on, duplicating the user agent and/or operating system's text stack. See the "Considered alternatives" section below.
+
 > NOTE: Long term, we expect that this proposal would merge into an existing CSS-related spec rather than stand on its own.
 
 ### Goals
@@ -150,7 +152,7 @@ Here we use enumeration and new APIs on `FontFace` to access specific OpenType t
     // to return all available tables. See:
     //    https://docs.microsoft.com/en-us/typography/opentype/spec/
     // Here we ask for a subset of the tables:
-    const tables = await f.getTables([ "glyf", "cmap", "head" ]);
+    const tables = await metadata.getTables([ "glyf", "cmap", "head" ]);
 
     // 'tables' is a Map of table names to Blobs
     const blob = tables.get("head");
@@ -200,7 +202,7 @@ Other issues that feedback is needed on:
 
 * The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser. Similarly, UAs are not required to provide table data exactly as it appears on disk. Chrome, e.g., will only provide access to table data after sanitization via [OTS](https://github.com/khaledhosny/ots) and will fail to reflect certain tables entirely.
 
-* Some users (mostly in big organizations) have custom web fonts installed.  Listing these could provide highly identifying information about the user's company.
+* Some users (mostly in big organizations) have custom fonts installed on their system.  Listing these could provide highly identifying information about the user's company.
 
 * Wherever possible, these APIs are designed to only expose exactly the information needed to enable the mentioned use cases.  System APIs may produce a list of installed fonts not in a random or a sorted order, but in the order of font installation.  Returning exactly the list of installed fonts given by such a system API can expose additional entropy bits, and use cases we want to enable aren't assisted by retaining this ordering.  As a result, this API requires that the returned data be sorted before being returned.
 
@@ -234,10 +236,13 @@ concerns.
 
 Including a subset of useful font metrics (`ascender`, `descender`, `xheight`, `baseline`) in the metadata was considered. Some are complicated (`baseline`), others more straightforward but may not be of practical use, especially if the full pipeline involves passing tables into Harfbuzz/FreeType for rendering. They are not included in the latest version of the sketch.
 
-For `isColor` there are multiple standards (`SBIX`, `CBDT`, `SVG` etc), although each user agent likely supports a subset. In this sketch, we assume the flag is true if there is a table supported by the user agent. However, the presence of a table may not be of practical use even if it is easy to detect.
+Additional metadata properties such whether the font uses color (`SBIX`, `CBDT`, `SVG` etc), or is a variable font could be provided, but may not be of use.
 
-Similarly, `isVariable` can be easily defined, but may not be of use.
+## Exposing Building Blocks
 
+To be of use, font table data must be consumed by a shaping engine such as [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/), in conjunction with Unicode libraries such as [ICU](http://site.icu-project.org/home) for bidirectional text support, text segmentation, and so on. Web applications could include these existing libraries, for example compiled via WASM, or equivalents. Necessarily, user agents and operating systems already provide this functionality, so requiring web applications to include their own copies leads to additional download and memory cost. In some cases, this may be required by the web application to ensure identical behavior across browsers, but in other cases exposing some of these libraries directly to script as additional web APIs could be beneficial.
+
+(Parts of ICU are being incrementally exposed to the web via the [ECMA-402](https://ecma-international.org/ecma-402/) effort.)
 
 ## References & acknowledgements
 

@@ -1223,6 +1223,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 8a606cd39d36033b27400c47ffcf6a695f400519" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
+  <meta content="8c03cd3d1ad4741b4efbe93d95f89043d57bde78" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1486,10 +1487,11 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2020-03-23">23 March 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2020-03-26">26 March 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
+     <dd><a href="https://github.com/inexorabletash/local-font-access/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:eae@google.com">Emil A. Eklund</a> (<a class="p-org org" href="https://google.com">Google Inc.</a>)
@@ -1501,7 +1503,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 23 March 2020,
+In addition, as of 26 March 2020,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1685,7 +1687,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
     <c- c1>// to return all available tables. See:</c->
     <c- c1>//    https://docs.microsoft.com/en-us/typography/opentype/spec/</c->
     <c- c1>// Here we ask for a subset of the tables:</c->
-    <c- kr>const</c-> tables <c- o>=</c-> await f<c- p>.</c->getTables<c- p>([</c-> <c- u>"glyf"</c-><c- p>,</c-> <c- u>"cmap"</c-><c- p>,</c-> <c- u>"head"</c-> <c- p>]);</c->
+    <c- kr>const</c-> tables <c- o>=</c-> await metadata<c- p>.</c->getTables<c- p>([</c-> <c- u>"glyf"</c-><c- p>,</c-> <c- u>"cmap"</c-><c- p>,</c-> <c- u>"head"</c-> <c- p>]);</c->
 
     <c- c1>// 'tables' is a Map of table names to Blobs</c->
     <c- kr>const</c-> blob <c- o>=</c-> tables<c- p>.</c->get<c- p>(</c-><c- u>"head"</c-><c- p>);</c->

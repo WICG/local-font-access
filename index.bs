@@ -195,7 +195,7 @@ Here we use enumeration to access specific OpenType tables of local fonts; we ca
     // to return all available tables. See:
     //    https://docs.microsoft.com/en-us/typography/opentype/spec/
     // Here we ask for a subset of the tables:
-    const tables = await f.getTables([ "glyf", "cmap", "head" ]);
+    const tables = await metadata.getTables([ "glyf", "cmap", "head" ]);
 
     // 'tables' is a Map of table names to Blobs
     const blob = tables.get("head");
