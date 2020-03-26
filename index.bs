@@ -323,7 +323,7 @@ WorkerNavigator includes NavigatorFonts;
 <div class=algorithm>
 Each [=/environment settings object=] has an associated {{FontManager}} object.
 
-The <dfn attribute for=NavigatorFonts>fonts</dfn> attribute's getter must return **this**'s [=/relevant settings object=]'s {{FontManager}} object.
+The <dfn attribute for=NavigatorFonts>fonts</dfn> attribute's getter must return [=/this=]'s [=/relevant settings object=]'s {{FontManager}} object.
 </div>
 
 <xmp class=idl>
@@ -342,7 +342,7 @@ Issue: This is returning an async iterable; should it be defined using Promise j
 Issue: Do we want query() to implicitly request the permission?
 
 1. Let |promise| be [=/a new promise=].
-1. If **this**’s [=relevant settings object=]'s [=origin=] is an [=opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
+1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
 1. Otherwise, run these steps [=in parallel=]:
     1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
@@ -364,10 +364,10 @@ All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator
 <div class=algorithm>
 The [=asynchronous iterator initialization steps=] for {{FontIterator}} are as follows:
 
-1. Set **this**'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
+1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
 1. For each local font |font| on the system, run these steps:
     1. Let |representation| be a [=/font representation=] for |font|.
-    1. [=queue/Enqueue=] |representation| to **this**'s {{FontIterator/[[FontList]]}}.
+    1. [=queue/Enqueue=] |representation| to [=/this=]'s {{FontIterator/[[FontList]]}}.
 
 </div>
 
@@ -378,10 +378,10 @@ Note: User agents are expected to actually populate the iterator's queue asynchr
 To [=get the next iteration result=] for {{FontIterator}}, run the following steps:
 
 1. Let |promise| be [=/a new promise=].
-1. If **this**'s {{FontIterator/[[FontList]]}} is [=queue/empty=], then:
+1. If [=/this=]'s {{FontIterator/[[FontList]]}} is [=queue/empty=], then:
     1. [=/Resolve=] |promise| with undefined.
 1. Otherwise:
-    1. Let |representation| be the result of [=queue/dequeuing=] from **this**'s {{FontIterator/[[FontList]]}}.
+    1. Let |representation| be the result of [=queue/dequeuing=] from [=/this=]'s {{FontIterator/[[FontList]]}}.
     1. Let |metadata| be a new {{FontMetadata}} instance associated with |representation|.
     1. [=/Resolve=] |promise| with |metadata|.
 1. Return |promise|.
@@ -421,11 +421,11 @@ interface FontMetadata {
 
 <div dfn-for="FontMetadata">
 
-The <dfn attribute>postscriptName</dfn> attribute's getter must return **this**'s associated [=/font representation=]'s [=font representation/name string=] 6 for \``en`\`.
+The <dfn attribute>postscriptName</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 6 for \``en`\`.
 
-The <dfn attribute>fullName</dfn> attribute's getter must return **this**'s associated [=/font representation=]'s [=font representation/name string=] 4 for the [=/current language=].
+The <dfn attribute>fullName</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 4 for the [=/current language=].
 
-The <dfn attribute>family</dfn> attribute's getter must return **this**'s associated [=/font representation=]'s [=font representation/name string=] 1 for the [=/current language=].
+The <dfn attribute>family</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 1 for the [=/current language=].
 
 </div>
 
@@ -468,7 +468,7 @@ The <dfn method for=FontMetadata>getTables(|tableNames|)</dfn> method, when invo
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Let |map| be a new {{FontTableMap}}.
     1. Let |backing| be |map|'s \[[BackingMap]] (an {{ECMAScript/Map}}.)
-    1. Let |font| be **this**'s [=/font representation=].
+    1. Let |font| be [=/this=]'s [=/font representation=].
     1. [=list/For each=] |table| of |font|'s [=font representation/table list=]:
         1. Let |tag| be |table|'s [=font table/tag=].
          1. If |tableNames| was given and does not [=list/contain=] |tag|, then [=iteration/continue=].

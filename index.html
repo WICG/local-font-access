@@ -1223,7 +1223,6 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 8a606cd39d36033b27400c47ffcf6a695f400519" name="generator">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="8c03cd3d1ad4741b4efbe93d95f89043d57bde78" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1491,7 +1490,6 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
-     <dd><a href="https://github.com/inexorabletash/local-font-access/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:eae@google.com">Emil A. Eklund</a> (<a class="p-org org" href="https://google.com">Google Inc.</a>)
@@ -1764,7 +1762,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
 </pre>
    <div class="algorithm">
      Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object" id="ref-for-environment-settings-object">environment settings object</a> has an associated <code class="idl"><a data-link-type="idl" href="#fontmanager" id="ref-for-fontmanager①">FontManager</a></code> object. 
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="NavigatorFonts" data-dfn-type="attribute" data-export id="dom-navigatorfonts-fonts"><code>fonts</code></dfn> attribute’s getter must return <strong>this</strong>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <code class="idl"><a data-link-type="idl" href="#fontmanager" id="ref-for-fontmanager②">FontManager</a></code> object.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="NavigatorFonts" data-dfn-type="attribute" data-export id="dom-navigatorfonts-fonts"><code>fonts</code></dfn> attribute’s getter must return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <code class="idl"><a data-link-type="idl" href="#fontmanager" id="ref-for-fontmanager②">FontManager</a></code> object.</p>
    </div>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -1780,7 +1778,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p>If <strong>this</strong>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, then <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, then <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
      <li data-md>
       <p>Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
       <ol>
@@ -1806,14 +1804,14 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
      The <a data-link-type="dfn" href="https://heycam.github.io/webidl/#TBD" id="ref-for-TBD">asynchronous iterator initialization steps</a> for <code class="idl"><a data-link-type="idl" href="#fontiterator" id="ref-for-fontiterator③">FontIterator</a></code> are as follows: 
     <ol>
      <li data-md>
-      <p>Set <strong>this</strong>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot">[[FontList]]</a></code> to a new empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue" id="ref-for-queue">queue</a>.</p>
+      <p>Set <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot">[[FontList]]</a></code> to a new empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue" id="ref-for-queue">queue</a>.</p>
      <li data-md>
       <p>For each local font <var>font</var> on the system, run these steps:</p>
       <ol>
        <li data-md>
         <p>Let <var>representation</var> be a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑥">font representation</a> for <var>font</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-enqueue" id="ref-for-queue-enqueue">Enqueue</a> <var>representation</var> to <strong>this</strong>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot①">[[FontList]]</a></code>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-enqueue" id="ref-for-queue-enqueue">Enqueue</a> <var>representation</var> to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot①">[[FontList]]</a></code>.</p>
       </ol>
     </ol>
    </div>
@@ -1824,7 +1822,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise①">a new promise</a>.</p>
      <li data-md>
-      <p>If <strong>this</strong>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot②">[[FontList]]</a></code> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty">empty</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot②">[[FontList]]</a></code> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty">empty</a>, then:</p>
       <ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve①">Resolve</a> <var>promise</var> with undefined.</p>
@@ -1833,7 +1831,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
       <p>Otherwise:</p>
       <ol>
        <li data-md>
-        <p>Let <var>representation</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-dequeue" id="ref-for-queue-dequeue">dequeuing</a> from <strong>this</strong>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot③">[[FontList]]</a></code>.</p>
+        <p>Let <var>representation</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-dequeue" id="ref-for-queue-dequeue">dequeuing</a> from <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑤">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot③">[[FontList]]</a></code>.</p>
        <li data-md>
         <p>Let <var>metadata</var> be a new <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata①">FontMetadata</a></code> instance associated with <var>representation</var>.</p>
        <li data-md>
@@ -1866,9 +1864,9 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
 };
 </pre>
    <div>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-postscriptname"><code>postscriptName</code></dfn> attribute’s getter must return <strong>this</strong>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string">name string</a> 6 for `<code>en</code>`.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-fullname"><code>fullName</code></dfn> attribute’s getter must return <strong>this</strong>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string①">name string</a> 4 for the <a data-link-type="dfn" href="#current-language" id="ref-for-current-language">current language</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-family"><code>family</code></dfn> attribute’s getter must return <strong>this</strong>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①⓪">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string②">name string</a> 1 for the <a data-link-type="dfn" href="#current-language" id="ref-for-current-language①">current language</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-postscriptname"><code>postscriptName</code></dfn> attribute’s getter must return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑥">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string">name string</a> 6 for `<code>en</code>`.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-fullname"><code>fullName</code></dfn> attribute’s getter must return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑦">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string①">name string</a> 4 for the <a data-link-type="dfn" href="#current-language" id="ref-for-current-language">current language</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontMetadata" data-dfn-type="attribute" data-export id="dom-fontmetadata-family"><code>family</code></dfn> attribute’s getter must return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑧">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①⓪">font representation</a>'s <a data-link-type="dfn" href="#font-representation-name-string" id="ref-for-font-representation-name-string②">name string</a> 1 for the <a data-link-type="dfn" href="#current-language" id="ref-for-current-language①">current language</a>.</p>
    </div>
    <aside class="issue" id="issue-cb2f1afa">
     <a class="self-link" href="#issue-cb2f1afa"></a> Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
@@ -1911,7 +1909,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
        <li data-md>
         <p>Let <var>backing</var> be <var>map</var>’s [[BackingMap]] (an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-map-objects" id="ref-for-sec-map-objects①">Map</a></code>.)</p>
        <li data-md>
-        <p>Let <var>font</var> be <strong>this</strong>'s <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①①">font representation</a>.</p>
+        <p>Let <var>font</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①①">font representation</a>.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>table</var> of <var>font</var>’s <a data-link-type="dfn" href="#font-representation-table-list" id="ref-for-font-representation-table-list③">table list</a>:</p>
         <ol>
@@ -2409,6 +2407,13 @@ for suggestions, reviews, and other feedback.</p>
     <li><a href="#ref-for-resolve③">6.2. The FontMetadata interface</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-this">
+   <a href="https://heycam.github.io/webidl/#this">https://heycam.github.io/webidl/#this</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-this">6.1. Font manager</a> <a href="#ref-for-this①">(2)</a> <a href="#ref-for-this②">(3)</a> <a href="#ref-for-this③">(4)</a> <a href="#ref-for-this④">(5)</a> <a href="#ref-for-this⑤">(6)</a>
+    <li><a href="#ref-for-this⑥">6.2. The FontMetadata interface</a> <a href="#ref-for-this⑦">(2)</a> <a href="#ref-for-this⑧">(3)</a> <a href="#ref-for-this⑨">(4)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-unsigned-short">
    <a href="https://heycam.github.io/webidl/#idl-unsigned-short">https://heycam.github.io/webidl/#idl-unsigned-short</a><b>Referenced in:</b>
    <ul>
@@ -2485,6 +2490,7 @@ for suggestions, reviews, and other feedback.</p>
      <li><span class="dfn-paneled" id="term-for-TBD①" style="color:initial">get the next iteration result</span>
      <li><span class="dfn-paneled" id="term-for-reject" style="color:initial">reject</span>
      <li><span class="dfn-paneled" id="term-for-resolve" style="color:initial">resolve</span>
+     <li><span class="dfn-paneled" id="term-for-this" style="color:initial">this</span>
      <li><span class="dfn-paneled" id="term-for-idl-unsigned-short" style="color:initial">unsigned short</span>
     </ul>
   </ul>
