@@ -36,16 +36,20 @@ spec: ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
 
-dl.domintro dt {
+.domintro::before {
+    content: 'For web developers (non-normative)';
+    text-transform: initial;
+}
+.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
 
     padding-top: 0.5em;
     padding-bottom: 1em;
 }
-dl.domintro dt a {
+.domintro dt a {
     color: inherit; border-bottom-style: none;
 }
-dl.domintro dt code {
+.domintro dt code {
     font-size: inherit;
 }
 </style>
@@ -303,12 +307,12 @@ else
 ## Font manager ## {#font-manager-api}
 <!-- ============================================================ -->
 
-<dl class="domintro note">
+<div class="domintro note">
 
-  : for await (const |fontFace| of navigator . fonts . {{FontManager/query()}} { ... }
-  :: Asynchronously iterate over the available fonts. Each time through the loop, |fontFace| will be a new {{FontFace}} object.
+: for await (const |metadata| of navigator . fonts . {{FontManager/query()}} { ... }
+  :: Asynchronously iterate over the available fonts. Each time through the loop, |metadata| will be a new {{FontMetadata}} object.
 
-</dl>
+</div>
 
 
 <xmp class=idl>
@@ -395,17 +399,18 @@ To [=get the next iteration result=] for {{FontIterator}}, run the following ste
 
 A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has an associated [=/font representation=].
 
-<dl class="domintro note">
+<div class="domintro note">
+
     : |metadata| . {{FontMetadata/postscriptName}}
-    :: The PostScript name for the font. E.g. "Arial-Bold"
+    :: The PostScript name for the font. Example: "`Arial-Bold`"
 
     : |metadata| . {{FontMetadata/fullName}}
-    :: The full font name, including family subfamily names. E.g. "Arial Bold"
+    :: The full font name, including family subfamily names. Example: "`Arial Bold`"
 
     : |metadata| . {{FontMetadata/family}}
-    :: The font family name. E.g. "Arial"
+    :: The font family name. Example: "`Arial`"
 
-</dl>
+</div>
 
 
 <xmp class=idl>
@@ -442,12 +447,13 @@ Issue: Include `name` ID 2 (Font subfamily, e.g. "Regular") as well?
 Issue: Include `name` ID 3 (Unique identifier) as well?
 
 
-<dl class="domintro note">
+<div class="domintro note">
+
     : await |map| = |metadata| . {{FontMetadata/getTables()}}
     : await |map| = |metadata| . {{FontMetadata/getTables()|getTables}}(|tableNames|)
     :: Request the internal tables of |metadata|. The result |map| is {{FontTableMap}} with an API like a {{ECMAScript/Map}}, where the keys are matching table names and the values are {{Blob}}s with the table binary data. If |tableNames| is not specified, all tables are returned.
 
-</dl>
+</div>
 
 <xmp class=idl>
 [Exposed=(Window,Worker)]
