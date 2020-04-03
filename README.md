@@ -1,4 +1,4 @@
-<img src="https://wicg.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
+<img src="https://wicg.github.io/local-font-access/logo-font-enumeration.svg" height=100 align=right>
 
 # Local Font Access Explained
 
@@ -10,6 +10,8 @@
 > Josh Bell `<jsbell@google.com>`<br>
 > Chase Phillips `<cmp@google.com>`<br>
 > Olivier Yiptong `<oyiptong@google.com>`<br>
+
+[![Build Status](https://travis-ci.org/WICG/local-font-access.svg?branch=master)](https://travis-ci.org/WICG/local-font-access)
 
 ## What’s all this then?
 
