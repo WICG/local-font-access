@@ -1,22 +1,7 @@
-language: python
-sudo: false
-python:
-  - "3.7"
+# For the gh-pages branch, we don't need anything special except to
+# have travis run.  That's what the branches: section is for.
 
-install:
-  # Setup bikeshed. See https://tabatkins.github.io/bikeshed/#install-final
-  - pip install bikeshed
-  - bikeshed update
-
-script:
-  - bash ./deploy.sh
-
-env:
-  global:
-  - ENCRYPTION_LABEL: "189e52c2c347"
-  - COMMIT_AUTHOR_EMAIL: "storage-dev@chromium.org"
-
+language: generic
 branches:
-  # Don't do this on the gh-pages branch.
-  except:
-  - gh-pages
+  only:
+    - gh-pages
