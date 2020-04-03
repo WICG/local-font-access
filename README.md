@@ -1,4 +1,4 @@
-<img src="https://inexorabletash.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
+<img src="https://wicg.github.io/font-enumeration/logo-font-enumeration.svg" height=100 align=right>
 
 # Local Font Access Explained
 
@@ -53,7 +53,7 @@ A successful API should:
  * Direct access to localized font names (can be done via table API)
  * Access to font tables for web (network-loaded) fonts
  * Registration of new font families (extensibility)
- * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using via the [font-table-access API](https://github.com/inexorabletash/font-table-access) even if not exposed during enumeration.
+ * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using table access, even if not exposed during enumeration.
  * Signals when system font configuration changes (fonts added/removed); some designers work with tools that swap font portfolios at the system level
  * Provide access to named instances and subfamilies (e.g. "semibold", "light")
 
