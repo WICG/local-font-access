@@ -1,8 +1,12 @@
 <pre class=metadata>
 Title: Local Font Access API
 Shortname: LocalFonts
+Level: 1
+Status: CG-DRAFT
+Group: WICG
+ED: https://wicg.github.io/local-font-access/
+Repository: WICG/font-enumeration
 Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw table data of fonts, allowing for more detailed custom text rendering.
-Status: DREAM
 Editor: Emil A. Eklund, Google Inc. https://google.com, eae@google.com
 Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
 Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
@@ -13,10 +17,6 @@ Complain About: accidental-2119 yes, missing-example-ids yes
 Favicon: logo-font-enumeration.png
 </pre>
 <!--
-Repository: WICG/font-enumeration
-Level: 1
-Group: wicg
-ED: https://wicg.github.io/font-enumeration
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-enumeration
 -->
 
