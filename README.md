@@ -90,7 +90,7 @@ Font enumeration can help by enabling:
   if (status.state !== "granted")
     throw new Error("Cannot enumerate local fonts");
 
-  // This sketch returns individual FontFace instances rather than families:
+  // This sketch returns individual FontMetadata instances rather than families:
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
   const fonts_iterator = navigator.fonts.query();
@@ -134,7 +134,7 @@ document.body.appendChild(font_select);
 
 ### Accessing Font Tables
 
-Here we use enumeration and new APIs on `FontFace` to access specific OpenType tables of local fonts; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
+Here we use enumeration and new APIs on `FontMetadata` to access specific OpenType tables of local fonts; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
 
 ```js
 (async () => { // Async block
@@ -190,8 +190,7 @@ Several aspects of this design need validation:
 
 * What precisely is being iterated over needs to be identified. Is it over files on disk, families, or other groupings that a system level enumeration API provides? There is not a 1:1 relationship between files and named instances.
 * Grouping of related fonts and variants into a parent object is difficult. Some families can be represented by one file or many, and the definition of a "family" is heuristic to start with. Is grouping needed? Design currently leaves this open to future additions.
-* `FontFace` objects provide a lot of metadata synchronously, by default. While this sketch provides additional metadata asynchronously, is using `FontFace` with the sync data subset a problem?
-* This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
+* This design tries to address concerns with `FontFace`, `FontFaceSet` and friends at the cost of introducing a new API surface.
 
 Other issues that feedback is needed on:
 
