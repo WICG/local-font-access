@@ -309,7 +309,7 @@ else
 
 <div class="domintro note">
 
-: for await (const |metadata| of navigator . fonts . {{FontManager/query()}} { ... }
+: for await (const |metadata| of navigator . fonts . {{FontManager/query()}}) { ... }
   :: Asynchronously iterate over the available fonts. Each time through the loop, |metadata| will be a new {{FontMetadata}} object.
 
 </div>
@@ -359,7 +359,7 @@ Issue: Do we want query() to implicitly request the permission?
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontIterator {
-  /*async*/ iterable<FontMetadata>;
+  async iterable<FontMetadata, FontMetadata>;
 };
 </xmp>
 
@@ -387,10 +387,12 @@ To [=get the next iteration result=] for {{FontIterator}}, run the following ste
 1. Otherwise:
     1. Let |representation| be the result of [=queue/dequeuing=] from [=/this=]'s {{FontIterator/[[FontList]]}}.
     1. Let |metadata| be a new {{FontMetadata}} instance associated with |representation|.
-    1. [=/Resolve=] |promise| with |metadata|.
+    1. [=/Resolve=] |promise| with (|metadata|, |metadata|).
 1. Return |promise|.
 
 </div>
+
+Issue: Web IDL's `async iterable` requires returning key-value pairs. That makes this awkward.
 
 
 <!-- ============================================================ -->
@@ -416,7 +418,7 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
 <xmp class=idl>
 [Exposed=(Window,Worker)]
 interface FontMetadata {
-  Promise<FontTableMap> getTables(sequence<ByteString> tables);
+  Promise<FontTableMap> getTables(optional sequence<ByteString> tables);
 
   readonly attribute USVString postscriptName;
   readonly attribute USVString fullName;
