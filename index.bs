@@ -359,9 +359,11 @@ Issue: Do we want query() to implicitly request the permission?
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontIterator {
-  async iterable<FontMetadata, FontMetadata>;
+  /*async*/ iterable<FontMetadata>;
 };
 </xmp>
+
+Issue: The `async` keyword is not yet supported here by spec tools. [Tracking Issue](https://github.com/plinss/widlparser/issues/58)
 
 All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator>\[[FontList]]</dfn> slot.
 
@@ -375,6 +377,7 @@ The [=asynchronous iterator initialization steps=] for {{FontIterator}} are as f
 
 </div>
 
+Issue: Make it clear that the user agent can filter fonts and/or prompt the user to select a subset of system fonts.
 
 Note: User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
 
@@ -387,12 +390,10 @@ To [=get the next iteration result=] for {{FontIterator}}, run the following ste
 1. Otherwise:
     1. Let |representation| be the result of [=queue/dequeuing=] from [=/this=]'s {{FontIterator/[[FontList]]}}.
     1. Let |metadata| be a new {{FontMetadata}} instance associated with |representation|.
-    1. [=/Resolve=] |promise| with (|metadata|, |metadata|).
+    1. [=/Resolve=] |promise| with |metadata|.
 1. Return |promise|.
 
 </div>
-
-Issue: Web IDL's `async iterable` requires returning key-value pairs. That makes this awkward.
 
 
 <!-- ============================================================ -->
@@ -487,6 +488,8 @@ The <dfn method for=FontMetadata>getTables(|tableNames|)</dfn> method, when invo
 
 Issue: Table order? If returned in requested order, what if the |tableNames| argument is omitted? (Observable by iterating the map.)
 
+Issue: What is the expected behavior if requested tables do not exist? If developers call `getTables()` with one name, they might expect a rejection if the table does not exist. On the other hand, if they call `getTables()` with a set of names they might expect all matching tables to be provided with no rejection. The above algorithm provides the latter behavior.
+
 </div>
 
 <!-- ============================================================ -->
@@ -539,6 +542,8 @@ The font list includes:
 This provides several "bits of entropy" to distinguish users.
 
 User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.
+
+User agents may also allow the user to select a set of fonts to make available via the API.
 
 <!-- ============================================================ -->
 ## Identification ## {#privacy-identification}
