@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version b76f9052, updated Mon Apr 13 16:17:21 2020 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.png" rel="icon">
-  <meta content="10f6bd9602a733fd6a25f0a4c420c872f45134d4" name="document-revision">
+  <meta content="891b5f2a96787e5d42e7bc2a44ba63e55b7b623f" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1493,7 +1493,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-04-20">20 April 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-04-21">21 April 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1815,9 +1815,10 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fontiterator"><code><c- g>FontIterator</c-></code></dfn> {
-  <c- b>async</c-> <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="#fontmetadata" id="ref-for-fontmetadata①"><c- n>FontMetadata</c-></a>, <a class="n" data-link-type="idl-name" href="#fontmetadata" id="ref-for-fontmetadata②"><c- n>FontMetadata</c-></a>>;
+  /*async*/ <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="#fontmetadata" id="ref-for-fontmetadata①"><c- n>FontMetadata</c-></a>>;
 };
 </pre>
+   <p class="issue" id="issue-9d1c3c9f"><a class="self-link" href="#issue-9d1c3c9f"></a> The <code>async</code> keyword is not yet supported here by spec tools. <a href="https://github.com/plinss/widlparser/issues/58">Tracking Issue</a></p>
    <p>All <code class="idl"><a data-link-type="idl" href="#fontiterator" id="ref-for-fontiterator②">FontIterator</a></code> objects contain an internal <dfn class="dfn-paneled idl-code" data-dfn-for="FontIterator" data-dfn-type="attribute" data-export id="dom-fontiterator-fontlist-slot"><code>[[FontList]]</code></dfn> slot.</p>
    <div class="algorithm">
      The <a data-link-type="dfn" href="https://heycam.github.io/webidl/#TBD" id="ref-for-TBD">asynchronous iterator initialization steps</a> for <code class="idl"><a data-link-type="idl" href="#fontiterator" id="ref-for-fontiterator③">FontIterator</a></code> are as follows: 
@@ -1834,6 +1835,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
       </ol>
     </ol>
    </div>
+   <p class="issue" id="issue-1285a5e4"><a class="self-link" href="#issue-1285a5e4"></a> Make it clear that the user agent can filter fonts and/or prompt the user to select a subset of system fonts.</p>
    <p class="note" role="note"><span>Note:</span> User agents are expected to actually populate the iterator’s queue asynchronously and possibly lazily, although this is not observable.</p>
    <div class="algorithm">
      To <a data-link-type="dfn" href="https://heycam.github.io/webidl/#TBD" id="ref-for-TBD①">get the next iteration result</a> for <code class="idl"><a data-link-type="idl" href="#fontiterator" id="ref-for-fontiterator④">FontIterator</a></code>, run the following steps: 
@@ -1852,17 +1854,16 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
        <li data-md>
         <p>Let <var>representation</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#queue-dequeue" id="ref-for-queue-dequeue">dequeuing</a> from <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑤">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-fontiterator-fontlist-slot" id="ref-for-dom-fontiterator-fontlist-slot③">[[FontList]]</a></code>.</p>
        <li data-md>
-        <p>Let <var>metadata</var> be a new <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata③">FontMetadata</a></code> instance associated with <var>representation</var>.</p>
+        <p>Let <var>metadata</var> be a new <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata②">FontMetadata</a></code> instance associated with <var>representation</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise②">Resolve</a> <var>promise</var> with (<var>metadata</var>, <var>metadata</var>).</p>
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise②">Resolve</a> <var>promise</var> with <var>metadata</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <p class="issue" id="issue-1a76c40e"><a class="self-link" href="#issue-1a76c40e"></a> Web IDL’s <code>async iterable</code> requires returning key-value pairs. That makes this awkward.</p>
-   <h3 class="heading settled" data-level="6.2" id="fontmetadata-interface"><span class="secno">6.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata④">FontMetadata</a></code> interface</span><a class="self-link" href="#fontmetadata-interface"></a></h3>
-   <p>A <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata⑤">FontMetadata</a></code> provides details about a font face. Each <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata⑥">FontMetadata</a></code> has an associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>.</p>
+   <h3 class="heading settled" data-level="6.2" id="fontmetadata-interface"><span class="secno">6.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata③">FontMetadata</a></code> interface</span><a class="self-link" href="#fontmetadata-interface"></a></h3>
+   <p>A <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata④">FontMetadata</a></code> provides details about a font face. Each <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata⑤">FontMetadata</a></code> has an associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>.</p>
    <div class="domintro note" role="note">
     <dl>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-postscriptname" id="ref-for-dom-fontmetadata-postscriptname">postscriptName</a></code>
@@ -1953,12 +1954,13 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
       <p>Return <var>promise</var>.</p>
     </ol>
     <p class="issue" id="issue-1c3c09e5"><a class="self-link" href="#issue-1c3c09e5"></a> Table order? If returned in requested order, what if the <var>tableNames</var> argument is omitted? (Observable by iterating the map.)</p>
+    <p class="issue" id="issue-5d0e5634"><a class="self-link" href="#issue-5d0e5634"></a> What is the expected behavior if requested tables do not exist? If developers call <code>getTables()</code> with one name, they might expect a rejection if the table does not exist. On the other hand, if they call <code>getTables()</code> with a set of names they might expect all matching tables to be provided with no rejection. The above algorithm provides the latter behavior.</p>
    </div>
    <h2 class="heading settled" data-level="7" id="i18n"><span class="secno">7. </span><span class="content">Internationalization considerations</span><a class="self-link" href="#i18n"></a></h2>
    <p class="issue" id="issue-85d2bf43"><a class="self-link" href="#issue-85d2bf43"></a> Document internationalization consideration, e.g. string localization</p>
    <h3 class="heading settled" data-level="7.1" id="i18n-names"><span class="secno">7.1. </span><span class="content">Font Names</span><a class="self-link" href="#i18n-names"></a></h3>
    <p>The `<code>name</code>` table in OpenType <a data-link-type="biblio" href="#biblio-opentype">[OPENTYPE]</a> fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a>. For example, a font could have family name strings defined for both `<code>en</code>` and `<code>zh-Hant-HK</code>`.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata⑦">FontMetadata</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-postscriptname" id="ref-for-dom-fontmetadata-postscriptname②">postscriptName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-fullname" id="ref-for-dom-fontmetadata-fullname②">fullName</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-family" id="ref-for-dom-fontmetadata-family②">family</a></code> are provided by this API simply as strings, using the `<code>en</code>` locale. This matches the behavior of the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface">FontFace</a></code> <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-family" id="ref-for-dom-fontface-family">family</a></code> property.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#fontmetadata" id="ref-for-fontmetadata⑥">FontMetadata</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-postscriptname" id="ref-for-dom-fontmetadata-postscriptname②">postscriptName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-fullname" id="ref-for-dom-fontmetadata-fullname②">fullName</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-family" id="ref-for-dom-fontmetadata-family②">family</a></code> are provided by this API simply as strings, using the `<code>en</code>` locale. This matches the behavior of the <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#fontface" id="ref-for-fontface">FontFace</a></code> <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/css-font-loading-3/#dom-fontface-family" id="ref-for-dom-fontface-family">family</a></code> property.</p>
    <p class="issue" id="issue-5dc0994a"><a class="self-link" href="#issue-5dc0994a"></a> The above does not match the spec/implementation. Resolve the ambiguity.</p>
    <p>Web applications that need to provide names in other languages can request and parse the `<code>name</code>` table directly.</p>
    <p class="issue" id="issue-656971e2"><a class="self-link" href="#issue-656971e2"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-fontmanager-query" id="ref-for-dom-fontmanager-query②">query()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en</code>` if not present?</p>
@@ -1979,6 +1981,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->font_select<c- p>);</
    </ul>
    <p>This provides several "bits of entropy" to distinguish users.</p>
    <p>User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.</p>
+   <p>User agents may also allow the user to select a set of fonts to make available via the API.</p>
    <h3 class="heading settled" data-level="10.2" id="privacy-identification"><span class="secno">10.2. </span><span class="content">Identification</span><a class="self-link" href="#privacy-identification"></a></h3>
    <p>Users from a particular organization could have specific fonts installed. Employees of "Example Co." could all have an "Example Corporate Typeface" installed by their system administrator, which would allow distinguishing users of a site as employees.</p>
    <p>There are services which create fonts based on handwriting samples. If these fonts are given names including personally identifiable information (e.g. "Alice’s Handwriting Font"), then personally identifiable information would be made available. This may not be apparent to users if the information is included as properties within the font, not just the font name.</p>
@@ -2574,7 +2577,7 @@ for suggestions, reviews, and other feedback.</p>
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a href="#fontiterator"><code><c- g>FontIterator</c-></code></a> {
-  <c- b>async</c-> <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="#fontmetadata"><c- n>FontMetadata</c-></a>, <a class="n" data-link-type="idl-name" href="#fontmetadata"><c- n>FontMetadata</c-></a>>;
+  /*async*/ <c- b>iterable</c->&lt;<a class="n" data-link-type="idl-name" href="#fontmetadata"><c- n>FontMetadata</c-></a>>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -2598,7 +2601,8 @@ for suggestions, reviews, and other feedback.</p>
    <div class="issue"> What if there is no matching <var>id</var> or <var>tag</var>? Empty string? Where does fallback occur?<a href="#issue-4a8c0163"> ↵ </a></div>
    <div class="issue"> This is returning an async iterable; should it be defined using Promise jargon here?<a href="#issue-0ccb9fa9"> ↵ </a></div>
    <div class="issue"> Do we want query() to implicitly request the permission?<a href="#issue-10f65560"> ↵ </a></div>
-   <div class="issue"> Web IDL’s <code>async iterable</code> requires returning key-value pairs. That makes this awkward.<a href="#issue-1a76c40e"> ↵ </a></div>
+   <div class="issue"> The <code>async</code> keyword is not yet supported here by spec tools. <a href="https://github.com/plinss/widlparser/issues/58">Tracking Issue</a><a href="#issue-9d1c3c9f"> ↵ </a></div>
+   <div class="issue"> Make it clear that the user agent can filter fonts and/or prompt the user to select a subset of system fonts.<a href="#issue-1285a5e4"> ↵ </a></div>
    <div class="issue">
      Verify source for all of the above. See <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">Microsoft Typography</a> 
     <ul>
@@ -2612,6 +2616,7 @@ for suggestions, reviews, and other feedback.</p>
    <div class="issue"> Include <code>name</code> ID 2 (Font subfamily, e.g. "Regular") as well?<a href="#issue-bd70c25b"> ↵ </a></div>
    <div class="issue"> Include <code>name</code> ID 3 (Unique identifier) as well?<a href="#issue-1b2cd231"> ↵ </a></div>
    <div class="issue"> Table order? If returned in requested order, what if the <var>tableNames</var> argument is omitted? (Observable by iterating the map.)<a href="#issue-1c3c09e5"> ↵ </a></div>
+   <div class="issue"> What is the expected behavior if requested tables do not exist? If developers call <code>getTables()</code> with one name, they might expect a rejection if the table does not exist. On the other hand, if they call <code>getTables()</code> with a set of names they might expect all matching tables to be provided with no rejection. The above algorithm provides the latter behavior.<a href="#issue-5d0e5634"> ↵ </a></div>
    <div class="issue"> Document internationalization consideration, e.g. string localization<a href="#issue-85d2bf43"> ↵ </a></div>
    <div class="issue"> The above does not match the spec/implementation. Resolve the ambiguity.<a href="#issue-5dc0994a"> ↵ </a></div>
    <div class="issue"> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-fontmanager-query">query()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en</code>` if not present?<a href="#issue-656971e2"> ↵ </a></div>
@@ -2733,9 +2738,9 @@ for suggestions, reviews, and other feedback.</p>
   <aside class="dfn-panel" data-for="fontmetadata">
    <b><a href="#fontmetadata">#fontmetadata</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fontmetadata">6.1. Font manager</a> <a href="#ref-for-fontmetadata①">(2)</a> <a href="#ref-for-fontmetadata②">(3)</a> <a href="#ref-for-fontmetadata③">(4)</a>
-    <li><a href="#ref-for-fontmetadata④">6.2. The FontMetadata interface</a> <a href="#ref-for-fontmetadata⑤">(2)</a> <a href="#ref-for-fontmetadata⑥">(3)</a>
-    <li><a href="#ref-for-fontmetadata⑦">7.1. Font Names</a>
+    <li><a href="#ref-for-fontmetadata">6.1. Font manager</a> <a href="#ref-for-fontmetadata①">(2)</a> <a href="#ref-for-fontmetadata②">(3)</a>
+    <li><a href="#ref-for-fontmetadata③">6.2. The FontMetadata interface</a> <a href="#ref-for-fontmetadata④">(2)</a> <a href="#ref-for-fontmetadata⑤">(3)</a>
+    <li><a href="#ref-for-fontmetadata⑥">7.1. Font Names</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontmetadata-postscriptname">
