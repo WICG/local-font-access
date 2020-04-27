@@ -359,11 +359,9 @@ Issue: Do we want query() to implicitly request the permission?
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontIterator {
-  /*async*/ iterable<FontMetadata>;
+  async iterable<FontMetadata>;
 };
 </xmp>
-
-Issue: The `async` keyword is not yet supported here by spec tools. [Tracking Issue](https://github.com/plinss/widlparser/issues/58)
 
 All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator>\[[FontList]]</dfn> slot.
 
