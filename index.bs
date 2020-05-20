@@ -264,7 +264,7 @@ The [=font representation/name table=] has a [=/map=] <dfn for="name table">name
 
 A <dfn>localized string table</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
 
-<div class=algorithm >
+<div algorithm >
 
 A [=/font representation=]'s <dfn for="font representation" lt="name string">name string |id| for |tag|</dfn> is given by these steps:
 
@@ -324,10 +324,10 @@ Navigator includes NavigatorFonts;
 WorkerNavigator includes NavigatorFonts;
 </xmp>
 
-<div class=algorithm>
+<div algorithm>
 Each [=/environment settings object=] has an associated {{FontManager}} object.
 
-The <dfn attribute for=NavigatorFonts>fonts</dfn> attribute's getter must return [=/this=]'s [=/relevant settings object=]'s {{FontManager}} object.
+The <dfn attribute for=NavigatorFonts>fonts</dfn> getter steps are to return [=/this=]'s [=/relevant settings object=]'s {{FontManager}} object.
 </div>
 
 <xmp class=idl>
@@ -338,15 +338,15 @@ interface FontManager {
 };
 </xmp>
 
-<div class=algorithm>
-The <dfn method for=FontManager>query()</dfn> method, when invoked, must run these steps:
+<div algorithm>
+The <dfn method for=FontManager>query()</dfn> method steps are:
 
 Issue: This is returning an async iterable; should it be defined using Promise jargon here?
 
 Issue: Do we want query() to implicitly request the permission?
 
 1. Let |promise| be [=/a new promise=].
-1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
+1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
 1. Otherwise, run these steps [=in parallel=]:
     1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
@@ -365,8 +365,8 @@ interface FontIterator {
 
 All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator>\[[FontList]]</dfn> slot.
 
-<div class=algorithm>
-The [=asynchronous iterator initialization steps=] for {{FontIterator}} are as follows:
+<div algorithm>
+The <dfn iterator for=FontIterator>asynchronous iterator initialization steps</dfn> for {{FontIterator}} are as follows:
 
 1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
 1. For each local font |font| on the system, run these steps:
@@ -379,8 +379,8 @@ Issue: Make it clear that the user agent can filter fonts and/or prompt the user
 
 Note: User agents are expected to actually populate the iterator's queue asynchronously and possibly lazily, although this is not observable.
 
-<div class=algorithm>
-To [=get the next iteration result=] for {{FontIterator}}, run the following steps:
+<div algorithm>
+To <dfn iterator for=FontIterator>get the next iteration result</dfn> for {{FontIterator}}, run the following steps:
 
 1. Let |promise| be [=/a new promise=].
 1. If [=/this=]'s {{FontIterator/[[FontList]]}} is [=queue/empty=], then:
@@ -427,11 +427,11 @@ interface FontMetadata {
 
 <div dfn-for="FontMetadata">
 
-The <dfn attribute>postscriptName</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 6 for \``en`\`.
+The <dfn attribute>postscriptName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 6 for \``en`\`.
 
-The <dfn attribute>fullName</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 4 for the [=/current language=].
+The <dfn attribute>fullName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 4 for the [=/current language=].
 
-The <dfn attribute>family</dfn> attribute's getter must return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 1 for the [=/current language=].
+The <dfn attribute>family</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 1 for the [=/current language=].
 
 </div>
 
@@ -464,9 +464,9 @@ interface FontTableMap {
 </xmp>
 
 
-<div class=algorithm>
+<div algorithm>
 
-The <dfn method for=FontMetadata>getTables(|tableNames|)</dfn> method, when invoked, must run these steps:
+The <dfn method for=FontMetadata>getTables(|tableNames|)</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
 1. Otherwise, if |tableNames| was given but is [=list/empty=], then [=/reject=] |promise| with a {{TypeError}}.
