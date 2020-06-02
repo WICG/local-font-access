@@ -187,26 +187,19 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
     if (metadata.postscriptName !== "Consolas")
       continue;
 
-    // 'getTables()' returns Blobs of table data. The default is
-    // to return all available tables. See:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/
-    // Here we ask for a subset of the tables:
+    // 'readAsBlob()' returns a Blob containing valid and complete SFNT
+    // wrapped font data.
     const sfnt = await metadata.readAsBlob();
 
-    // Slice out only the bytes we need.
-    const sfntVersionBytes = new DataView(await sfnt.slice(0, 4).arrayBuffer());
-
-    // Parse out the outline format of our font:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
-    const sfntVersionChars = [];
-    for (let i = 0; i < versionBytes.byteLength; i++) {
-      sfntVersionChars.push(String.fromCharCode(versionBytes.getUint8(i)));
-    }
-    const sfntVersion = sfntVersionChars.join('');
+    const sfntVersion = (new TextDecoder).decode(
+        // Slice out only the bytes we need: the first 4 bytes are the SFNT
+        // version info.
+        // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+        await sfnt.slice(0, 4).arrayBuffer());
 
     let outlineFormat = "UNKNOWN";
-    switch(sfntVersion) {
-      case String.fromCharCode(0, 1, 0, 0):
+    switch (sfntVersion) {
+      case '\x00\x01\x00\x00':
       case 'true':
       case 'typ1':
         outlineFormat = "truetype";
