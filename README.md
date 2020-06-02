@@ -171,6 +171,55 @@ Here we use enumeration and new APIs on `FontMetadata` to access specific OpenTy
 })();
 ```
 
+### Accessing Full Font Data
+
+Here we use enumeration and new APIs on `FontMetadata` to access a full and valid SFNT font data payload; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
+
+```js
+(async () => { // Async block
+  // May prompt the user
+  const status = await navigator.permissions.request({ name: "local-fonts" });
+  if (status.state !== "granted")
+    throw new Error("Cannot continue to style with local fonts");
+
+  for await (const metadata of navigator.fonts.query()) {
+    // Looking for a specific font:
+    if (metadata.postscriptName !== "Consolas")
+      continue;
+
+    // 'getTables()' returns Blobs of table data. The default is
+    // to return all available tables. See:
+    //    https://docs.microsoft.com/en-us/typography/opentype/spec/
+    // Here we ask for a subset of the tables:
+    const sfnt = await metadata.readAsBlob();
+
+    // Slice out only the bytes we need.
+    const sfntVersionBytes = new DataView(await sfnt.slice(0, 4).arrayBuffer());
+
+    // Parse out the outline format of our font:
+    //    https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+    const sfntVersionChars = [];
+    for (let i = 0; i < versionBytes.byteLength; i++) {
+      sfntVersionChars.push(String.fromCharCode(versionBytes.getUint8(i)));
+    }
+    const sfntVersion = sfntVersionChars.join('');
+
+    let outlineFormat = "UNKNOWN";
+    switch(sfntVersion) {
+      case String.fromCharCode(0, 1, 0, 0):
+      case 'true':
+      case 'typ1':
+        outlineFormat = "truetype";
+        break;
+      case 'OTTO':
+        outlineFormat = "cff";
+        break;
+    }
+    console.log("Consolas outline format:", outlineFormat);
+  }
+})();
+```
+
 ## Detailed design discussion (tables)
 
 Several aspects of this design need validation:
