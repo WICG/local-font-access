@@ -187,9 +187,9 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
     if (metadata.postscriptName !== "Consolas")
       continue;
 
-    // 'readAsBlob()' returns a Blob containing valid and complete SFNT
+    // blob()' returns a Blob containing valid and complete SFNT
     // wrapped font data.
-    const sfnt = await metadata.readAsBlob();
+    const sfnt = await metadata.blob();
 
     const sfntVersion = (new TextDecoder).decode(
         // Slice out only the bytes we need: the first 4 bytes are the SFNT
