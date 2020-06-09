@@ -5,7 +5,7 @@ Level: 1
 Status: CG-DRAFT
 Group: WICG
 ED: https://wicg.github.io/local-font-access/
-Repository: WICG/font-enumeration
+Repository: WICG/local-font-access
 Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw table data of fonts, allowing for more detailed custom text rendering.
 Editor: Emil A. Eklund, Google Inc. https://google.com, eae@google.com
 Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
