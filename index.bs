@@ -14,7 +14,7 @@ Editor: Olivier Yiptong, Google Inc. https://google.com, oyiptong@google.com
 Assume Explicit For: yes
 Markup Shorthands: markdown yes, css yes
 Complain About: accidental-2119 yes, missing-example-ids yes
-Favicon: logo-font-enumeration.png
+Favicon: logo-font-enumeration.svg
 </pre>
 <!--
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-enumeration
