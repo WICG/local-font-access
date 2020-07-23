@@ -11,7 +11,7 @@
 > Chase Phillips `<cmp@google.com>`<br>
 > Olivier Yiptong `<oyiptong@google.com>`<br>
 
-[![Build Status](https://travis-ci.org/WICG/local-font-access.svg?branch=master)](https://travis-ci.org/WICG/local-font-access)
+[![Build Status](https://travis-ci.org/WICG/local-font-access.svg?branch=main)](https://travis-ci.org/WICG/local-font-access)
 
 ## What’s all this then?
 
