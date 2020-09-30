@@ -46,16 +46,16 @@ A successful API should:
  * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
  * Enable access to all [browser-allowed font tables](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) (may vary per browser)
  * Enable a memory efficient implementation, avoiding leaks and copies by design
- * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned tables
+ * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
  * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by Unicode code point given font names
 
 #### Possible/Future Goals
 
- * Direct access to localized font names (can be done via table API)
- * Access to font tables for web (network-loaded) fonts
+ * Direct access to localized font names (can be done via data API)
+ * Access to font table data for web (network-loaded) fonts
  * Registration of new font families (extensibility)
- * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using table access, even if not exposed during enumeration.
+ * Additional metadata available during enumeration (ascender, descender, baseline, x-height, etc.). Will require feedback from developers; can be determined using data access, even if not exposed during enumeration.
  * Signals when system font configuration changes (fonts added/removed); some designers work with tools that swap font portfolios at the system level
  * Provide access to named instances and subfamilies (e.g. "semibold", "light")
 
@@ -67,8 +67,8 @@ This API will not try to:
  * Standardize font family detection or grouping
  * Describe or provide full access to an existing WOFF/TTF/PS parser.
  * Provide access to the underlying WOFF/TTF/PS font files or describe their locations on disk.
- * Provide a guarantee that the set of available tables or their content matches the font on disk byte to byte.
- * Normalize differences in processed font tables across browser implementations. The font tables that will be exposed will have been processed by browser-provided parsers, but we will not describe or constrain them except to say that their output will continue to be in a valid OpenType format. For instance, if a library like [OTS](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) reduces the available information for a font, this spec will not require implementations to do more than they already would or provide alternative ways of getting such information back from the source font files.
+ * Provide a guarantee that the set of available font data matches the font on disk byte to byte.
+ * Normalize differences in processed font data across browser implementations. The font data that will be exposed will have been processed by browser-provided parsers, but we will not describe or constrain them except to say that their output will continue to be in a valid OpenType format. For instance, if a library like [OTS](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) reduces the available information for a font, this spec will not require implementations to do more than they already would or provide alternative ways of getting such information back from the source font files.
 
 ## Key scenarios
 
@@ -134,43 +134,6 @@ document.body.appendChild(font_select);
 })();
 ```
 
-### Accessing Font Tables
-
-Here we use enumeration and new APIs on `FontMetadata` to access specific OpenType tables of local fonts; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
-
-```js
-(async () => { // Async block
-  // May prompt the user
-  const status = await navigator.permissions.request({ name: "local-fonts" });
-  if (status.state !== "granted")
-    throw new Error("Cannot continue to style with local fonts");
-
-  for await (const metadata of navigator.fonts.query()) {
-    // Looking for a specific font:
-    if (metadata.postscriptName !== "Consolas")
-      continue;
-
-    // 'getTables()' returns Blobs of table data. The default is
-    // to return all available tables. See:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/
-    // Here we ask for a subset of the tables:
-    const tables = await metadata.getTables([ "glyf", "cmap", "head" ]);
-
-    // 'tables' is a Map of table names to Blobs
-    const blob = tables.get("head");
-
-    // Slice out only the bytes we need.
-    const bytes = new DataView(await blob.slice(0, 4).arrayBuffer());
-
-    // Parse out the version number of our font:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/head
-    const major = bytes.getInt16(0);
-    const minor = bytes.getInt16(2);
-    console.log("Consolas version:", (major + (minor/10)));
-  }
-})();
-```
-
 ### Accessing Full Font Data
 
 Here we use enumeration and new APIs on `FontMetadata` to access a full and valid SFNT font data payload; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
@@ -213,14 +176,11 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
 })();
 ```
 
-## Detailed design discussion (tables)
+## Detailed design discussion (data)
 
 Several aspects of this design need validation:
 
-* The arguments to `getTables()` could easily be done a dozen different ways. Feedback appreciated.
 * This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
-* It isn't strictly clear that providing table-by-table access is the best choice.
-* The specifics of table filtering (i.e. what tables/subtables are included) is left up to user agents.
 
 Other issues that feedback is needed on:
 
@@ -240,7 +200,7 @@ Other issues that feedback is needed on:
 
 ### Privacy and Security Considerations
 
-* The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser. Similarly, UAs are not required to provide table data exactly as it appears on disk. Chrome, e.g., will only provide access to table data after sanitization via [OTS](https://github.com/khaledhosny/ots) and will fail to reflect certain tables entirely.
+* The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser. Similarly, UAs are not required to provide table data exactly as it appears on disk. Browsers, e.g., may choose to only provide access to table data after sanitization via [OTS](https://github.com/khaledhosny/ots) and would fail to reflect certain tables entirely.
 
 * Some users (mostly in big organizations) have custom fonts installed on their system.  Listing these could provide highly identifying information about the user's company.
 
@@ -271,6 +231,19 @@ access to the list of available fonts on the system, and haven't heard interest
 in a font-chooser approach to the enumeration API.  However, we're keeping the
 alternative in mind as we balance the need for new functionality with privacy
 concerns.
+
+### Exposing Font Tables as a map
+
+The proposed API exposes font data as [`Blob`](https://w3c.github.io/FileAPI/#blob-section)
+containing a complete and valid SFNT data payload, itself containing valid OpenType font data.
+
+An alternative to the API is to expose the data as a map of the tables contained in the SFNT
+wrapper. This alternative would provide a higher level API whereby font table data could be parsed
+individually instead of the font data as a whole.
+
+We've heard from partners that this alternative does not provide a lot of value, and may in fact be
+counter-productive, because intended use-cases of this API subsume font data parsing tasks and
+require re-assembling the tables into a whole.
 
 ### Metadata Properties
 
