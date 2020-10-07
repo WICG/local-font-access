@@ -17,7 +17,7 @@ Complain About: accidental-2119 yes, missing-example-ids yes
 Favicon: logo-font-enumeration.svg
 </pre>
 <!--
-Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-enumeration
+Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-access
 -->
 
 <pre class=anchors>
@@ -62,7 +62,7 @@ div.head h1 { clear: left; }
 # Introduction # {#introduction}
 <!-- ============================================================ -->
 
-This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to the various OpenType tables is provided.
+This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to an SFNT [[!SFNT]] container that includes full font data.
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
 
@@ -74,10 +74,12 @@ Font enumeration helps by enabling:
 
 While the web has its origins as a text-focused medium and user agents provide very high quality typography support, they have limitations that impact some classes of web-based applications:
 
-* System font engines (and browser stacks) may handle the parsing and display of certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce fidelity.
-* Web application developers may have legacy font stacks for their applications which they are bringing to the web. To use these engines, they usually require direct access to font data; something Web Fonts do not provide.
+* System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required..
+* Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
+* Developers may have legacy font stacks for their applications that they are bringing to the web. To use these stacks, they usually require direct access to font data, something Web Fonts do not provide.
+* Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
-This API provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples include the OpenType [[!OPENTYPE]] `glyf` table for glyph vector data, the `GPOS` table for glyph placement, and the `GSUB` table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+This API provides high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples include the OpenType [[!OPENTYPE]] `glyf` table for glyph vector data, the `GPOS` table for glyph placement, and the `GSUB` table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 
 <!-- ============================================================ -->
@@ -87,13 +89,16 @@ This API provide high-end tools access to the same underlying data tables that b
 The API should:
 
 * Provide efficient enumeration of all local fonts without blocking the main thread
+* Ensure UAs are free to return anything they like. If a browser implementation prefers, they may choose to only provide a set of default fonts built into the browser.
 * Be available from Workers
 * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
 * Reflect local font access state in the Permissions API
 * Restrict access to local font data to Secure Contexts
 * Provide unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
-* Provide access to all browser-allowed font tables (may vary per browser)
+* Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
 * Enable a memory efficient implementation, avoiding leaks and copies by design
+* Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the Permissions Policy spec
+* Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by given font names
 
 <!--
 The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
@@ -118,7 +123,7 @@ The following code queries the available local fonts, and logs details about eac
 // Asynchronous Query and Iteration
 (async () => { // Async block
   // May prompt the user:
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot enumerate local fonts");
 
@@ -156,15 +161,14 @@ document.body.appendChild(font_select);
 
 (async () => { // Async block
   // May prompt the user:
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
   for await (const metadata of navigator.fonts.query()) {
     const option = document.createElement("option");
     option.text = metadata.fullName;
-    option.value = metadata.fullName;
-    option.setAttribute("postscriptName", metadata.postscriptName);
+    option.value = metadata.postscriptName;
     font_select.append(option);
   }
 })();
@@ -173,45 +177,48 @@ document.body.appendChild(font_select);
 
 
 <!-- ============================================================ -->
-## Accessing table data ## {#example-accessing-table-data}
+## Accessing font data ## {#example-accessing-font-data}
 <!-- ============================================================ -->
 
-The API allows script to request the internal tables of fonts.
+The API allows script to request font data, providing access to the internal tables of fonts.
 
-<aside class=example id=example-font-tables>
+<aside class=example id=example-font-data>
 The following code queries the available local fonts, and logs details about each to the console.
 
-Here we use enumeration to access specific OpenType tables of local fonts; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
+Here we use enumeration to access specific local font data; we can use this to parse out specific tables or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
 
 ```js
 (async () => { // Async block
   // May prompt the user
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
   for await (const metadata of navigator.fonts.query()) {
-    // Looking for a specific font:
-    if (metadata.postscriptName !== "Consolas")
-      continue;
-
-    // 'getTables()' returns Blobs of table data. The default is
-    // to return all available tables. See:
+    // 'blob()' returns a Blob containing valid and complete SFNT wrapped
+    // font data. See:
     //    https://docs.microsoft.com/en-us/typography/opentype/spec/
-    // Here we ask for a subset of the tables:
-    const tables = await metadata.getTables([ "glyf", "cmap", "head" ]);
+    const sfnt = await metadata.blob();
 
-    // 'tables' is a Map of table names to Blobs
-    const blob = tables.get("head");
+    const sfntVersion = (new TextDecoder).decode(
+        // Slice out only the bytes we need: the first 4 bytes are the SFNT
+        // version info.
+        // Spec:
+        //    https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+        await sfnt.slice(0, 4).arrayBuffer());
 
-    // Slice out only the bytes we need.
-    const bytes = new DataView(await blob.slice(0, 4).arrayBuffer());
-
-    // Parse out the version number of our font:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/head
-    const major = bytes.getInt16(0);
-    const minor = bytes.getInt16(2);
-    console.log("Consolas version:", (major + (minor/10)));
+    let outlineFormat = "UNKNOWN";
+    switch (sfntVersion) {
+      case '\x00\x01\x00\x00':
+      case 'true':
+      case 'typ1':
+        outlineFormat = "truetype";
+        break;
+      case 'OTTO':
+        outlineFormat = "cff";
+        break;
+    }
+    console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
   }
 })();
 ```
@@ -231,7 +238,9 @@ A <dfn>font representation</dfn> is an OpenType [[!OPENTYPE]] definition of a fo
 
 <div dfn-for="font representation">
 
-A [=/font representation=] has a <dfn>table list</dfn>, a [=/list=] of [=/font tables=].
+A [=/font representation=] is serialized in SFNT [[!SFNT]] format, a flexible and extensible tabled-based container format which can contain font data in a multitude of other formats.
+
+An SFNT [[!SFNT]] container is represented in <dfn>data bytes</dfn>, which is a [=/byte sequence=] containing a <dfn>table list</dfn>, a [=/list=] of [=/font tables=].
 
 </div>
 
@@ -245,13 +254,9 @@ A <dfn>font table</dfn> is an OpenType [[!OPENTYPE]] table.
 
 A [=/font table=] has a <dfn>tag</dfn>, which is a {{ByteString}} of length 4, derived from the `Tag` of the table record.
 
-A [=/font table=] has <dfn>data bytes</dfn>, which is a [=/byte sequence=] corresponding to the table data.
+A [=/font table=] has <dfn>table bytes</dfn>, which is a [=/byte sequence=] corresponding to the table data.
 
 </div>
-
-Table types within the original font file that are not supported by the user agent should be elided from the [=/font representation=]'s [=font representation/table list=] as defined by this specification. Tables with subtables not supported by the user agent should be transcoded to elide those subtables.
-
-Note: For example, if a user agent does not support the `EBDT` table, it will not appear in a [=/font representation=]'s [=font representation/table list=]. If a user agent does not support the platform 1, encoding 0, format 6 subtable of the `cmap` table, the [=/font table=] with the `cmap` [=font table/tag=] will not include it.
 
 
 <!-- ============================================================ -->
@@ -284,18 +289,18 @@ The <dfn>current language</dfn> is the BCP 47 language tag returned by the {{Nav
 
 Enumeration of local fonts requires a permission to be granted.
 
-The <dfn for=PermissionName enum-value>"`local-fonts`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
+The <dfn for=PermissionName enum-value>"`font-access`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
 
 
 <aside class=example id=example-request-permission>
 Permission to enumerate local fonts can be requested using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.request({ name: "local-fonts" });
+const status = await navigator.permissions.request({ name: "font-access" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
 else
-  console.log("permission was denied 👎")
+  console.log("permission was denied 👎");
 ```
 </aside>
 
@@ -348,7 +353,7 @@ Issue: Do we want query() to implicitly request the permission?
 1. Let |promise| be [=/a new promise=].
 1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
 1. Otherwise, run these steps [=in parallel=]:
-    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
+    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. [=/Resolve=] |promise| with a newly created {{FontIterator}}.
 1. Return |promise|.
@@ -369,6 +374,7 @@ All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator
 The <dfn iterator for=FontIterator>asynchronous iterator initialization steps</dfn> for {{FontIterator}} are as follows:
 
 1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
+1. Obtain a sorted list of each local font |font|.
 1. For each local font |font| on the system, run these steps:
     1. Let |representation| be a [=/font representation=] for |font|.
     1. [=queue/Enqueue=] |representation| to [=/this=]'s {{FontIterator/[[FontList]]}}.
@@ -417,7 +423,7 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
 <xmp class=idl>
 [Exposed=(Window,Worker)]
 interface FontMetadata {
-  Promise<FontTableMap> getTables(optional sequence<ByteString> tables);
+  Promise<Blob> blob();
 
   readonly attribute USVString postscriptName;
   readonly attribute USVString fullName;
@@ -443,50 +449,29 @@ Verify source for all of the above. See [Microsoft Typography](https://docs.micr
 
 </aside>
 
-Issue: Include `name` ID 2 (Font subfamily, e.g. "Regular") as well?
+Issue: Include `name` ID 2 (Font subfamily/style, e.g. "Regular", "Bold", etc.) as well?
 
 Issue: Include `name` ID 3 (Unique identifier) as well?
 
 
 <div class="domintro note">
 
-    : await |map| = |metadata| . {{FontMetadata/getTables()}}
-    : await |map| = |metadata| . {{FontMetadata/getTables()|getTables}}(|tableNames|)
-    :: Request the internal tables of |metadata|. The result |map| is {{FontTableMap}} with an API like a {{ECMAScript/Map}}, where the keys are matching table names and the values are {{Blob}}s with the table binary data. If |tableNames| is not specified, all tables are returned.
+    : await |blob| = |metadata| . {{FontMetadata/blob()}}
+    :: Request the font data of |metadata|. The result |blob| contains [=font representation/data bytes=].
 
 </div>
 
-<xmp class=idl>
-[Exposed=(Window,Worker)]
-interface FontTableMap {
-  readonly maplike<ByteString, Blob>;
-};
-</xmp>
-
-
 <div algorithm>
 
-The <dfn method for=FontMetadata>getTables(|tableNames|)</dfn> method steps are:
+The <dfn method for=FontMetadata>blob()</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
-1. Otherwise, if |tableNames| was given but is [=list/empty=], then [=/reject=] |promise| with a {{TypeError}}.
-1. Otherwise, run these steps [=in parallel=]:
-    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"local-fonts"}}.
+1. Run these steps [=in parallel=]:
+    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
-    1. Let |map| be a new {{FontTableMap}}.
-    1. Let |backing| be |map|'s \[[BackingMap]] (an {{ECMAScript/Map}}.)
-    1. Let |font| be [=/this=]'s [=/font representation=].
-    1. [=list/For each=] |table| of |font|'s [=font representation/table list=]:
-        1. Let |tag| be |table|'s [=font table/tag=].
-         1. If |tableNames| was given and does not [=list/contain=] |tag|, then [=iteration/continue=].
-        1. Let |blob| be a new {{Blob}} whose contents are |table|'s [=font table/data bytes=] and {{Blob/type}} attribute is \``application/octet-stream`\`.
-        1. Append the [=ecma-record|Record=] { \[[Key]]: |tag|, \[[Value]]: |blob| } to |backing|.\[[MapData]].
-    1. [=/Resolve=] |promise| with |map|.
+    1. Let |blob| be a new {{Blob}} whose contents are |metadata|'s [=font representation/data bytes=] and {{Blob/type}} attribute is \``application/octet-stream`\`.
+    1. [=/Resolve=] |promise| with |blob|.
 1. Return |promise|.
-
-Issue: Table order? If returned in requested order, what if the |tableNames| argument is omitted? (Observable by iterating the map.)
-
-Issue: What is the expected behavior if requested tables do not exist? If developers call `getTables()` with one name, they might expect a rejection if the table does not exist. On the other hand, if they call `getTables()` with a set of names they might expect all matching tables to be provided with no rejection. The above algorithm provides the latter behavior.
 
 </div>
 
@@ -568,6 +553,9 @@ Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshe
 
 And thanks to
 Chase Phillips,
-Dominik Röttsches, and
-Igor Kopylov
+Dominik Röttsches,
+Igor Kopylov,
+Domenic Denicola, and
+Jake Archibald
+
 for suggestions, reviews, and other feedback.

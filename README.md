@@ -3,7 +3,7 @@
 # Local Font Access Explained
 
 > August 14th, 2018<br>
-> Last Update: September 1st, 2020
+> Last Update: October 7th, 2020
 >
 > Alex Russell `<slightlyoff@google.com>`<br>
 > Josh Bell `<jsbell@google.com>`<br>
@@ -47,8 +47,8 @@ A successful API should:
  * Enable access to all [browser-allowed font tables](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) (may vary per browser)
  * Enable a memory efficient implementation, avoiding leaks and copies by design
  * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
- * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
- * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by Unicode code point given font names
+ * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) spec
+ * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by given font names
 
 #### Possible/Future Goals
 
@@ -88,7 +88,7 @@ Font enumeration can help by enabling:
 // Asynchronous Query and Iteration
 (async () => { // Async block
   // May prompt the user:
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot enumerate local fonts");
 
@@ -120,7 +120,7 @@ document.body.appendChild(font_select);
 
 (async () => { // Async block
   // May prompt the user:
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
@@ -141,15 +141,11 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
 ```js
 (async () => { // Async block
   // May prompt the user
-  const status = await navigator.permissions.request({ name: "local-fonts" });
+  const status = await navigator.permissions.request({ name: "font-access" });
   if (status.state !== "granted")
     throw new Error("Cannot continue to style with local fonts");
 
   for await (const metadata of navigator.fonts.query()) {
-    // Looking for a specific font:
-    if (metadata.postscriptName !== "Consolas")
-      continue;
-
     // blob()' returns a Blob containing valid and complete SFNT
     // wrapped font data.
     const sfnt = await metadata.blob();
@@ -171,7 +167,7 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
         outlineFormat = "cff";
         break;
     }
-    console.log("Consolas outline format:", outlineFormat);
+    console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
   }
 })();
 ```
