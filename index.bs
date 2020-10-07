@@ -10,6 +10,7 @@ Abstract: This specification documents web browser support for allowing users to
 Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
 Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
 Editor: Olivier Yiptong, Google Inc. https://google.com, oyiptong@google.com
+Former Editor: Emil A. Eklund
 Assume Explicit For: yes
 Markup Shorthands: markdown yes, css yes
 Complain About: accidental-2119 yes, missing-example-ids yes
@@ -555,17 +556,13 @@ There are services which create fonts based on handwriting samples. If these fon
 # Acknowledgements # {#acknowledgements}
 <!-- ============================================================ -->
 
-Former editors:
-
-* Emil A. Eklund
-
 We'd like to acknowledge the contributions of:
 
 * Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal.
 * Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
 * Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
 * Dominik Röttsches and Igor Kopylov for their thoughtful feedback
-* Lastly, we would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
+* We would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
 
 Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
 
