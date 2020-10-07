@@ -6,7 +6,6 @@
 > Last Update: September 1st, 2020
 >
 > Alex Russell `<slightlyoff@google.com>`<br>
-> Emil A Eklund `<eae@google.com>`<br>
 > Josh Bell `<jsbell@google.com>`<br>
 > Chase Phillips `<cmp@google.com>`<br>
 > Olivier Yiptong `<oyiptong@google.com>`<br>
@@ -260,6 +259,10 @@ To be of use, font table data must be consumed by a shaping engine such as [Harf
 
 ## References & acknowledgements
 
+Former editors:
+
+* Emil A. Eklund
+
 The following references have been invaluable:
 
 * [MSDN DirectWrite overview](https://docs.microsoft.com/en-us/windows/desktop/directwrite/introducing-directwrite#accessing-the-font-system)
@@ -272,3 +275,4 @@ We'd like to acknowledge the contributions of:
 * Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
 * Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
 * Dominik Röttsches and Igor Kopylov for their thoughtful feedback
+* Lastly, we would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
