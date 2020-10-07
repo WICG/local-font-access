@@ -3,7 +3,7 @@
 # Local Font Access Explained
 
 > August 14th, 2018<br>
-> Last Update: March 23rd, 2020
+> Last Update: September 1st, 2020
 >
 > Alex Russell `<slightlyoff@google.com>`<br>
 > Emil A Eklund `<eae@google.com>`<br>
@@ -19,13 +19,14 @@ Professional-quality design and graphics tools have historically been difficult 
 
 One stumbling block has been an inability to access and use the full variety of professionally constructed and hinted fonts which designers have locally installed. The web's answer to this situation has been the introduction of [Web Fonts](https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Web_fonts) which are loaded dynamically by browsers and are subsequently available to use via CSS. This level of flexibility enables some publishing use-cases but fails to fully enable high-fidelity, platform independent vector-based design tools for several reasons:
 
- * System font engines (and browser stacks) may handle the parsing and display of certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
- * Developers may have legacy font stacks for their applications which they are bringing to the web. To use these engines, they usually require direct access to font data; something Web Fonts do not provide.
+* Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
+* Developers may have legacy font stacks for their applications that they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
+* Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 We propose a two-part API to help address this gap:
 
- * A font enumeration API which may, optionally, allow users to grant access to the full set of available system fonts in addition to network fonts.
- * From each enumeration result, the ability to request low-level (byte-oriented) access to the various [TrueType/OpenType](https://docs.microsoft.com/en-us/typography/opentype/spec/otff#font-tables) tables.
+* A font enumeration API, which allows users to grant access to the full set of available system fonts.
+* From each enumeration result, the ability to request low-level (byte-oriented) SFNT container access that includes the full font data.
 
 Taken together, these provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
@@ -48,7 +49,6 @@ A successful API should:
  * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Feature Policy](https://wicg.github.io/feature-policy) spec
  * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by Unicode code point given font names
-
 
 #### Possible/Future Goals
 
@@ -182,6 +182,10 @@ Several aspects of this design need validation:
 
 * This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
 
+Other issues that feedback is needed on:
+
+* Enumeration order of the returned table map needs to be defined.
+
 ## Detailed design discussion (enumeration)
 
 Several aspects of this design need validation:
@@ -193,7 +197,6 @@ Several aspects of this design need validation:
 Other issues that feedback is needed on:
 
 * Font "name" propertes in OpenType are quite logically a map of (language tag → string) rather than just a string. The sketch just provides a single name (the "en" variant or first?) - should we introduce a map? Or have `query()` take a language tag? Or defer for now?
-
 
 ### Privacy and Security Considerations
 
