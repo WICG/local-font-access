@@ -15,12 +15,13 @@
 ## What’s all this then?
 
 Professional-quality design and graphics tools have historically been difficult to deliver on the web.
+These tools provide extensive typographic features and controls as core capabilities.
 
 One stumbling block has been an inability to access and use the full variety of professionally constructed and hinted fonts which designers have locally installed. The web's answer to this situation has been the introduction of [Web Fonts](https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Web_fonts) which are loaded dynamically by browsers and are subsequently available to use via CSS. This level of flexibility enables some publishing use-cases but fails to fully enable high-fidelity, platform independent vector-based design tools for several reasons:
 
 * System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
 * Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
-* Developers may have custom font handling strategies for their applications that they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
+* Developers may have custom font handling strategies for their applications they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
 * Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 We propose a two-part API to help address this gap:
@@ -28,7 +29,7 @@ We propose a two-part API to help address this gap:
 * A font enumeration API, which allows users to grant access to the full set of available system fonts.
 * From each enumeration result, the ability to request low-level (byte-oriented) SFNT container access that includes the full font data.
 
-Taken together, these provide applications providing extensive typographic features and controls access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the [GPOS](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos) table for glyph placement, and the [GSUB](https://docs.microsoft.com/en-us/typography/opentype/spec/gsub) table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+The API provides the aforementioned tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the [GPOS](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos) table for glyph placement, and the [GSUB](https://docs.microsoft.com/en-us/typography/opentype/spec/gsub) table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 Note that this implies that the web application provides its own shaper and libraries for Unicode, bidirectional text, text segmentation, and so on, duplicating the user agent and/or operating system's text stack. See the "Considered alternatives" section below.
 
