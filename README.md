@@ -20,7 +20,7 @@ One stumbling block has been an inability to access and use the full variety of 
 
 * System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
 * Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
-* Developers may have legacy font stacks for their applications that they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
+* Developers may have custom font handling strategies for their applications that they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
 * Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 We propose a two-part API to help address this gap:
@@ -28,7 +28,7 @@ We propose a two-part API to help address this gap:
 * A font enumeration API, which allows users to grant access to the full set of available system fonts.
 * From each enumeration result, the ability to request low-level (byte-oriented) SFNT container access that includes the full font data.
 
-Taken together, these provide high-end tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the GPOS table for glyph placement, and the GSUB table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+Taken together, these provide applications providing extensive typographic features and controls access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the [GPOS](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos) table for glyph placement, and the [GSUB](https://docs.microsoft.com/en-us/typography/opentype/spec/gsub) table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 Note that this implies that the web application provides its own shaper and libraries for Unicode, bidirectional text, text segmentation, and so on, duplicating the user agent and/or operating system's text stack. See the "Considered alternatives" section below.
 
@@ -48,7 +48,7 @@ A successful API should:
  * Enable a memory efficient implementation, avoiding leaks and copies by design
  * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) spec
- * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by given font names
+ * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be [sorted](https://infra.spec.whatwg.org/#list-sort-in-ascending-order) by given font names
 
 #### Possible/Future Goals
 
@@ -87,20 +87,25 @@ Font enumeration can help by enabling:
 ```js
 // Asynchronous Query and Iteration
 (async () => { // Async block
-  // May prompt the user:
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot enumerate local fonts");
 
   // This sketch returns individual FontMetadata instances rather than families:
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
-  const fonts_iterator = navigator.fonts.query();
+  const iterable = navigator.fonts.query();
 
-  for await (const metadata of fonts_iterator) {
-    console.log(metadata.postscriptName);
-    console.log(metadata.fullName);
-    console.log(metadata.family);
+  try {
+    // May prompt the user:
+    for await (const metadata of iterable) {
+      console.log(metadata.postscriptName);
+      console.log(metadata.fullName);
+      console.log(metadata.family);
+    }
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
 })();
 ```
@@ -119,17 +124,21 @@ font_select.onchange = e => {
 document.body.appendChild(font_select);
 
 (async () => { // Async block
-  // May prompt the user:
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
 
-  for await (const metadata of navigator.fonts.query()) {
-    const option = document.createElement("option");
-    option.text = metadata.fullName;
-    option.value = metadata.fullName;
-    option.setAttribute("postscriptName", metadata.postscriptName);
-    font_select.append(option);
+  try {
+    // May prompt the user:
+    for await (const metadata of navigator.fonts.query()) {
+      const option = document.createElement("option");
+      option.text = metadata.fullName;
+      option.value = metadata.postscriptName;
+      font_select.append(option);
+    }
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
 })();
 ```
@@ -140,34 +149,38 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
 
 ```js
 (async () => { // Async block
-  // May prompt the user
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
 
-  for await (const metadata of navigator.fonts.query()) {
-    // blob()' returns a Blob containing valid and complete SFNT
-    // wrapped font data.
-    const sfnt = await metadata.blob();
-
-    const sfntVersion = (new TextDecoder).decode(
-        // Slice out only the bytes we need: the first 4 bytes are the SFNT
-        // version info.
-        // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
-        await sfnt.slice(0, 4).arrayBuffer());
-
-    let outlineFormat = "UNKNOWN";
-    switch (sfntVersion) {
-      case '\x00\x01\x00\x00':
-      case 'true':
-      case 'typ1':
-        outlineFormat = "truetype";
-        break;
-      case 'OTTO':
-        outlineFormat = "cff";
-        break;
+  try {
+    // May prompt the user
+    for await (const metadata of navigator.fonts.query()) {
+      // blob()' returns a Blob containing valid and complete SFNT
+      // wrapped font data.
+      const sfnt = await metadata.blob();
+  
+      // Slice out only the bytes we need: the first 4 bytes are the SFNT
+      // version info.
+      // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+      const sfntVersion = await sfnt.slice(0, 4).text();
+  
+      let outlineFormat = "UNKNOWN";
+      switch (sfntVersion) {
+        case '\x00\x01\x00\x00':
+        case 'true':
+        case 'typ1':
+          outlineFormat = "truetype";
+          break;
+        case 'OTTO':
+          outlineFormat = "cff";
+          break;
+      }
+      console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
     }
-    console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
 })();
 ```
