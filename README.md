@@ -21,7 +21,7 @@ One stumbling block has been an inability to access and use the full variety of 
 
 * System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
 * Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
-* Developers may have custom font handling strategies for their applications they are bringing to the web. To use these stacks, they usually require direct access to font data, something web fonts do not provide.
+* Developers may have custom font handling strategies for their applications they are bringing to the web. To use these strategies, they usually require direct access to font data, something web fonts do not provide.
 * Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 We propose a two-part API to help address this gap:
