@@ -469,7 +469,7 @@ The <dfn method for=FontMetadata>blob()</dfn> method steps are:
 1. Run these steps [=in parallel=]:
     1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
     1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
-    1. Let |blob| be a new {{Blob}} whose contents are |metadata|'s [=font representation/data bytes=] and {{Blob/type}} attribute is \``application/octet-stream`\`.
+    1. Let |blob| be a new {{Blob}} whose contents are [=this=]'s [=font representation/data bytes=] and {{Blob/type}} attribute is \``application/octet-stream`\`.
     1. [=/Resolve=] |promise| with |blob|.
 1. Return |promise|.
 
