@@ -72,7 +72,7 @@ This API will not try to:
 
 ## Key scenarios
 
-> Note: Earlier versions of this document attempted to sketch out two versions of each API; one based on `FontFaceSource` and the other the fully-asynchronous version that survives in this doc. While attractive from a re-use perspective, [`FontFaceSource`](https://drafts.csswg.org/css-font-loading/#font-face-source) (and the implied global `window.fonts`) implies synchronous iteration over a potentially unbounded (and perhaps slow) set of files, and each item may require synchronous IPCs and I/O. This, combined with the lack of implementations of `FontFaceSource` caused us to abandon this approach.
+> Note: Earlier versions of this document attempted to sketch out two versions of each API; one based on `FontFaceSet` and the other the fully-asynchronous version that survives in this doc. While attractive from a re-use perspective, [`FontFaceSet`](https://drafts.csswg.org/css-font-loading/#fontfaceset) (and the implied global `document.fonts`) implies synchronous iteration over a potentially unbounded (and perhaps slow) set of files, and each item may require synchronous IPCs and I/O. This, combined with the lack of implementations of `FontFaceSet` caused us to abandon this approach.
 
 ### Enumerating Local Fonts
 

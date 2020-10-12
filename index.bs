@@ -391,11 +391,14 @@ All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator
 <div algorithm>
 The <dfn iterator for=FontIterator>asynchronous iterator initialization steps</dfn> for {{FontIterator}} are as follows:
 
-1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
+1. Create a new empty [=/queue=], |temp queue|.
 1. For each local font |font| on the system, run these steps:
     1. Let |representation| be a [=/font representation=] for |font|.
+    1. [=queue/Enqueue=] |representation| to |temp queue|.
+1. Sort |temp queue| in [=list/sort in ascending order|ascending order=] by using {{FontMetadata/postscriptName}} as the sort key and store the result as |temp queue|.
+1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
+1. For each |representation| in |temp queue|, run these steps:
     1. [=queue/Enqueue=] |representation| to [=/this=]'s {{FontIterator/[[FontList]]}}.
-1. Sort {{FontIterator/[[FontList]]}} in [=list/sort in ascending order|ascending order=] by using {{FontMetadata/postscriptName}} as the sort key.
 
 </div>
 
