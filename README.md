@@ -115,13 +115,13 @@ Font enumeration can help by enabling:
 Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name can allow the user to select from a richer set of choices:
 
 ```js
-const font_select = document.createElement("select");
-font_select.onchange = e => {
-  console.log("selected:", font_select.value);
+const fontSelect = document.createElement("select");
+fontSelect.onchange = e => {
+  console.log("selected:", fontSelect.value);
   // Use the selected font to style something here.
 };
 
-document.body.appendChild(font_select);
+document.body.appendChild(fontSelect);
 
 (async () => { // Async block
   const status = await navigator.permissions.query({ name: "font-access" });
@@ -134,7 +134,7 @@ document.body.appendChild(font_select);
       const option = document.createElement("option");
       option.text = metadata.fullName;
       option.value = metadata.postscriptName;
-      font_select.append(option);
+      fontSelect.append(option);
     }
   } catch(e) {
     // Handle error. It could be a permission error.
