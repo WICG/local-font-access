@@ -15,10 +15,8 @@ Assume Explicit For: yes
 Markup Shorthands: markdown yes, css yes
 Complain About: accidental-2119 yes, missing-example-ids yes
 Favicon: logo-font-enumeration.svg
-</pre>
-<!--
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-access
--->
+</pre>
 
 <pre class=anchors>
 spec: webidl; urlPrefix: https://heycam.github.io/webidl/
@@ -97,10 +95,10 @@ The API should:
 * Reflect local font access state in the Permissions API
 * Restrict access to local font data to Secure Contexts
 * Provide unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
-* Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
+* Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
 * Enable a memory efficient implementation, avoiding leaks and copies by design
 * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the Permissions Policy spec
-* Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be sorted by given font names
+* Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterable which will be sorted by given font names
 
 <!--
 The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
@@ -124,20 +122,26 @@ The following code queries the available local fonts, and logs details about eac
 ```js
 // Asynchronous Query and Iteration
 (async () => { // Async block
-  // May prompt the user:
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot enumerate local fonts");
 
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
-  const fonts_iterator = navigator.fonts.query();
+  const iterable = navigator.fonts.query();
 
-  for await (const metadata of fonts_iterator) {
-    console.log(metadata.postscriptName);
-    console.log(metadata.fullName);
-    console.log(metadata.family);
+  try {
+    // May prompt the user:
+    for await (const metadata of iterable) {
+      console.log(metadata.postscriptName);
+      console.log(metadata.fullName);
+      console.log(metadata.family);
+    }
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
+}
 })();
 ```
 </aside>
@@ -162,17 +166,23 @@ font_select.onchange = e => {
 document.body.appendChild(font_select);
 
 (async () => { // Async block
-  // May prompt the user:
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
 
-  for await (const metadata of navigator.fonts.query()) {
-    const option = document.createElement("option");
-    option.text = metadata.fullName;
-    option.value = metadata.postscriptName;
-    font_select.append(option);
+  try {
+    // May prompt the user:
+    for await (const metadata of navigator.fonts.query()) {
+      const option = document.createElement("option");
+      option.text = metadata.fullName;
+      option.value = metadata.postscriptName;
+      font_select.append(option);
+    }
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
+}
 })();
 ```
 </aside>
@@ -191,37 +201,41 @@ Here we use enumeration to access specific local font data; we can use this to p
 
 ```js
 (async () => { // Async block
-  // May prompt the user
-  const status = await navigator.permissions.request({ name: "font-access" });
-  if (status.state !== "granted")
+  const status = await navigator.permissions.query({ name: "font-access" });
+  if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
 
-  for await (const metadata of navigator.fonts.query()) {
-    // 'blob()' returns a Blob containing valid and complete SFNT wrapped
-    // font data. See:
-    //    https://docs.microsoft.com/en-us/typography/opentype/spec/
-    const sfnt = await metadata.blob();
+  try {
+    // May prompt the user
+    for await (const metadata of navigator.fonts.query()) {
+      // 'blob()' returns a Blob containing valid and complete SFNT wrapped
+      // font data. See:
+      //    https://docs.microsoft.com/en-us/typography/opentype/spec/
+      const sfnt = await metadata.blob();
 
-    const sfntVersion = (new TextDecoder).decode(
-        // Slice out only the bytes we need: the first 4 bytes are the SFNT
-        // version info.
-        // Spec:
-        //    https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
-        await sfnt.slice(0, 4).arrayBuffer());
+      // Slice out only the bytes we need: the first 4 bytes are the SFNT
+      // version info.
+      // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
+      const sfntVersion = await sfnt.slice(0, 4).text();
 
-    let outlineFormat = "UNKNOWN";
-    switch (sfntVersion) {
-      case '\x00\x01\x00\x00':
-      case 'true':
-      case 'typ1':
-        outlineFormat = "truetype";
-        break;
-      case 'OTTO':
-        outlineFormat = "cff";
-        break;
+      let outlineFormat = "UNKNOWN";
+      switch (sfntVersion) {
+        case '\x00\x01\x00\x00':
+        case 'true':
+        case 'typ1':
+          outlineFormat = "truetype";
+          break;
+        case 'OTTO':
+          outlineFormat = "cff";
+          break;
+      }
+      console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
     }
-    console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    throw new Error(e);
   }
+}
 })();
 ```
 </aside>
@@ -298,9 +312,11 @@ The <dfn for=PermissionName enum-value>"`font-access`"</dfn> [=/powerful feature
 Permission to enumerate local fonts can be requested using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.request({ name: "font-access" });
+const status = await navigator.permissions.query({ name: "font-access" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
+else if (status.state === "prompt")
+  console.log("permission will be requested");
 else
   console.log("permission was denied 👎");
 ```
@@ -376,10 +392,10 @@ All {{FontIterator}} objects contain an internal <dfn attribute for=FontIterator
 The <dfn iterator for=FontIterator>asynchronous iterator initialization steps</dfn> for {{FontIterator}} are as follows:
 
 1. Set [=/this=]'s {{FontIterator/[[FontList]]}} to a new empty [=/queue=].
-1. Obtain a <a href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order">list sorted in ascending order</a> of each local font |font|.
 1. For each local font |font| on the system, run these steps:
     1. Let |representation| be a [=/font representation=] for |font|.
     1. [=queue/Enqueue=] |representation| to [=/this=]'s {{FontIterator/[[FontList]]}}.
+1. Sort {{FontIterator/[[FontList]]}} in [=list/sort in ascending order|ascending order=] by using {{FontMetadata/postscriptName}} as the sort key.
 
 </div>
 
@@ -555,9 +571,9 @@ Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshe
 
 And thanks to
 Chase Phillips,
+Domenic Denicola,
 Dominik Röttsches,
-Igor Kopylov,
-Domenic Denicola, and
+Igor Kopylov, and
 Jake Archibald
 
 for suggestions, reviews, and other feedback.

@@ -47,9 +47,9 @@ A successful API should:
  * Provide the ability to uniquely identify a specific font in the case of conflicting names (e.g. Web Font aliases vs. local PostScript font names)
  * Enable access to all [browser-allowed font tables](https://chromium.googlesource.com/external/ots/+/master/docs/DesignDoc.md) (may vary per browser)
  * Enable a memory efficient implementation, avoiding leaks and copies by design
- * Shield applications from unnecessary complexity by requiring that browser implementations produce valid OpenType data in the returned data
+ * Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) spec
- * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterator which will be [sorted](https://infra.spec.whatwg.org/#list-sort-in-ascending-order) by given font names
+ * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterable which will be [sorted](https://infra.spec.whatwg.org/#list-sort-in-ascending-order) by given font names
 
 #### Possible/Future Goals
 
