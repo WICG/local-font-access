@@ -283,5 +283,5 @@ We'd like to acknowledge the contributions of:
 * Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal
 * Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
 * Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
-* Dominik Röttsches and Igor Kopylov for their thoughtful feedback
+* Domenic Denicola, Dominik Röttsches, Igor Kopylov and Jake Archibald for their thoughtful feedback
 * Lastly, we would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
