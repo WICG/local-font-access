@@ -211,9 +211,12 @@ Other issues that feedback is needed on:
 
 * The `local-fonts` permission appears to provide a highly fingerprintable surface. However, UAs are free to return anything they like.  For example, the Tor Browser or Brave may choose to only provide a set of default fonts built into the browser. Similarly, UAs are not required to provide table data exactly as it appears on disk. Browsers, e.g., may choose to only provide access to table data after sanitization via [OTS](https://github.com/khaledhosny/ots) and would fail to reflect certain tables entirely.
 
+* Another fingerprinting vector could be the font version. Providing access to the raw font data could provide further bits of entropy, due to developers being able to discern between users having certain versions of a given font file.
+
 * Some users (mostly in big organizations) have custom fonts installed on their system.  Listing these could provide highly identifying information about the user's company.
 
 * Wherever possible, these APIs are designed to only expose exactly the information needed to enable the mentioned use cases.  System APIs may produce a list of installed fonts not in a random or a sorted order, but in the order of font installation.  Returning exactly the list of installed fonts given by such a system API can expose additional entropy bits, and use cases we want to enable aren't assisted by retaining this ordering.  As a result, this API requires that the returned data be sorted before being returned.
+
 
 ## Considered alternatives
 
