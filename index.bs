@@ -157,18 +157,28 @@ Advanced creative tools may wish to use CSS to style text using all available lo
 The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.
 
 ```js
-const fontSelect = document.createElement("select");
-fontSelect.onchange = e => {
-  console.log("selected:", fontSelect.value);
-  // Use the selected font to style something here.
-};
-
-document.body.appendChild(fontSelect);
-
 (async () => { // Async block
   const status = await navigator.permissions.query({ name: "font-access" });
   if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
+
+  const exampleText = document.createElement("p");
+  exampleText.id = "exampleText";
+  exampleText.innerText = "The quick brown fox jumps over the lazy dog";
+  exampleText.style.fontFamily = "dynamic-font";
+
+  const textStyle = document.createElement("style");
+  const fontSelect = document.createElement("select");
+  fontSelect.onchange = e => {
+    console.log("selected:", fontSelect.value);
+    // An example of styling using @font-face src: local matching.
+    changeFontStyle(fontSelect.value);
+    textStyle.textContent = `
+      @font-face {
+        font-family: "dynamic-font";
+        src: local("${postscriptName}");
+      }`;
+  };
 
   try {
     // May prompt the user:
@@ -178,6 +188,9 @@ document.body.appendChild(fontSelect);
       option.value = metadata.postscriptName;
       fontSelect.append(option);
     }
+    document.body.appendChild(textStyle);
+    document.body.appendChild(exampleText);
+    document.body.appendChild(fontSelect);
   } catch(e) {
     // Handle error. It could be a permission error.
     throw new Error(e);
