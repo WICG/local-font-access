@@ -26,7 +26,7 @@ One stumbling block has been an inability to access and use the full variety of 
 
 We propose a two-part API to help address this gap:
 
-* A font enumeration API, which allows users to grant access to the full set of available system fonts.
+* A font enumeration API, which allows users to grant access to the full set of available system font metadata.
 * From each enumeration result, the ability to request low-level (byte-oriented) SFNT container access that includes the full font data.
 
 The API provides the aforementioned tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the [GPOS](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos) table for glyph placement, and the [GSUB](https://docs.microsoft.com/en-us/typography/opentype/spec/gsub) table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
@@ -40,7 +40,7 @@ Note that this implies that the web application provides its own shaper and libr
 A successful API should:
 
  * Where allowed, provide efficient enumeration of all local fonts without blocking the main thread
- * Ensure UAs are free to return anything they like. If a browser implementation prefers, they may choose to only provide a set of default fonts built into the browser.
+ * Ensure UAs are free to return anything they like. If a browser implementation prefers, for security and privacy, they may choose to only provide a set of default fonts built into the browser.
  * Be available from Workers
  * Allow multiple levels of privacy preservation; e.g. full access for "trusted" sites and degraded access for untrusted scenarios
  * Reflect local font access state in the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)
@@ -77,6 +77,8 @@ This API will not try to:
 ### Enumerating Local Fonts
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that [tools have been built to help "eyeball"](https://meowni.ca/font-style-matcher/) likely-available local matches.
+
+At the same time, when creating font-based content, specific fonts need to be identified and used.
 
 Font enumeration can help by enabling:
 
@@ -263,6 +265,8 @@ Additional metadata properties such whether the font uses color (`SBIX`, `CBDT`,
 ## Exposing Building Blocks
 
 To be of use, font table data must be consumed by a shaping engine such as [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/), in conjunction with Unicode libraries such as [ICU](http://site.icu-project.org/home) for bidirectional text support, text segmentation, and so on. Web applications could include these existing libraries, for example compiled via WASM, or equivalents. Necessarily, user agents and operating systems already provide this functionality, so requiring web applications to include their own copies leads to additional download and memory cost. In some cases, this may be required by the web application to ensure identical behavior across browsers, but in other cases exposing some of these libraries directly to script as additional web APIs could be beneficial.
+
+We are not considering these options right now for the API, but we'll keep them in mind in case there's demand for them.
 
 (Parts of ICU are being incrementally exposed to the web via the [ECMA-402](https://ecma-international.org/ecma-402/) effort.)
 
