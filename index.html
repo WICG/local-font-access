@@ -1325,7 +1325,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 89ebb6ab, updated Fri Oct 9 15:32:07 2020 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="e2291d2620bf1213eb03fb91ec0b4b574543f35c" name="document-revision">
+  <meta content="b03e2384cab8f7423815cd53102790d43cf41636" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -1916,7 +1916,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-10-12">12 October 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-10-13">13 October 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2101,27 +2101,44 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <aside class="example" id="example-query-build-ui">
     <a class="self-link" href="#example-query-build-ui"></a> 
     <p>The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.</p>
-<pre class="language-js highlight"><c- kr>const</c-> fontSelect <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"select"</c-><c- p>);</c->
-fontSelect<c- p>.</c->onchange <c- o>=</c-> e <c- p>=></c-> <c- p>{</c->
-  console<c- p>.</c->log<c- p>(</c-><c- u>"selected:"</c-><c- p>,</c-> fontSelect<c- p>.</c->value<c- p>);</c->
-  <c- c1>// Use the selected font to style something here.</c->
-<c- p>};</c->
-
-document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c->
-
-<c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
+<pre class="language-js highlight"><c- p>(</c->async <c- p>()</c-> <c- p>=></c-> <c- p>{</c-> <c- c1>// Async block</c->
   <c- kr>const</c-> status <c- o>=</c-> await navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"font-access"</c-> <c- p>});</c->
   <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>===</c-> <c- u>"denied"</c-><c- p>)</c->
     <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c-><c- u>"Cannot continue to style with local fonts"</c-><c- p>);</c->
+
+  <c- kr>const</c-> exampleText <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"p"</c-><c- p>);</c->
+  exampleText<c- p>.</c->id <c- o>=</c-> <c- u>"exampleText"</c-><c- p>;</c->
+  exampleText<c- p>.</c->innerText <c- o>=</c-> <c- u>"The quick brown fox jumps over the lazy dog"</c-><c- p>;</c->
+  exampleText<c- p>.</c->style<c- p>.</c->fontFamily <c- o>=</c-> <c- u>"dynamic-font"</c-><c- p>;</c->
+
+  <c- kr>const</c-> textStyle <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"style"</c-><c- p>);</c->
+  <c- kr>const</c-> fontSelect <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"select"</c-><c- p>);</c->
+  fontSelect<c- p>.</c->onchange <c- o>=</c-> e <c- p>=></c-> <c- p>{</c->
+    console<c- p>.</c->log<c- p>(</c-><c- u>"selected:"</c-><c- p>,</c-> fontSelect<c- p>.</c->value<c- p>);</c->
+    <c- c1>// An example of styling using @font-face src: local matching.</c->
+    changeFontStyle<c- p>(</c->fontSelect<c- p>.</c->value<c- p>);</c->
+    textStyle<c- p>.</c->textContent <c- o>=</c-> <c- sb>`</c->
+<c- sb>      @font-face {</c->
+<c- sb>        font-family: "dynamic-font";</c->
+<c- sb>        src: local("</c-><c- si>${</c->postscriptName<c- si>}</c-><c- sb>");</c->
+<c- sb>      }`</c-><c- p>;</c->
+  <c- p>};</c->
 
   <c- k>try</c-> <c- p>{</c->
     <c- c1>// May prompt the user:</c->
     <c- k>for</c-> await <c- p>(</c-><c- kr>const</c-> metadata <c- k>of</c-> navigator<c- p>.</c->fonts<c- p>.</c->query<c- p>())</c-> <c- p>{</c->
       <c- kr>const</c-> option <c- o>=</c-> document<c- p>.</c->createElement<c- p>(</c-><c- u>"option"</c-><c- p>);</c->
       option<c- p>.</c->text <c- o>=</c-> metadata<c- p>.</c->fullName<c- p>;</c->
+      <c- c1>// postscriptName works well as an identifier of sorts.</c->
+      <c- c1>// It is unique as returned by the API, the OpenType spec expects</c->
+      <c- c1>// it to be in ASCII, and it can be used by @font-face src: local</c->
+      <c- c1>// matching to be used to style elements.</c->
       option<c- p>.</c->value <c- o>=</c-> metadata<c- p>.</c->postscriptName<c- p>;</c->
       fontSelect<c- p>.</c->append<c- p>(</c->option<c- p>);</c->
     <c- p>}</c->
+    document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->textStyle<c- p>);</c->
+    document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->exampleText<c- p>);</c->
+    document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c->
   <c- p>}</c-> <c- k>catch</c-><c- p>(</c->e<c- p>)</c-> <c- p>{</c->
     <c- c1>// Handle error. It could be a permission error.</c->
     <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c->e<c- p>);</c->
@@ -2333,7 +2350,7 @@ document<c- p>.</c->body<c- p>.</c->appendChild<c- p>(</c->fontSelect<c- p>);</c
     <dl>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-postscriptname" id="ref-for-dom-fontmetadata-postscriptname①">postscriptName</a></code>
      <dd data-md>
-      <p>The PostScript name for the font. Example: "<code>Arial-Bold</code>"</p>
+      <p>The PostScript name for the font. Example: "<code>Arial-Bold</code>". The OpenType spec expects this to be encoded in a subset of ASCII and is unique for <var>metadata</var></p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-fullname" id="ref-for-dom-fontmetadata-fullname">fullName</a></code>
      <dd data-md>
       <p>The full font name, including family subfamily names. Example: "<code>Arial Bold</code>"</p>
