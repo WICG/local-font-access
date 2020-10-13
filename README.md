@@ -115,31 +115,48 @@ Font enumeration can help by enabling:
 Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name can allow the user to select from a richer set of choices:
 
 ```js
-const fontSelect = document.createElement("select");
-fontSelect.onchange = e => {
-  console.log("selected:", fontSelect.value);
-  // Use the selected font to style something here.
-};
-
-document.body.appendChild(fontSelect);
-
 (async () => { // Async block
   const status = await navigator.permissions.query({ name: "font-access" });
   if (status.state === "denied")
     throw new Error("Cannot continue to style with local fonts");
+
+  const exampleText = document.createElement("p");
+  exampleText.id = "exampleText";
+  exampleText.innerText = "The quick brown fox jumps over the lazy dog";
+  exampleText.style.fontFamily = "dynamic-font";
+
+  const textStyle = document.createElement("style");
+  const fontSelect = document.createElement("select");
+  fontSelect.onchange = e => {
+    console.log("selected:", fontSelect.value);
+    // An example of styling using @font-face src: local matching.
+    textStyle.textContent = `
+      @font-face {
+        font-family: "dynamic-font";
+        src: local("${postscriptName}");
+      }`;
+  };
 
   try {
     // May prompt the user:
     for await (const metadata of navigator.fonts.query()) {
       const option = document.createElement("option");
       option.text = metadata.fullName;
+      // postscriptName works well as an identifier of sorts.
+      // It is unique as returned by the API, the OpenType spec expects
+      // it to be in ASCII, and it can be used by @font-face src: local
+      // matching to be used to style elements.
       option.value = metadata.postscriptName;
       fontSelect.append(option);
     }
+    document.body.appendChild(textStyle);
+    document.body.appendChild(exampleText);
+    document.body.appendChild(fontSelect);
   } catch(e) {
     // Handle error. It could be a permission error.
     throw new Error(e);
   }
+}
 })();
 ```
 
