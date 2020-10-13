@@ -142,6 +142,10 @@ Advanced creative tools may wish to use CSS to style text using all available lo
     for await (const metadata of navigator.fonts.query()) {
       const option = document.createElement("option");
       option.text = metadata.fullName;
+      // postscriptName works well as an identifier of sorts.
+      // It is unique as returned by the API, the OpenType spec expects
+      // it to be in ASCII, and it can be used by @font-face src: local
+      // matching to be used to style elements.
       option.value = metadata.postscriptName;
       fontSelect.append(option);
     }

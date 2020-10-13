@@ -173,11 +173,11 @@ The following code populates a drop-down selection form element with the availab
     console.log("selected:", fontSelect.value);
     // An example of styling using @font-face src: local matching.
     changeFontStyle(fontSelect.value);
-    textStyle.textContent = `
+    textStyle.textContent = \`
       @font-face {
         font-family: "dynamic-font";
         src: local("${postscriptName}");
-      }`;
+      }\`;
   };
 
   try {
@@ -185,6 +185,10 @@ The following code populates a drop-down selection form element with the availab
     for await (const metadata of navigator.fonts.query()) {
       const option = document.createElement("option");
       option.text = metadata.fullName;
+      // postscriptName works well as an identifier of sorts.
+      // It is unique as returned by the API, the OpenType spec expects
+      // it to be in ASCII, and it can be used by @font-face src: local
+      // matching to be used to style elements.
       option.value = metadata.postscriptName;
       fontSelect.append(option);
     }
@@ -443,7 +447,7 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
 <div class="domintro note">
 
     : |metadata| . {{FontMetadata/postscriptName}}
-    :: The PostScript name for the font. Example: "`Arial-Bold`"
+    :: The PostScript name for the font. Example: "`Arial-Bold`". The OpenType spec expects this to be encoded in a subset of ASCII and is unique for |metadata|
 
     : |metadata| . {{FontMetadata/fullName}}
     :: The full font name, including family subfamily names. Example: "`Arial Bold`"
