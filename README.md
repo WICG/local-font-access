@@ -1,29 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Local Font Access Explained](#local-font-access-explained)
-  - [What’s all this then?](#whats-all-this-then)
-    - [Goals](#goals)
-      - [Possible/Future Goals](#possiblefuture-goals)
-    - [Non-goals](#non-goals)
-  - [Key scenarios](#key-scenarios)
-    - [Enumerating Local Fonts](#enumerating-local-fonts)
-    - [Styling with Local Fonts](#styling-with-local-fonts)
-    - [Accessing Full Font Data](#accessing-full-font-data)
-  - [Detailed design discussion (data)](#detailed-design-discussion-data)
-  - [Detailed design discussion (enumeration)](#detailed-design-discussion-enumeration)
-    - [Privacy and Security Considerations](#privacy-and-security-considerations)
-  - [Considered alternatives](#considered-alternatives)
-    - [`FontFaceSource`](#fontfacesource)
-    - [Add a browser/OS-provided font chooser](#add-a-browseros-provided-font-chooser)
-    - [Exposing Font Tables as a map](#exposing-font-tables-as-a-map)
-    - [Metadata Properties](#metadata-properties)
-  - [Exposing Building Blocks](#exposing-building-blocks)
-  - [References & acknowledgements](#references--acknowledgements)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 <img src="https://wicg.github.io/local-font-access/logo-font-enumeration.svg" height=100 align=right>
 
 # Local Font Access Explained
@@ -37,6 +11,31 @@
 > Olivier Yiptong `<oyiptong@google.com>`<br>
 
 [![Build Status](https://travis-ci.org/WICG/local-font-access.svg?branch=main)](https://travis-ci.org/WICG/local-font-access)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [What’s all this then?](#whats-all-this-then)
+  - [Goals](#goals)
+    - [Possible/Future Goals](#possiblefuture-goals)
+  - [Non-goals](#non-goals)
+- [Key scenarios](#key-scenarios)
+  - [Enumerating Local Fonts](#enumerating-local-fonts)
+  - [Styling with Local Fonts](#styling-with-local-fonts)
+  - [Accessing Full Font Data](#accessing-full-font-data)
+- [Detailed design discussion (data)](#detailed-design-discussion-data)
+- [Detailed design discussion (enumeration)](#detailed-design-discussion-enumeration)
+  - [Privacy and Security Considerations](#privacy-and-security-considerations)
+- [Considered alternatives](#considered-alternatives)
+  - [`FontFaceSource`](#fontfacesource)
+  - [Add a browser/OS-provided font chooser](#add-a-browseros-provided-font-chooser)
+  - [Exposing Font Tables as a map](#exposing-font-tables-as-a-map)
+  - [Metadata Properties](#metadata-properties)
+- [Exposing Building Blocks](#exposing-building-blocks)
+- [References & acknowledgements](#references--acknowledgements)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## What’s all this then?
 
