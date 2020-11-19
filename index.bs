@@ -554,11 +554,12 @@ There are no known security impacts of this feature.
 ## Fingerprinting ## {#privacy-fingerprinting}
 <!-- ============================================================ -->
 
-The font list includes:
+The font metadata includes:
 
 * Fonts included in the operating system distribution.
 * Fonts installed by particular applications installed on the system, for example office suites.
 * Fonts directly installed by the system administrator and/or end user.
+* The version of the font installed on the system, obtained via the font data.
 
 This provides several "bits of entropy" to distinguish users.
 
