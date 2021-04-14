@@ -159,7 +159,7 @@ useLocalFontsButton.onclick = async function() {
   // Query for allowed local fonts.
   try {
     // Query for allowed local fonts.
-    const array = navigator.fonts.query();
+    const array = await navigator.fonts.query();
 
     // Create an element to style.
     const exampleText = document.createElement("p");

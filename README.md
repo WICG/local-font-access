@@ -56,7 +56,7 @@ We propose a two-part API to help address this gap:
 
 The API provides the aforementioned tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples of these data tables include the [glyf](https://docs.microsoft.com/en-us/typography/opentype/spec/glyf) table for glyph vector data, the [GPOS](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos) table for glyph placement, and the [GSUB](https://docs.microsoft.com/en-us/typography/opentype/spec/gsub) table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
-Note that this implies that the web application provides its own shaper and libraries for Unicode, bidirectional text, text segmentation, andt so on, duplicating the user agent and/or operating system's text stack. See the "Considered alternatives" section below.
+Note that this implies that the web application provides its own shaper and libraries for Unicode, bidirectional text, text segmentation, and so on, duplicating the user agent and/or operating system's text stack. See the "Considered alternatives" section below.
 
 > NOTE: Long term, we expect that this proposal would merge into an existing CSS-related spec rather than stand on its own.
 
@@ -146,7 +146,7 @@ useLocalFontsButton.onclick = async function() {
 
   try {
     // Query for allowed local fonts.
-    const array = navigator.fonts.query();
+    const array = await navigator.fonts.query();
 
     // Create an element to style.
     const exampleText = document.createElement("p");
@@ -238,7 +238,7 @@ useLocalFontsButton.onclick = async function() {
 
 In the above examples, the `query()` call allows the user agent to prompt the user for access to some or all local fonts at the time of the call. For example, this could show a font picker interface allowing selection of fonts.
 
-Other scenarios would benefit from access to local fonts on an ongoing basis. For example, a web application could offer font selection UI showing both fonts provided by the web application's server as well as local fonts. Calling `query()` with `{persistentAccess:true}` will request a permission (`"font-access"`). If that permission is granted, then subsequent calls to `query()` with that option not prompt the user.
+Other scenarios would benefit from access to local fonts on an ongoing basis. For example, a web application could offer font selection UI showing both fonts provided by the web application's server as well as local fonts. Calling `query()` with `{persistentAccess:true}` will request a permission (`"font-access"`). If that permission is granted, then subsequent calls to `query()` with that option will not prompt the user.
 
 ```js
 // User activation is required.
