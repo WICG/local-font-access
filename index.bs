@@ -259,6 +259,8 @@ Parsing font files in more detail, for example enumerating the contained tables,
 </aside>
 
 
+Issue: Add example with {{QueryOptions/select}}.
+
 <!-- ============================================================ -->
 ## Persistent access ## {#example-persistent-access}
 <!-- ============================================================ -->
