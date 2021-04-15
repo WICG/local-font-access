@@ -113,28 +113,27 @@ Font enumeration can help by enabling:
 
 ```js
 // Asynchronous Query and Iteration
-(async () => { // Async block
-  const status = await navigator.permissions.query({ name: "font-access" });
-  if (status.state === "denied")
-    throw new Error("Cannot enumerate local fonts");
 
+// User activation is required.
+showLocalFontsButton.onclick = async function() {
   // This sketch returns individual FontMetadata instances rather than families:
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
-  const iterable = navigator.fonts.query();
-
   try {
-    // May prompt the user:
-    for await (const metadata of iterable) {
+    const array = await navigator.fonts.query();
+
+    array.forEach(metadata => {
       console.log(metadata.postscriptName);
       console.log(metadata.fullName);
       console.log(metadata.family);
-    }
-  } catch(e) {
-    // Handle error. It could be a permission error.
-    throw new Error(e);
+      console.log(metadata.family);
+      console.log(metadata.style);
+    });
+   } catch(e) {
+    // Handle error, e.g. user cancelled the operation.
+    console.warn(`Local font access not available: ${e.message}`);
   }
-})();
+};
 ```
 
 ### Styling with Local Fonts
@@ -142,31 +141,34 @@ Font enumeration can help by enabling:
 Advanced creative tools may wish to use CSS to style text using all available local fonts. In this case, getting access to the local font name can allow the user to select from a richer set of choices:
 
 ```js
-(async () => { // Async block
-  const status = await navigator.permissions.query({ name: "font-access" });
-  if (status.state === "denied")
-    throw new Error("Cannot continue to style with local fonts");
-
-  const exampleText = document.createElement("p");
-  exampleText.id = "exampleText";
-  exampleText.innerText = "The quick brown fox jumps over the lazy dog";
-  exampleText.style.fontFamily = "dynamic-font";
-
-  const textStyle = document.createElement("style");
-  const fontSelect = document.createElement("select");
-  fontSelect.onchange = e => {
-    console.log("selected:", fontSelect.value);
-    // An example of styling using @font-face src: local matching.
-    textStyle.textContent = `
-      @font-face {
-        font-family: "dynamic-font";
-        src: local("${postscriptName}");
-      }`;
-  };
+// User activation is required.
+useLocalFontsButton.onclick = async function() {
 
   try {
-    // May prompt the user:
-    for await (const metadata of navigator.fonts.query()) {
+    // Query for allowed local fonts.
+    const array = await navigator.fonts.query();
+
+    // Create an element to style.
+    const exampleText = document.createElement("p");
+    exampleText.id = "exampleText";
+    exampleText.innerText = "The quick brown fox jumps over the lazy dog";
+    exampleText.style.fontFamily = "dynamic-font";
+
+    // Create a list of fonts to select from, and a selection handler.
+    const textStyle = document.createElement("style");
+    const fontSelect = document.createElement("select");
+    fontSelect.onchange = e => {
+      console.log("selected:", fontSelect.value);
+      // An example of styling using @font-face src: local matching.
+      textStyle.textContent = `
+        @font-face {
+          font-family: "dynamic-font";
+          src: local("${postscriptName}");
+        }`;
+    };
+
+    // Populate the list with the available fonts.
+    array.forEach(metadata => {
       const option = document.createElement("option");
       option.text = metadata.fullName;
       // postscriptName works well as an identifier of sorts.
@@ -175,40 +177,43 @@ Advanced creative tools may wish to use CSS to style text using all available lo
       // matching to be used to style elements.
       option.value = metadata.postscriptName;
       fontSelect.append(option);
-    }
+    });
+
+    // Add all of the elements to the page.
     document.body.appendChild(textStyle);
     document.body.appendChild(exampleText);
     document.body.appendChild(fontSelect);
   } catch(e) {
-    // Handle error. It could be a permission error.
-    throw new Error(e);
+    // Handle error, e.g. user cancelled the operation.
+    console.warn(`Local font access not available: ${e.message}`);
   }
-}
-})();
+};
 ```
 
 ### Accessing Full Font Data
 
-Here we use enumeration and new APIs on `FontMetadata` to access a full and valid SFNT font data payload; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
+Here we use the `FontMetadata` `blob()` method to access a full and valid SFNT font data payload; we can use this to parse out specific data or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
 
 ```js
-(async () => { // Async block
-  const status = await navigator.permissions.query({ name: "font-access" });
-  if (status.state === "denied")
-    throw new Error("Cannot continue to style with local fonts");
-
+// User activation is required.
+useLocalFontsButton.onclick = async function() {
+  // This sketch returns individual FontMetadata instances rather than families:
+  // In the future, query() could take filters e.g. family name, and/or options
+  // e.g. locale. A user agent may return all fonts, or show UI allowing selection
+  // of a subset of fonts.
   try {
-    // May prompt the user
-    for await (const metadata of navigator.fonts.query()) {
-      // blob()' returns a Blob containing valid and complete SFNT
+    const array = await navigator.fonts.query();
+
+    array.forEach(metadata => {
+      // blob() returns a Blob containing valid and complete SFNT
       // wrapped font data.
       const sfnt = await metadata.blob();
-  
+
       // Slice out only the bytes we need: the first 4 bytes are the SFNT
       // version info.
       // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
       const sfntVersion = await sfnt.slice(0, 4).text();
-  
+
       let outlineFormat = "UNKNOWN";
       switch (sfntVersion) {
         case '\x00\x01\x00\x00':
@@ -224,20 +229,39 @@ Here we use enumeration and new APIs on `FontMetadata` to access a full and vali
     }
   } catch(e) {
     // Handle error. It could be a permission error.
-    throw new Error(e);
+    console.warn(`Local font access not available: ${e.message}`);
   }
-})();
+};
 ```
+
+### Persistent Access
+
+In the above examples, the `query()` call allows the user agent to prompt the user for access to some or all local fonts at the time of the call. For example, this could show a font picker interface allowing selection of fonts.
+
+Other scenarios would benefit from access to local fonts on an ongoing basis. For example, a web application could offer font selection UI showing both fonts provided by the web application's server as well as local fonts. Calling `query()` with `{persistentAccess:true}` will request a permission (`"font-access"`). If that permission is granted, then subsequent calls to `query()` with that option will not prompt the user.
+
+```js
+// User activation is required.
+includeLocalFontsButton.onclick = async function() {
+  try {
+    const array = await navigator.fonts.query({persistentAccess: true});
+
+    // Was persistent access granted?
+    console.log('Expect granted: ' + (await navigator.permission.query('font-access')).state);
+
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    console.warn(`Local font access not available: ${e.message}`);
+  }
+};
+```
+
 
 ## Detailed design discussion (data)
 
 Several aspects of this design need validation:
 
 * This design tries to address concerns with `FontFaceSet` and friends at the cost of introducing a new API surface.
-
-Other issues that feedback is needed on:
-
-* Enumeration order of the returned table map needs to be defined.
 
 ## Detailed design discussion (enumeration)
 
