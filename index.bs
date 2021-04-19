@@ -405,7 +405,7 @@ The <dfn attribute for=NavigatorFonts>fonts</dfn> getter steps are to return [=/
 [SecureContext,
  Exposed=(Window,Worker)]
 interface FontManager {
-  Promise<sequence<FontMetadata>> query(QueryOptions options);
+  Promise<sequence<FontMetadata>> query(optional QueryOptions options = {});
 };
 
 dictionary QueryOptions {
