@@ -4,10 +4,10 @@
   <title>Local Font Access API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version c5fd42b86, updated Mon Apr 5 16:27:33 2021 -0700" name="generator">
+  <meta content="Bikeshed version c6f50773a, updated Fri Apr 16 16:45:47 2021 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="09c323d73cf51b0de948f418dfe77b206b44c5be" name="document-revision">
+  <meta content="b8d3c2f2677fa46c4ae73a90f418e7290510714a" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -135,9 +135,9 @@ pre .property::before, pre .property::after {
     --ins-bg: transparent;
 
     --a-normal-text: #034575;
-    --a-normal-underline: #707070;
+    --a-normal-underline: #bbb;
     --a-visited-text: var(--a-normal-text);
-    --a-visited-underline: #bbb;
+    --a-visited-underline: #707070;
     --a-hover-bg: rgba(75%, 75%, 75%, .25);
     --a-active-text: #c00;
     --a-active-underline: #c00;
@@ -600,7 +600,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-04-15">15 April 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-04-20">20 April 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -968,7 +968,7 @@ includeLocalFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>f
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fontmanager"><code><c- g>FontManager</c-></code></dfn> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontmetadata" id="ref-for-fontmetadata①"><c- n>FontMetadata</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-fontmanager-query" id="ref-for-dom-fontmanager-query①"><c- g>query</c-></a>(<a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="idl-code" data-dfn-for="FontManager/query(options)" data-dfn-type="argument" data-export id="dom-fontmanager-query-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-fontmanager-query-options-options"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontmetadata" id="ref-for-fontmetadata①"><c- n>FontMetadata</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-fontmanager-query" id="ref-for-dom-fontmanager-query①"><c- g>query</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="idl-code" data-dfn-for="FontManager/query(options), FontManager/query()" data-dfn-type="argument" data-export id="dom-fontmanager-query-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-fontmanager-query-options-options"></a></dfn> = {});
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-queryoptions"><code><c- g>QueryOptions</c-></code></dfn> {
@@ -977,7 +977,7 @@ includeLocalFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>f
 };
 </pre>
    <div class="algorithm" data-algorithm="query(options)" data-algorithm-for="FontManager">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="FontManager" data-dfn-type="method" data-export id="dom-fontmanager-query"><code>query(<var>options</var>)</code></dfn> method steps are: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="FontManager" data-dfn-type="method" data-export data-lt="query(options)|query()" id="dom-fontmanager-query"><code>query(<var>options</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
@@ -1207,6 +1207,7 @@ Jake Archibald</p>
    <li><a href="#navigatorfonts">NavigatorFonts</a><span>, in §6.1</span>
    <li><a href="#dom-queryoptions-persistentaccess">persistentAccess</a><span>, in §6.1</span>
    <li><a href="#dom-fontmetadata-postscriptname">postscriptName</a><span>, in §6.2</span>
+   <li><a href="#dom-fontmanager-query">query()</a><span>, in §6.1</span>
    <li><a href="#dom-fontmanager-query">query(options)</a><span>, in §6.1</span>
    <li><a href="#dictdef-queryoptions">QueryOptions</a><span>, in §6.1</span>
    <li><a href="#dom-queryoptions-select">select</a><span>, in §6.1</span>
@@ -1573,7 +1574,7 @@ Jake Archibald</p>
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>,
  <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a href="#fontmanager"><code><c- g>FontManager</c-></code></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontmetadata"><c- n>FontMetadata</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-fontmanager-query"><c- g>query</c-></a>(<a data-link-type="idl-name" href="#dictdef-queryoptions"><c- n>QueryOptions</c-></a> <a href="#dom-fontmanager-query-options-options"><code><c- g>options</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontmetadata"><c- n>FontMetadata</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-fontmanager-query"><c- g>query</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions"><c- n>QueryOptions</c-></a> <a href="#dom-fontmanager-query-options-options"><code><c- g>options</c-></code></a> = {});
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-queryoptions"><code><c- g>QueryOptions</c-></code></a> {
