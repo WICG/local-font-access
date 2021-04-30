@@ -74,6 +74,7 @@ A successful API should:
  * Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
  * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) spec
  * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterable which will be [sorted](https://infra.spec.whatwg.org/#list-sort-in-ascending-order) by given font names
+ * Provide access to commonly used properties of fonts (for example, metrics used in CSS selectors, or when building font selection UI) without requiring parsing every font.
 
 #### Possible/Future Goals
 
@@ -124,10 +125,13 @@ showLocalFontsButton.onclick = async function() {
 
     array.forEach(metadata => {
       console.log(metadata.postscriptName);
-      console.log(metadata.fullName);
-      console.log(metadata.family);
-      console.log(metadata.family);
-      console.log(metadata.style);
+      console.log(` full name: ${metadata.fullName}`);
+      console.log(` family: ${metadata.family}`);
+      console.log(` style: ${metadata.style}`);
+
+      console.log(` italic: ${metadata.italic}`);
+      console.log(` stretch: ${metadata.stretch}`);
+      console.log(` weight: ${metadata.weight}`);
     });
    } catch(e) {
     // Handle error, e.g. user cancelled the operation.
@@ -248,6 +252,30 @@ includeLocalFontsButton.onclick = async function() {
 
     // Was persistent access granted?
     console.log('Expect granted: ' + (await navigator.permission.query('font-access')).state);
+
+  } catch(e) {
+    // Handle error. It could be a permission error.
+    console.warn(`Local font access not available: ${e.message}`);
+  }
+};
+```
+
+
+### Requesting specific fonts
+
+In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `select` option that scopes the request to fonts identified by PostScript names. Only matching fonts will be returned.
+
+User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
+
+```js
+// User activation is required.
+requestFontsButton.onclick = async function() {
+  try {
+    const array = await navigator.fonts.query({select: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
+
+    array.forEach(metadata => {
+      console.log(`Access granted for ${metadata.postscriptName}`);
+    });
 
   } catch(e) {
     // Handle error. It could be a permission error.
