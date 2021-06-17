@@ -10,8 +10,6 @@
 > Chase Phillips `<cmp@google.com>`<br>
 > Olivier Yiptong `<oyiptong@google.com>`<br>
 
-[![Build Status](https://travis-ci.org/WICG/local-font-access.svg?branch=main)](https://travis-ci.org/WICG/local-font-access)
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
