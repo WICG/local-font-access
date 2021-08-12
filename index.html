@@ -4,10 +4,10 @@
   <title>Local Font Access API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 3d6a6fcbb, updated Wed Jun 16 16:19:39 2021 -0700" name="generator">
+  <meta content="Bikeshed version 4f053d00e, updated Tue Aug 10 14:13:32 2021 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="1cce862f2133dd20c506152ff1468122c30cb3ea" name="document-revision">
+  <meta content="0825d9859b6a93828a027c849123a74baf6bf92d" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -600,7 +600,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-06-17">17 June 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-08-12">12 August 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1088,19 +1088,19 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
       <p>The full font name, including family subfamily names. Example: "<code>Arial Bold</code>"</p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-family" id="ref-for-dom-fontmetadata-family">family</a></code>
      <dd data-md>
-      <p>The font family name. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-3/#propdef-font-family" id="ref-for-propdef-font-family">font-family</a> property. Example: "<code>Arial</code>"</p>
+      <p>The font family name. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-4/#propdef-font-family" id="ref-for-propdef-font-family">font-family</a> property. Example: "<code>Arial</code>"</p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-style" id="ref-for-dom-fontmetadata-style">style</a></code>
      <dd data-md>
       <p>The font style (or subfamily) name. Example: "<code>Regular</code>", "<code>Bold Italic</code>"</p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-italic" id="ref-for-dom-fontmetadata-italic">italic</a></code>
      <dd data-md>
-      <p>Returns true if this font is labeled as italic or oblique, false otherwise. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-3/#propdef-font-style" id="ref-for-propdef-font-style">font-style</a> property’s <a class="css" data-link-type="value" href="https://drafts.csswg.org/css-fonts-4/#valdef-font-style-italic" id="ref-for-valdef-font-style-italic">italic</a> value.</p>
+      <p>Returns true if this font is labeled as italic or oblique, false otherwise. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-4/#propdef-font-style" id="ref-for-propdef-font-style">font-style</a> property’s <a class="css" data-link-type="value" href="https://drafts.csswg.org/css-fonts-4/#valdef-font-style-italic" id="ref-for-valdef-font-style-italic">italic</a> value.</p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-stretch" id="ref-for-dom-fontmetadata-stretch">stretch</a></code>
      <dd data-md>
       <p>Returns the stretch or width of the font, as a number from 0.5 (50%) to 2.0 (200%), with a default of 1.0 (100%). This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-4/#propdef-font-stretch" id="ref-for-propdef-font-stretch">font-stretch</a> property numeric value.</p>
      <dt data-md><var>metadata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontmetadata-style" id="ref-for-dom-fontmetadata-style①">style</a></code>
      <dd data-md>
-      <p>Returns the weight of the font, as a number from 1 to 1000, with a default of 400. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-3/#propdef-font-weight" id="ref-for-propdef-font-weight">font-weight</a> property numeric value.</p>
+      <p>Returns the weight of the font, as a number from 1 to 1000, with a default of 400. This corresponds with the CSS <a class="property" data-link-type="propdesc" href="https://drafts.csswg.org/css-fonts-4/#propdef-font-weight" id="ref-for-propdef-font-weight">font-weight</a> property numeric value.</p>
     </dl>
    </div>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -1261,38 +1261,38 @@ Jake Archibald</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#dom-fontmetadata-blob">blob()</a><span>, in §6.2</span>
-   <li><a href="#current-language">current language</a><span>, in §4.3</span>
-   <li><a href="#font-representation-data-bytes">data bytes</a><span>, in §4.1</span>
-   <li><a href="#dom-fontmetadata-family">family</a><span>, in §6.2</span>
-   <li><a href="#dom-permissionname-font-access">"font-access"</a><span>, in §5</span>
-   <li><a href="#fontmanager">FontManager</a><span>, in §6.1</span>
-   <li><a href="#fontmetadata">FontMetadata</a><span>, in §6.2</span>
-   <li><a href="#font-representation">font representation</a><span>, in §4.1</span>
-   <li><a href="#dom-navigatorfonts-fonts">fonts</a><span>, in §6.1</span>
-   <li><a href="#font-table">font table</a><span>, in §4.2</span>
-   <li><a href="#dom-fontmetadata-fullname">fullName</a><span>, in §6.2</span>
-   <li><a href="#dom-fontmetadata-italic">italic</a><span>, in §6.2</span>
-   <li><a href="#font-representation-italic-property">italic property</a><span>, in §4.4</span>
-   <li><a href="#localized-string-table">localized string table</a><span>, in §4.3</span>
-   <li><a href="#font-representation-metrics-table">metrics table</a><span>, in §4.4</span>
-   <li><a href="#name-table-names">names</a><span>, in §4.3</span>
-   <li><a href="#font-representation-name-string">name string</a><span>, in §4.3</span>
-   <li><a href="#font-representation-name-table">name table</a><span>, in §4.3</span>
-   <li><a href="#navigatorfonts">NavigatorFonts</a><span>, in §6.1</span>
-   <li><a href="#dom-queryoptions-persistentaccess">persistentAccess</a><span>, in §6.1</span>
-   <li><a href="#dom-fontmetadata-postscriptname">postscriptName</a><span>, in §6.2</span>
-   <li><a href="#dom-fontmanager-query">query()</a><span>, in §6.1</span>
-   <li><a href="#dom-fontmanager-query">query(options)</a><span>, in §6.1</span>
-   <li><a href="#dictdef-queryoptions">QueryOptions</a><span>, in §6.1</span>
-   <li><a href="#dom-queryoptions-select">select</a><span>, in §6.1</span>
-   <li><a href="#dom-fontmetadata-stretch">stretch</a><span>, in §6.2</span>
-   <li><a href="#font-representation-stretch-property">stretch property</a><span>, in §4.4</span>
-   <li><a href="#dom-fontmetadata-style">style</a><span>, in §6.2</span>
-   <li><a href="#font-representation-table-list">table list</a><span>, in §4.1</span>
-   <li><a href="#font-table-tag">tag</a><span>, in §4.2</span>
-   <li><a href="#dom-fontmetadata-weight">weight</a><span>, in §6.2</span>
-   <li><a href="#font-representation-weight-property">weight property</a><span>, in §4.4</span>
+   <li><a href="#dom-fontmetadata-blob">blob()</a><span>, in § 6.2</span>
+   <li><a href="#current-language">current language</a><span>, in § 4.3</span>
+   <li><a href="#font-representation-data-bytes">data bytes</a><span>, in § 4.1</span>
+   <li><a href="#dom-fontmetadata-family">family</a><span>, in § 6.2</span>
+   <li><a href="#dom-permissionname-font-access">"font-access"</a><span>, in § 5</span>
+   <li><a href="#fontmanager">FontManager</a><span>, in § 6.1</span>
+   <li><a href="#fontmetadata">FontMetadata</a><span>, in § 6.2</span>
+   <li><a href="#font-representation">font representation</a><span>, in § 4.1</span>
+   <li><a href="#dom-navigatorfonts-fonts">fonts</a><span>, in § 6.1</span>
+   <li><a href="#font-table">font table</a><span>, in § 4.2</span>
+   <li><a href="#dom-fontmetadata-fullname">fullName</a><span>, in § 6.2</span>
+   <li><a href="#dom-fontmetadata-italic">italic</a><span>, in § 6.2</span>
+   <li><a href="#font-representation-italic-property">italic property</a><span>, in § 4.4</span>
+   <li><a href="#localized-string-table">localized string table</a><span>, in § 4.3</span>
+   <li><a href="#font-representation-metrics-table">metrics table</a><span>, in § 4.4</span>
+   <li><a href="#name-table-names">names</a><span>, in § 4.3</span>
+   <li><a href="#font-representation-name-string">name string</a><span>, in § 4.3</span>
+   <li><a href="#font-representation-name-table">name table</a><span>, in § 4.3</span>
+   <li><a href="#navigatorfonts">NavigatorFonts</a><span>, in § 6.1</span>
+   <li><a href="#dom-queryoptions-persistentaccess">persistentAccess</a><span>, in § 6.1</span>
+   <li><a href="#dom-fontmetadata-postscriptname">postscriptName</a><span>, in § 6.2</span>
+   <li><a href="#dom-fontmanager-query">query()</a><span>, in § 6.1</span>
+   <li><a href="#dom-fontmanager-query">query(options)</a><span>, in § 6.1</span>
+   <li><a href="#dictdef-queryoptions">QueryOptions</a><span>, in § 6.1</span>
+   <li><a href="#dom-queryoptions-select">select</a><span>, in § 6.1</span>
+   <li><a href="#dom-fontmetadata-stretch">stretch</a><span>, in § 6.2</span>
+   <li><a href="#font-representation-stretch-property">stretch property</a><span>, in § 4.4</span>
+   <li><a href="#dom-fontmetadata-style">style</a><span>, in § 6.2</span>
+   <li><a href="#font-representation-table-list">table list</a><span>, in § 4.1</span>
+   <li><a href="#font-table-tag">tag</a><span>, in § 4.2</span>
+   <li><a href="#dom-fontmetadata-weight">weight</a><span>, in § 6.2</span>
+   <li><a href="#font-representation-weight-property">weight property</a><span>, in § 4.4</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-fontface">
    <a href="https://drafts.csswg.org/css-font-loading-3/#fontface">https://drafts.csswg.org/css-font-loading-3/#fontface</a><b>Referenced in:</b>
@@ -1307,27 +1307,27 @@ Jake Archibald</p>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-propdef-font-family">
-   <a href="https://drafts.csswg.org/css-fonts-3/#propdef-font-family">https://drafts.csswg.org/css-fonts-3/#propdef-font-family</a><b>Referenced in:</b>
+   <a href="https://drafts.csswg.org/css-fonts-4/#propdef-font-family">https://drafts.csswg.org/css-fonts-4/#propdef-font-family</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-propdef-font-family">6.2. The FontMetadata interface</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-propdef-font-style">
-   <a href="https://drafts.csswg.org/css-fonts-3/#propdef-font-style">https://drafts.csswg.org/css-fonts-3/#propdef-font-style</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-propdef-font-style">6.2. The FontMetadata interface</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-propdef-font-weight">
-   <a href="https://drafts.csswg.org/css-fonts-3/#propdef-font-weight">https://drafts.csswg.org/css-fonts-3/#propdef-font-weight</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-propdef-font-weight">6.2. The FontMetadata interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-propdef-font-stretch">
    <a href="https://drafts.csswg.org/css-fonts-4/#propdef-font-stretch">https://drafts.csswg.org/css-fonts-4/#propdef-font-stretch</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-propdef-font-stretch">6.2. The FontMetadata interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-propdef-font-style">
+   <a href="https://drafts.csswg.org/css-fonts-4/#propdef-font-style">https://drafts.csswg.org/css-fonts-4/#propdef-font-style</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-propdef-font-style">6.2. The FontMetadata interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-propdef-font-weight">
+   <a href="https://drafts.csswg.org/css-fonts-4/#propdef-font-weight">https://drafts.csswg.org/css-fonts-4/#propdef-font-weight</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-propdef-font-weight">6.2. The FontMetadata interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-valdef-font-style-italic">
@@ -1588,16 +1588,12 @@ Jake Archibald</p>
      <li><span class="dfn-paneled" id="term-for-dom-fontface-family">family</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[css-fonts-3]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-propdef-font-family">font-family</span>
-     <li><span class="dfn-paneled" id="term-for-propdef-font-style">font-style</span>
-     <li><span class="dfn-paneled" id="term-for-propdef-font-weight">font-weight</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[css-fonts-4]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-propdef-font-family">font-family</span>
      <li><span class="dfn-paneled" id="term-for-propdef-font-stretch">font-stretch</span>
+     <li><span class="dfn-paneled" id="term-for-propdef-font-style">font-style</span>
+     <li><span class="dfn-paneled" id="term-for-propdef-font-weight">font-weight</span>
      <li><span class="dfn-paneled" id="term-for-valdef-font-style-italic">italic</span>
     </ul>
    <li>
@@ -1664,38 +1660,36 @@ Jake Archibald</p>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-css-font-loading-3">[CSS-FONT-LOADING-3]
-   <dd>Tab Atkins Jr.. <a href="https://www.w3.org/TR/css-font-loading-3/">CSS Font Loading Module Level 3</a>. 22 May 2014. WD. URL: <a href="https://www.w3.org/TR/css-font-loading-3/">https://www.w3.org/TR/css-font-loading-3/</a>
+   <dd>Tab Atkins Jr.. <a href="https://www.w3.org/TR/css-font-loading-3/"><cite>CSS Font Loading Module Level 3</cite></a>. 22 May 2014. WD. URL: <a href="https://www.w3.org/TR/css-font-loading-3/">https://www.w3.org/TR/css-font-loading-3/</a>
    <dt id="biblio-fileapi">[FileAPI]
-   <dd>Marijn Kruisselbrink; Arun Ranganathan. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 4 June 2021. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
+   <dd>Marijn Kruisselbrink; Arun Ranganathan. <a href="https://www.w3.org/TR/FileAPI/"><cite>File API</cite></a>. 4 June 2021. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
-   <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
+   <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-opentype">[OPENTYPE]
-   <dd><a href="http://www.microsoft.com/typography/otspec/default.htm">OpenType specification</a>. URL: <a href="http://www.microsoft.com/typography/otspec/default.htm">http://www.microsoft.com/typography/otspec/default.htm</a>
+   <dd><a href="http://www.microsoft.com/typography/otspec/default.htm"><cite>OpenType specification</cite></a>. URL: <a href="http://www.microsoft.com/typography/otspec/default.htm">http://www.microsoft.com/typography/otspec/default.htm</a>
    <dt id="biblio-permissions">[PERMISSIONS]
-   <dd>Mounir Lamouri; Marcos Caceres; Jeffrey Yasskin. <a href="https://www.w3.org/TR/permissions/">Permissions</a>. 17 June 2021. WD. URL: <a href="https://www.w3.org/TR/permissions/">https://www.w3.org/TR/permissions/</a>
+   <dd>Mounir Lamouri; Marcos Caceres; Jeffrey Yasskin. <a href="https://www.w3.org/TR/permissions/"><cite>Permissions</cite></a>. 20 July 2021. WD. URL: <a href="https://www.w3.org/TR/permissions/">https://www.w3.org/TR/permissions/</a>
    <dt id="biblio-rfc2119">[RFC2119]
-   <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
+   <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
    <dt id="biblio-sfnt">[SFNT]
-   <dd><a href="https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en">Spline/Scalable font format</a>. January 2019. URL: <a href="https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en">https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en</a>
+   <dd><a href="https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en"><cite>Spline/Scalable font format</cite></a>. January 2019. URL: <a href="https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en">https://www.iso.org/obp/ui/#iso:std:iso-iec:14496:-22:ed-4:v1:en</a>
    <dt id="biblio-webidl">[WebIDL]
-   <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
+   <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/"><cite>Web IDL</cite></a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-bcp47">[BCP47]
-   <dd>A. Phillips, Ed.; M. Davis, Ed.. <a href="https://datatracker.ietf.org/doc/html/rfc5646">Tags for Identifying Languages</a>. September 2009. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc5646">https://datatracker.ietf.org/doc/html/rfc5646</a>
-   <dt id="biblio-css-fonts-3">[CSS-FONTS-3]
-   <dd>John Daggett; Myles Maxfield; Chris Lilley. <a href="https://www.w3.org/TR/css-fonts-3/">CSS Fonts Module Level 3</a>. 20 September 2018. REC. URL: <a href="https://www.w3.org/TR/css-fonts-3/">https://www.w3.org/TR/css-fonts-3/</a>
+   <dd>A. Phillips, Ed.; M. Davis, Ed.. <a href="https://www.rfc-editor.org/rfc/rfc5646"><cite>Tags for Identifying Languages</cite></a>. September 2009. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc5646">https://www.rfc-editor.org/rfc/rfc5646</a>
    <dt id="biblio-css-fonts-4">[CSS-FONTS-4]
-   <dd>John Daggett; Myles Maxfield; Chris Lilley. <a href="https://www.w3.org/TR/css-fonts-4/">CSS Fonts Module Level 4</a>. 17 November 2020. WD. URL: <a href="https://www.w3.org/TR/css-fonts-4/">https://www.w3.org/TR/css-fonts-4/</a>
+   <dd>John Daggett; Myles Maxfield; Chris Lilley. <a href="https://www.w3.org/TR/css-fonts-4/"><cite>CSS Fonts Module Level 4</cite></a>. 29 July 2021. WD. URL: <a href="https://www.w3.org/TR/css-fonts-4/">https://www.w3.org/TR/css-fonts-4/</a>
    <dt id="biblio-truetype">[TrueType]
-   <dd><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">TrueType™ Reference Manual</a>. URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
+   <dd><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/"><cite>TrueType™ Reference Manual</cite></a>. URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
    <dt id="biblio-woff">[WOFF]
-   <dd>Jonathan Kew; Tal Leming; Erik van Blokland. <a href="https://www.w3.org/TR/WOFF/">WOFF File Format 1.0</a>. 13 December 2012. REC. URL: <a href="https://www.w3.org/TR/WOFF/">https://www.w3.org/TR/WOFF/</a>
+   <dd>Jonathan Kew; Tal Leming; Erik van Blokland. <a href="https://www.w3.org/TR/WOFF/"><cite>WOFF File Format 1.0</cite></a>. 13 December 2012. REC. URL: <a href="https://www.w3.org/TR/WOFF/">https://www.w3.org/TR/WOFF/</a>
    <dt id="biblio-woff2">[WOFF2]
-   <dd>Vladimir Levantovsky; Raph Levien. <a href="https://www.w3.org/TR/WOFF2/">WOFF File Format 2.0</a>. 1 March 2018. REC. URL: <a href="https://www.w3.org/TR/WOFF2/">https://www.w3.org/TR/WOFF2/</a>
+   <dd>Vladimir Levantovsky; Raph Levien. <a href="https://www.w3.org/TR/WOFF2/"><cite>WOFF File Format 2.0</cite></a>. 6 July 2021. REC. URL: <a href="https://www.w3.org/TR/WOFF2/">https://www.w3.org/TR/WOFF2/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
