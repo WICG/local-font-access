@@ -18,18 +18,6 @@ Favicon: logo-font-enumeration.svg
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-access
 </pre>
 
-<pre class=anchors>
-spec: webidl; urlPrefix: https://heycam.github.io/webidl/
-    type: dfn
-        text: asynchronous iterator initialization steps; url: #TBD
-        text: get the next iteration result; url: #TBD
-spec: ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
-    type: interface; for: ECMAScript
-        text: Map; url: sec-map-objects
-    type: dfn
-        text: ecma-record; url: #sec-list-and-record-specification-type
-</pre>
-
 <pre class=link-defaults>
 spec:css-fonts-4; type:value; text:italic
 </pre>
@@ -274,8 +262,10 @@ In some cases, a web application may wish to request access to specific fonts. F
 
 User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
 
+<aside class=example id=example-specific-fonts>
+
 ```js
-// User activation is required.
+// User activation is needed.
 requestFontsButton.onclick = async function() {
   try {
     const array = await navigator.fonts.query({select: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
@@ -291,6 +281,7 @@ requestFontsButton.onclick = async function() {
 };
 ```
 
+</aside>
 
 <!-- ============================================================ -->
 # Concepts # {#concepts}
@@ -415,12 +406,15 @@ else
 
 <div class="domintro note">
 
-: await navigator . fonts . {{FontManager/query()}})
-  :: Asynchronously query for available/allowed fonts. The returned promise resolves to an array of {{FontMetadata}} objects.
+: await navigator . fonts . {{FontManager/query()}}
+: await navigator . fonts . {{FontManager/query()|query}}({ {{QueryOptions/select}}: [ ... ] })
+  :: Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of {{FontMetadata}} objects.
 
-     If the `{persistentAccess}` option is true, the user will be prompted for permission for ongoing access to query fonts without further prompts. If the option is not passed, the user agent will prompt the user to select fonts.
+     If the method is not called while the document has [=/transient activation=] (e.g. in response to a click event), the returned promise will be rejected.
 
-     If the `{select}` option is a non-empty array, then only fonts with matching PostScript names will be included in the results.
+     The user will be prompted for permission for access local fonts. If the permission is not granted, the returned promise will rejected.
+
+     If the {{QueryOptions/select}} option is a non-empty array, then only fonts with matching PostScript names will be included in the results.
 
 </div>
 
@@ -431,24 +425,25 @@ interface mixin NavigatorFonts {
   [SameObject] readonly attribute FontManager fonts;
 };
 Navigator includes NavigatorFonts;
-WorkerNavigator includes NavigatorFonts;
 </xmp>
 
 <div algorithm>
-Each [=/environment settings object=] has an associated {{FontManager}} object.
+Each {{Navigator}} has an associated {{FontManager}} object.
 
-The <dfn attribute for=NavigatorFonts>fonts</dfn> getter steps are to return [=/this=]'s [=/relevant settings object=]'s {{FontManager}} object.
+The <dfn attribute for=NavigatorFonts>fonts</dfn> getter steps are to return [=/this=]'s [=/relevant global object=]'s {{Navigator}}'s {{FontManager}} object.
 </div>
+
+Issue: Define {{Worker}} support.
+
 
 <xmp class=idl>
 [SecureContext,
- Exposed=(Window,Worker)]
+ Exposed=Window]
 interface FontManager {
   Promise<sequence<FontMetadata>> query(optional QueryOptions options = {});
 };
 
 dictionary QueryOptions {
-  boolean persistentAccess = false;
   sequence<DOMString> select = [];
 };
 </xmp>
@@ -457,14 +452,14 @@ dictionary QueryOptions {
 The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
-1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a {{TypeError}}.
+1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a {{TypeError}}, and return |promise|.
+1. If [=/this=]’s [=relevant global object=]'s [=/associated Document=] is not [=/allowed to use=] the [=/policy-controlled feature=] named "local-fonts", then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
+1. If [=/this=]’s [=relevant global object=] does not have [=/transient activation=], then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
 1. Otherwise, run these steps [=in parallel=]:
+    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
+    1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
+    1. Let |fonts| be a [=/list=] of all local fonts on the system.
     1. Let |select| be |options|' {{QueryOptions/"select"}} member.
-    1. If |options|' {{QueryOptions/"persistentAccess"}} member is true, then run these steps:
-        1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
-        1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
-        1. Let |fonts| be [=/list=] of all local fonts on the system.
-    1. Otherwise, let |fonts| be a [=/list=] of fonts on the system selected by the user.
     1. Let |result| be an new [=/list=].
     1. [=list/For each=] font |font| in |fonts|, run these steps:
         1. Let |representation| be a [=/font representation=] for |font|.
@@ -474,9 +469,10 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
     1. [=/Resolve=] |promise| with |list|.
 1. Return |promise|.
 
-Issue: Make "selected by the user" more spec-like.
-
 </div>
+
+Issue: The above permission checks preclude {{Worker}} support as written.
+
 
 <!-- ============================================================ -->
 ## The {{FontMetadata}} interface ## {#fontmetadata-interface}
@@ -511,7 +507,7 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
 
 
 <xmp class=idl>
-[Exposed=(Window,Worker)]
+[Exposed=Window]
 interface FontMetadata {
   Promise<Blob> blob();
 
