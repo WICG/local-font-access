@@ -2,6 +2,8 @@
 
 # Local Font Access Explained
 
+[![CI](https://github.com/WICG/local-font-access/actions/workflows/auto-publish.yml/badge.svg)](https://github.com/WICG/local-font-access/actions/workflows/auto-publish.yml)
+
 > August 14th, 2018<br>
 > Last Update: October 7th, 2020
 >
