@@ -18,10 +18,6 @@ Favicon: logo-font-enumeration.svg
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-access
 </pre>
 
-<pre class=link-defaults>
-spec:css-fonts-4; type:value; text:italic
-</pre>
-
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
