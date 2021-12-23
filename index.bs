@@ -374,13 +374,14 @@ Issue: Give wiggle room for other font definitions/APIs to provide values here. 
 
 
 <!-- ============================================================ -->
-# Local font access permission # {#permission}
+# Permissions # {#permissions}
 <!-- ============================================================ -->
 
 Enumeration of local fonts requires a permission to be granted.
 
-The <dfn for=PermissionName enum-value>"`font-access`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
+The Local Font Access API is a [=/default powerful feature=] that is identified by the [=powerful feature/name=] <dfn for=PermissionName export enum-value>"font-access"</dfn>.
 
+Issue: File bug against [[permissions]], to add to the registry.
 
 <aside class=example id=example-request-permission>
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
