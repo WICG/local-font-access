@@ -18,10 +18,6 @@ Favicon: logo-font-enumeration.svg
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/font-access
 </pre>
 
-<pre class=link-defaults>
-spec:css-fonts-4; type:value; text:italic
-</pre>
-
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -125,10 +121,6 @@ showLocalFontsButton.onclick = async function() {
       console.log(` full name: ${metadata.fullName}`);
       console.log(` family: ${metadata.family}`);
       console.log(` style: ${metadata.style}`);
-
-      console.log(` italic: ${metadata.italic}`);
-      console.log(` stretch: ${metadata.stretch}`);
-      console.log(` weight: ${metadata.weight}`);
     });
    } catch(e) {
     // Handle error, e.g. user cancelled the operation.
@@ -338,39 +330,7 @@ Issue: What if there is no matching |id| or |tag|? Empty string? Where does fall
 
 </div>
 
-The <dfn>current language</dfn> is the BCP 47 language tag returned by the {{NavigatorLanguage}} mixin's {{NavigatorLanguage/language}} propertyy. [[BCP47]]
-
-
-<!-- ============================================================ -->
-## Metrics Table ## {#concept-metrics-table}
-<!-- ============================================================ -->
-
-A [=/font representation=] has a <dfn for="font representation">metrics table</dfn>, which is the [=/font table=] in its [=font representation/table list=] with [=font table/tag=] \``OS/2`\`. The table is a mapping from a string to a value.
-
-A [=/font representation=]'s <dfn for="font representation">italic property</dfn> is true if its [=font representation/metrics table=] has a \``fcSelection`\` entry (a 16-bit unsigned number), and if bit 0 of the entry's value is 1, or false otherwise.
-
-A [=/font representation=]'s <dfn for="font representation">stretch property</dfn> is the value of its [=font representation/metrics table=]'s \``usWidthClass`\` entry (a 16-bit unsigned number) if present, with the value mapped according to the following table, or 1.00 (the default) otherwise:
-
-<table class=data>
-<thead>
-<tr><th>\``usWidthClass`\`</th><th>[=font representation/stretch property=]</th><th>common name</th></tr>
-</thead>
-<tbody>
-<tr><td>1</td><td>0.50</td><td>ultra-condensed</td></tr>
-<tr><td>2</td><td>0.625</td><td>extra-condensed</td></tr>
-<tr><td>3</td><td>0.75</td><td>condensed</td></tr>
-<tr><td>4</td><td>0.825</td><td>semi-condensed</td></tr>
-<tr><td>5</td><td>1.00</td><td>normal</td></tr>
-<tr><td>6</td><td>1.125</td><td>semi-expanded</td></tr>
-<tr><td>7</td><td>1.25</td><td>expanded</td></tr>
-<tr><td>8</td><td>1.50</td><td>extra-expanded</td></tr>
-<tr><td>9</td><td>2.00</td><td>ultra-expanded</td></tr>
-</tbody>
-</table>
-
-A [=/font representation=]'s <dfn for="font representation">weight property</dfn> is the value of its [=font representation/metrics table=]'s \``usWeightClass`\` entry (a 16-bit unsigned number, in the range 1 to 1000) if present, or 400 (the default) otherwise.
-
-Issue: Give wiggle room for other font definitions/APIs to provide values here. Maybe something like "In OpenType font definitions, the foo property is given by .... In other font definitions, an equivalent value should be inferred."
+The <dfn>current language</dfn> is the BCP 47 language tag returned by the {{NavigatorLanguage}} mixin's {{NavigatorLanguage/language}} property. [[BCP47]]
 
 
 <!-- ============================================================ -->
@@ -494,15 +454,6 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
     : |metadata| . {{FontMetadata/style}}
     :: The font style (or subfamily) name. Example: "`Regular`", "`Bold Italic`"
 
-    : |metadata| . {{FontMetadata/italic}}
-    :: Returns true if this font is labeled as italic or oblique, false otherwise. This corresponds with the CSS 'font-style' property's <a value for=font-style>italic</a> value.
-
-    : |metadata| . {{FontMetadata/stretch}}
-    :: Returns the stretch or width of the font, as a number from 0.5 (50%) to 2.0 (200%), with a default of 1.0 (100%). This corresponds with the CSS 'font-stretch' property numeric value.
-
-    : |metadata| . {{FontMetadata/style}}
-    :: Returns the weight of the font, as a number from 1 to 1000, with a default of 400. This corresponds with the CSS 'font-weight' property numeric value.
-
 </div>
 
 
@@ -516,11 +467,6 @@ interface FontMetadata {
   readonly attribute USVString fullName;
   readonly attribute USVString family;
   readonly attribute USVString style;
-
-  // Metrics
-  readonly attribute boolean italic;
-  readonly attribute float stretch;
-  readonly attribute float weight;
 };
 </xmp>
 
@@ -533,12 +479,6 @@ The <dfn attribute>fullName</dfn> getter steps are to return [=/this=]'s associa
 The <dfn attribute>family</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 1 for the [=/current language=].
 
 The <dfn attribute>style</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 2 for the [=/current language=].
-
-The <dfn attribute>italic</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/italic property=].
-
-The <dfn attribute>stretch</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/stretch property=].
-
-The <dfn attribute>weight</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/weight property=].
 
 </div>
 
