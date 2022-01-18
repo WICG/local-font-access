@@ -7,9 +7,7 @@ Group: WICG
 ED: https://wicg.github.io/local-font-access/
 Repository: WICG/local-font-access
 Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw table data of fonts, allowing for more detailed custom text rendering.
-Editor: Alex Russell, Google Inc. https://google.com, slightlyoff@google.com
 Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
-Editor: Olivier Yiptong, Google Inc. https://google.com, oyiptong@google.com
 Former Editor: Emil A. Eklund
 Assume Explicit For: yes
 Markup Shorthands: markdown yes, css yes
@@ -583,9 +581,11 @@ We'd like to acknowledge the contributions of:
 
 * Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal.
 * Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
-* Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
-* Dominik Röttsches and Igor Kopylov for their thoughtful feedback
-* We would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
+* Alex Russell, who drafted the initial version of this proposal.
+* Olivier Yiptong, who provided an initial implementation and iteration on the API shape.
+* Tab Atkins, Jr. and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases.
+* Dominik Röttsches and Igor Kopylov for their thoughtful feedback.
+* We would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers.
 
 Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
 
