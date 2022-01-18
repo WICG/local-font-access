@@ -7,7 +7,7 @@
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="134d62258d0c0d1eed29cb3b2079ed714d88eb26" name="document-revision">
+  <meta content="68f466b1eb74f7d90eddef69ac64e14892aa1010" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -667,7 +667,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#concept-font-table"><span class="secno">4.2</span> <span class="content">Font Table</span></a>
       <li><a href="#concept-name-table"><span class="secno">4.3</span> <span class="content">Name Table</span></a>
      </ol>
-    <li><a href="#permission"><span class="secno">5</span> <span class="content">Local font access permission</span></a>
+    <li>
+     <a href="#permissions-integration"><span class="secno">5</span> <span class="content">Permissions Integration</span></a>
+     <ol class="toc">
+      <li><a href="#permissions"><span class="secno">5.1</span> <span class="content">Permissions</span></a>
+      <li><a href="#permissions-policy"><span class="secno">5.2</span> <span class="content">Permissions policy</span></a>
+     </ol>
     <li>
      <a href="#api"><span class="secno">6</span> <span class="content">API</span></a>
      <ol class="toc">
@@ -939,9 +944,11 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
     <p class="issue" id="issue-4a8c0163"><a class="self-link" href="#issue-4a8c0163"></a> What if there is no matching <var>id</var> or <var>tag</var>? Empty string? Where does fallback occur?</p>
    </div>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="current-language">current language</dfn> is the BCP 47 language tag returned by the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/system-state.html#navigatorlanguage" id="ref-for-navigatorlanguage">NavigatorLanguage</a></code> mixin’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language" id="ref-for-dom-navigator-language">language</a></code> property. <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a></p>
-   <h2 class="heading settled" data-level="5" id="permission"><span class="secno">5. </span><span class="content">Local font access permission</span><a class="self-link" href="#permission"></a></h2>
+   <h2 class="heading settled" data-level="5" id="permissions-integration"><span class="secno">5. </span><span class="content">Permissions Integration</span><a class="self-link" href="#permissions-integration"></a></h2>
    <p>Enumeration of local fonts requires a permission to be granted.</p>
-   <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-font-access"><code>"<code>font-access</code>"</code></dfn> <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-powerful-feature" id="ref-for-dfn-powerful-feature">powerful feature</a>’s permission-related flags, algorithms, and types are defaulted.</p>
+   <h3 class="heading settled" data-level="5.1" id="permissions"><span class="secno">5.1. </span><span class="content">Permissions</span><a class="self-link" href="#permissions"></a></h3>
+   <p>The Local Font Access API is a <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-default-powerful-feature" id="ref-for-dfn-default-powerful-feature">default powerful feature</a> that is identified by the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-name" id="ref-for-dfn-name">name</a> <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-font-access"><code>"font-access"</code></dfn>.</p>
+   <p class="issue" id="issue-9b4d7999"><a class="self-link" href="#issue-9b4d7999"></a> File bug against <a data-link-type="biblio" href="#biblio-permissions">[PERMISSIONS]</a>, to add to the registry.</p>
    <aside class="example" id="example-request-permission">
     <a class="self-link" href="#example-request-permission"></a> Permission to enumerate local fonts can be queried using the <code>navigator.permissions</code> API: 
 <pre class="language-js highlight"><c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"font-access"</c-> <c- p>});</c->
@@ -953,6 +960,25 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
   console<c- p>.</c->log<c- p>(</c-><c- u>"permission was denied 👎"</c-><c- p>);</c->
 </pre>
    </aside>
+   <h3 class="heading settled" data-level="5.2" id="permissions-policy"><span class="secno">5.2. </span><span class="content">Permissions policy</span><a class="self-link" href="#permissions-policy"></a></h3>
+   <p>This specification defines a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature">policy-controlled feature</a> identified by the string <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionPolicy" data-dfn-type="enum-value" data-export id="dom-permissionpolicy-local-fonts"><code>"local-fonts"</code></dfn>. Its <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#default-allowlist" id="ref-for-default-allowlist">default allowlist</a> is <code>'self'</code>.</p>
+   <p class="issue" id="issue-3575f1be"><a class="self-link" href="#issue-3575f1be"></a> File bug against <a data-link-type="biblio" href="#biblio-permissions-policy">[PERMISSIONS-POLICY]</a> to add policy to its <a href="https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md">list</a>.</p>
+   <div class="note" role="note">
+     The <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#default-allowlist" id="ref-for-default-allowlist①">default allowlist</a> of <code>'self'</code> allows usage of this feature on same-origin nested frames by default but prevents access by third-party content. 
+    <p>Third-party usage can be selectively enabled by adding the <code>allow="local-fonts"</code> attribute to an <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element">iframe</a></code> element:</p>
+    <div class="example" id="example-frame-delegation">
+     <a class="self-link" href="#example-frame-delegation"></a> 
+<pre class="language-html highlight"><c- p>&lt;</c-><c- f>iframe</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://example.com"</c-> <c- e>allow</c-><c- o>=</c-><c- s>"local-fonts"</c-><c- p>>&lt;/</c-><c- f>iframe</c-><c- p>></c->
+</pre>
+    </div>
+    <p>Alternatively, this feature can be disabled completely in first-party contexts by specifying the permissions policy in an HTTP response header:</p>
+    <div class="example" id="example-header-policy">
+     <a class="self-link" href="#example-header-policy"></a> 
+<pre class="language-http highlight">Permissions-Policy: local-fonts 'none'
+</pre>
+    </div>
+    <p>See <a data-link-type="biblio" href="#biblio-permissions-policy">[PERMISSIONS-POLICY]</a> for more details.</p>
+   </div>
    <h2 class="heading settled" data-level="6" id="api"><span class="secno">6. </span><span class="content">API</span><a class="self-link" href="#api"></a></h2>
    <h3 class="heading settled" data-level="6.1" id="font-manager-api"><span class="secno">6.1. </span><span class="content">Font manager</span><a class="self-link" href="#font-manager-api"></a></h3>
    <div class="domintro note" role="note">
@@ -995,16 +1021,16 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>, and return <var>promise</var>.</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to use</a> the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature">policy-controlled feature</a> named "local-fonts", then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to use</a> the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①">policy-controlled feature</a> named <code class="idl"><a data-link-type="idl" href="#dom-permissionpolicy-local-fonts" id="ref-for-dom-permissionpolicy-local-fonts">"local-fonts"</a></code>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, and return <var>promise</var>.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> does not have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror①">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>, and return <var>promise</var>.</p>
      <li data-md>
       <p>Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>permission</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-request-permission-to-use" id="ref-for-dfn-request-permission-to-use">requesting permission to use</a> <code class="idl"><a data-link-type="idl" href="#dom-permissionname-font-access" id="ref-for-dom-permissionname-font-access">"font-access"</a></code>.</p>
+        <p>Let <var>permissionState</var> be <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-request-permission-to-use" id="ref-for-dfn-request-permission-to-use">request permission to use</a> <code class="idl"><a data-link-type="idl" href="#dom-permissionname-font-access" id="ref-for-dom-permissionname-font-access">"font-access"</a></code>.</p>
        <li data-md>
-        <p>If <var>permission</var> is not <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted">"granted"</a></code>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>, and abort these steps.</p>
+        <p>If <var>permissionState</var> is <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-denied" id="ref-for-dom-permissionstate-denied">"denied"</a></code>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>, and abort these steps.</p>
        <li data-md>
         <p>Let <var>fonts</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of all local fonts on the system.</p>
        <li data-md>
@@ -1207,13 +1233,14 @@ Jake Archibald</p>
    <li><a href="#current-language">current language</a><span>, in § 4.3</span>
    <li><a href="#font-representation-data-bytes">data bytes</a><span>, in § 4.1</span>
    <li><a href="#dom-fontmetadata-family">family</a><span>, in § 6.2</span>
-   <li><a href="#dom-permissionname-font-access">"font-access"</a><span>, in § 5</span>
+   <li><a href="#dom-permissionname-font-access">"font-access"</a><span>, in § 5.1</span>
    <li><a href="#fontmanager">FontManager</a><span>, in § 6.1</span>
    <li><a href="#fontmetadata">FontMetadata</a><span>, in § 6.2</span>
    <li><a href="#font-representation">font representation</a><span>, in § 4.1</span>
    <li><a href="#dom-navigatorfonts-fonts">fonts</a><span>, in § 6.1</span>
    <li><a href="#font-table">font table</a><span>, in § 4.2</span>
    <li><a href="#dom-fontmetadata-fullname">fullName</a><span>, in § 6.2</span>
+   <li><a href="#dom-permissionpolicy-local-fonts">"local-fonts"</a><span>, in § 5.2</span>
    <li><a href="#localized-string-table">localized string table</a><span>, in § 4.3</span>
    <li><a href="#name-table-names">names</a><span>, in § 4.3</span>
    <li><a href="#font-representation-name-string">name string</a><span>, in § 4.3</span>
@@ -1286,6 +1313,12 @@ Jake Archibald</p>
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window">https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document-window">6.1. Font manager</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-the-iframe-element">
+   <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-the-iframe-element">5.2. Permissions policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-in-parallel">
@@ -1374,16 +1407,22 @@ Jake Archibald</p>
     <li><a href="#ref-for-list-sort-in-ascending-order">6.1. Font manager</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissionstate-granted">
-   <a href="https://w3c.github.io/permissions/#dom-permissionstate-granted">https://w3c.github.io/permissions/#dom-permissionstate-granted</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dfn-default-powerful-feature">
+   <a href="https://w3c.github.io/permissions/#dfn-default-powerful-feature">https://w3c.github.io/permissions/#dfn-default-powerful-feature</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-permissionstate-granted">6.1. Font manager</a>
+    <li><a href="#ref-for-dfn-default-powerful-feature">5.1. Permissions</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-powerful-feature">
-   <a href="https://w3c.github.io/permissions/#dfn-powerful-feature">https://w3c.github.io/permissions/#dfn-powerful-feature</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-permissionstate-denied">
+   <a href="https://w3c.github.io/permissions/#dom-permissionstate-denied">https://w3c.github.io/permissions/#dom-permissionstate-denied</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-powerful-feature">5. Local font access permission</a>
+    <li><a href="#ref-for-dom-permissionstate-denied">6.1. Font manager</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-name">
+   <a href="https://w3c.github.io/permissions/#dfn-name">https://w3c.github.io/permissions/#dfn-name</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-name">5.1. Permissions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-request-permission-to-use">
@@ -1392,10 +1431,17 @@ Jake Archibald</p>
     <li><a href="#ref-for-dfn-request-permission-to-use">6.1. Font manager</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-default-allowlist">
+   <a href="https://w3c.github.io/webappsec-permissions-policy/#default-allowlist">https://w3c.github.io/webappsec-permissions-policy/#default-allowlist</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-default-allowlist">5.2. Permissions policy</a> <a href="#ref-for-default-allowlist①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-policy-controlled-feature">
    <a href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature">https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-policy-controlled-feature">6.1. Font manager</a>
+    <li><a href="#ref-for-policy-controlled-feature">5.2. Permissions policy</a>
+    <li><a href="#ref-for-policy-controlled-feature①">6.1. Font manager</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-ByteString">
@@ -1533,6 +1579,7 @@ Jake Archibald</p>
      <li><span class="dfn-paneled" id="term-for-worker">Worker</span>
      <li><span class="dfn-paneled" id="term-for-allowed-to-use">allowed to use</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-window">associated document</span>
+     <li><span class="dfn-paneled" id="term-for-the-iframe-element">iframe</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
      <li><span class="dfn-paneled" id="term-for-dom-navigator-language">language</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-opaque">opaque origin</span>
@@ -1553,15 +1600,17 @@ Jake Archibald</p>
      <li><span class="dfn-paneled" id="term-for-list-sort-in-ascending-order">sort in ascending order</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[permissions]</a> defines the following terms:
+    <a data-link-type="biblio">[PERMISSIONS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-permissionstate-granted">granted</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-powerful-feature">powerful feature</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-request-permission-to-use">requesting permission to use</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-default-powerful-feature">default powerful feature</span>
+     <li><span class="dfn-paneled" id="term-for-dom-permissionstate-denied">denied</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-name">name</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-request-permission-to-use">request permission to use</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[permissions-policy-1]</a> defines the following terms:
+    <a data-link-type="biblio">[PERMISSIONS-POLICY]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-default-allowlist">default allowlist</span>
      <li><span class="dfn-paneled" id="term-for-policy-controlled-feature">policy-controlled feature</span>
     </ul>
    <li>
@@ -1601,7 +1650,7 @@ Jake Archibald</p>
    <dd><a href="http://www.microsoft.com/typography/otspec/default.htm"><cite>OpenType specification</cite></a>. URL: <a href="http://www.microsoft.com/typography/otspec/default.htm">http://www.microsoft.com/typography/otspec/default.htm</a>
    <dt id="biblio-permissions">[PERMISSIONS]
    <dd>Marcos Caceres; Mike Taylor. <a href="https://www.w3.org/TR/permissions/"><cite>Permissions</cite></a>. 18 January 2022. WD. URL: <a href="https://www.w3.org/TR/permissions/">https://www.w3.org/TR/permissions/</a>
-   <dt id="biblio-permissions-policy-1">[PERMISSIONS-POLICY-1]
+   <dt id="biblio-permissions-policy">[PERMISSIONS-POLICY]
    <dd>Ian Clelland. <a href="https://www.w3.org/TR/permissions-policy-1/"><cite>Permissions Policy</cite></a>. 16 July 2020. WD. URL: <a href="https://www.w3.org/TR/permissions-policy-1/">https://www.w3.org/TR/permissions-policy-1/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
@@ -1656,6 +1705,8 @@ Jake Archibald</p>
   <div style="counter-reset:issue">
    <div class="issue"> Define any new concepts beyond just the API <a class="issue-return" href="#issue-b2a456eb" title="Jump to section">↵</a></div>
    <div class="issue"> What if there is no matching <var>id</var> or <var>tag</var>? Empty string? Where does fallback occur? <a class="issue-return" href="#issue-4a8c0163" title="Jump to section">↵</a></div>
+   <div class="issue"> File bug against <a data-link-type="biblio" href="#biblio-permissions">[PERMISSIONS]</a>, to add to the registry. <a class="issue-return" href="#issue-9b4d7999" title="Jump to section">↵</a></div>
+   <div class="issue"> File bug against <a data-link-type="biblio" href="#biblio-permissions-policy">[PERMISSIONS-POLICY]</a> to add policy to its <a href="https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md">list</a>. <a class="issue-return" href="#issue-3575f1be" title="Jump to section">↵</a></div>
    <div class="issue"> Define <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#worker">Worker</a></code> support. <a class="issue-return" href="#issue-ac908e6c" title="Jump to section">↵</a></div>
    <div class="issue"> The above permission checks preclude <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#worker">Worker</a></code> support as written. <a class="issue-return" href="#issue-8693fc60" title="Jump to section">↵</a></div>
    <div class="issue">
@@ -1743,6 +1794,12 @@ Jake Archibald</p>
    <b><a href="#dom-permissionname-font-access">#dom-permissionname-font-access</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissionname-font-access">6.1. Font manager</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-permissionpolicy-local-fonts">
+   <b><a href="#dom-permissionpolicy-local-fonts">#dom-permissionpolicy-local-fonts</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-permissionpolicy-local-fonts">6.1. Font manager</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="navigatorfonts">
