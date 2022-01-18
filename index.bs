@@ -332,13 +332,18 @@ The <dfn>current language</dfn> is the BCP 47 language tag returned by the {{Nav
 
 
 <!-- ============================================================ -->
-# Local font access permission # {#permission}
+# Permissions Integration # {#permissions-integration}
 <!-- ============================================================ -->
 
 Enumeration of local fonts requires a permission to be granted.
 
-The <dfn for=PermissionName enum-value>"`font-access`"</dfn> [=/powerful feature=]’s permission-related flags, algorithms, and types are defaulted.
+<!-- ============================================================ -->
+## Permissions ## {#permissions}
+<!-- ============================================================ -->
 
+The Local Font Access API is a [=/default powerful feature=] that is identified by the [=powerful feature/name=] <dfn for=PermissionName export enum-value>"font-access"</dfn>.
+
+Issue: File bug against [[PERMISSIONS]], to add to the registry.
 
 <aside class=example id=example-request-permission>
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
@@ -353,6 +358,38 @@ else
   console.log("permission was denied 👎");
 ```
 </aside>
+
+<!-- ============================================================ -->
+## Permissions policy ## {#permissions-policy}
+<!-- ============================================================ -->
+
+This specification defines a [=/policy-controlled feature=] identified by the string <dfn for=PermissionPolicy enum-value>"local-fonts"</dfn>. Its [=/default allowlist=] is `'self'`.
+
+Issue: File bug against [[PERMISSIONS-POLICY]] to add policy to its [list](https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md).
+
+
+<div class=note>
+  The [=/default allowlist=] of `'self'` allows usage of this feature on same-origin nested frames by default but prevents access by third-party content.
+
+  Third-party usage can be selectively enabled by adding the `allow="local-fonts"` attribute to an <{iframe}> element:
+
+  <div class=example id=example-frame-delegation>
+  ```html
+  <iframe src="https://example.com" allow="local-fonts"></iframe>
+  ```
+  </div>
+
+  Alternatively, this feature can be disabled completely in first-party contexts by specifying the permissions policy in an HTTP response header:
+
+  <div class=example id=example-header-policy>
+  ```http
+  Permissions-Policy: local-fonts 'none'
+  ```
+  </div>
+
+  See [[PERMISSIONS-POLICY]] for more details.
+</div>
+
 
 <!-- ============================================================ -->
 # API # {#api}
@@ -411,11 +448,11 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
 1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a {{TypeError}}, and return |promise|.
-1. If [=/this=]’s [=relevant global object=]'s [=/associated Document=] is not [=/allowed to use=] the [=/policy-controlled feature=] named "local-fonts", then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
+1. If [=/this=]’s [=relevant global object=]'s [=/associated Document=] is not [=/allowed to use=] the [=/policy-controlled feature=] named {{PermissionPolicy/"local-fonts"}}, then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
 1. If [=/this=]’s [=relevant global object=] does not have [=/transient activation=], then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
 1. Otherwise, run these steps [=in parallel=]:
-    1. Let |permission| be the result of [=requesting permission to use=] {{PermissionName/"font-access"}}.
-    1. If |permission| is not {{PermissionState/"granted"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
+    1. Let |permissionState| be [=request permission to use=] {{PermissionName/"font-access"}}.
+    1. If |permissionState| is {{PermissionState/"denied"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Let |fonts| be a [=/list=] of all local fonts on the system.
     1. Let |select| be |options|' {{QueryOptions/"select"}} member.
     1. Let |result| be an new [=/list=].
