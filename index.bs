@@ -6,7 +6,7 @@ Status: CG-DRAFT
 Group: WICG
 ED: https://wicg.github.io/local-font-access/
 Repository: WICG/local-font-access
-Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw table data of fonts, allowing for more detailed custom text rendering.
+Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw data of fonts, allowing for more detailed custom text rendering.
 Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
 Former Editor: Emil A. Eklund
 Assume Explicit For: yes
@@ -46,26 +46,25 @@ div.head h1 { clear: left; }
 # Introduction # {#introduction}
 <!-- ============================================================ -->
 
-This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to an SFNT [[!SFNT]] container that includes full font data.
+This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to an SFNT [[!SFNT]] container provides full font data.
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
 
 Font enumeration helps by enabling:
 
-* Logging of likely-available fonts to improve server-side font rule generation.
-* Scripts to generate style rules based on "similar" local fonts, perhaps saving a download.
-* Improving styling options for user-generated content, allowing the generation of style rules via more expressive font selection menus.
+* Improving styling options for user-generated content.
+* Matching fonts declared by existing content.
 
 While the web has its origins as a text-focused medium and user agents provide very high quality typography support, they have limitations that impact some classes of web-based applications:
 
 * System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
-* Design tools need access to font bytes to do their own OpenType layout implementation and allow design tools to hook in at lower levels, for actions such as performing vector filters or transforms on the glyph shapes.
-* Developers may have custom font handling strategies for their applications that they are bringing to the web. To use these strategies, they usually require direct access to font data, something Web Fonts do not provide.
+* Design tools need access to font data to do their own layout in a platform-independent way, and for actions such as performing vector filters or transforms on the glyph shapes.
+* Developers may provide font selection UI based on metrics or themes, or automatic font matching based on metrics and other metadata, which require direct access to font data.
 * Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 Professional-quality design and graphics tools have historically been difficult to deliver on the web. These tools provide extensive typographic features and controls as core capabilities.
 
-This API provides these tools access to the same underlying data tables that browser layout and rasterization engines use for drawing text. Examples include the OpenType [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/glyf">glyf</a> table for glyph vector data, the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gpos">GPOS</a> table for glyph placement, and the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gsub">GSUB</a> table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+This API provides these tools access to the same underlying font data that browser layout and rasterization engines use for drawing text. Examples include the OpenType [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/glyf">glyf</a> table for glyph vector data, the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gpos">GPOS</a> table for glyph placement, and the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gsub">GSUB</a> table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 
 <!-- ============================================================ -->
@@ -79,7 +78,6 @@ The API should:
 * Be available from Workers
 * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
 * Reflect local font access state in the Permissions API
-* Restrict access to local font data to Secure Contexts
 * Provide unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
 * Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
 * Enable a memory efficient implementation, avoiding leaks and copies by design
@@ -107,22 +105,18 @@ The following code queries the available local fonts, and logs the names and met
 
 ```js
 showLocalFontsButton.onclick = async function() {
-  // This sketch returns individual FontMetadata instances rather than families:
-  // In the future, query() could take filters e.g. family name, and/or options
-  // e.g. locale. A user agent can return all fonts, or show UI allowing selection
-  // of a subset of fonts.
   try {
     const array = await navigator.fonts.query();
 
     array.forEach(metadata => {
       console.log(metadata.postscriptName);
-      console.log(` full name: ${metadata.fullName}`);
-      console.log(` family: ${metadata.family}`);
-      console.log(` style: ${metadata.style}`);
+      console.log(\` full name: ${metadata.fullName}\`);
+      console.log(\` family: ${metadata.family}\`);
+      console.log(\` style: ${metadata.style}\`);
     });
    } catch(e) {
     // Handle error, e.g. user cancelled the operation.
-    console.warn(`Local font access not available: ${e.message}`);
+    console.warn(\`Local font access not available: ${e.message}\`);
   }
 };
 ```
@@ -140,8 +134,6 @@ The following code populates a drop-down selection form element with the availab
 
 ```js
 useLocalFontsButton.onclick = async function() {
-
-  // Query for allowed local fonts.
   try {
     // Query for allowed local fonts.
     const array = await navigator.fonts.query();
@@ -158,11 +150,11 @@ useLocalFontsButton.onclick = async function() {
     fontSelect.onchange = e => {
       console.log("selected:", fontSelect.value);
       // An example of styling using @font-face src: local matching.
-      textStyle.textContent = `
+      textStyle.textContent = \`
         @font-face {
           font-family: "dynamic-font";
           src: local("${postscriptName}");
-        }`;
+        }\`;
     };
 
     // Populate the list with the available fonts.
@@ -183,7 +175,7 @@ useLocalFontsButton.onclick = async function() {
     document.body.appendChild(fontSelect);
   } catch(e) {
     // Handle error, e.g. user cancelled the operation.
-    console.warn(`Local font access not available: ${e.message}`);
+    console.warn(\`Local font access not available: ${e.message}\`);
   }
 };
 ```
@@ -194,7 +186,7 @@ useLocalFontsButton.onclick = async function() {
 ## Accessing font data ## {#example-accessing-font-data}
 <!-- ============================================================ -->
 
-The API allows script to request font data, providing access to the internal tables of fonts.
+The API allows script to request font data.
 
 <aside class=example id=example-font-data>
 The following code queries the available local fonts, and logs details about each to the console.
@@ -203,10 +195,6 @@ Here we use enumeration to access specific local font data; we can use this to p
 
 ```js
 useLocalFontsButton.onclick = async function() {
-  // This sketch returns individual FontMetadata instances rather than families:
-  // In the future, query() could take filters e.g. family name, and/or options
-  // e.g. locale. A user agent can return all fonts, or show UI allowing selection
-  // of a subset of fonts.
   try {
     const array = await navigator.fonts.query();
 
@@ -231,11 +219,11 @@ useLocalFontsButton.onclick = async function() {
           outlineFormat = "cff";
           break;
       }
-      console.log(`${metadata.fullName} outline format: ${outlineFormat}`);
+      console.log(\`${metadata.fullName} outline format: ${outlineFormat}\`);
     }
   } catch(e) {
     // Handle error. It could be a permission error.
-    console.warn(`Local font access not available: ${e.message}`);
+    console.warn(\`Local font access not available: ${e.message}\`);
   }
 };
 ```
@@ -261,12 +249,12 @@ requestFontsButton.onclick = async function() {
     const array = await navigator.fonts.query({select: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(metadata => {
-      console.log(`Access granted for ${metadata.postscriptName}`);
+      console.log(\`Access granted for ${metadata.postscriptName}\`);
     });
 
   } catch(e) {
     // Handle error. It could be a permission error.
-    console.warn(`Local font access not available: ${e.message}`);
+    console.warn(\`Local font access not available: ${e.message}\`);
   }
 };
 ```
