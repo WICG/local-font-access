@@ -263,7 +263,7 @@ includeLocalFontsButton.onclick = async function() {
 
 ### Requesting specific fonts
 
-In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `select` option that scopes the request to fonts identified by PostScript names. Only matching fonts will be returned.
+In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `postscriptNames` option that scopes the request to fonts identified by PostScript names. Only matching fonts will be returned.
 
 User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
 
@@ -271,7 +271,7 @@ User agents may provide a different user interface to support this. For example,
 // User activation is required.
 requestFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query({select: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
+    const array = await navigator.fonts.query({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(metadata => {
       console.log(`Access granted for ${metadata.postscriptName}`);

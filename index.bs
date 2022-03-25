@@ -244,7 +244,7 @@ Parsing font files in more detail, for example enumerating the contained tables,
 ## Requesting specific fonts ## {#example-requesting-specific-fonts}
 <!-- ============================================================ -->
 
-In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `select` option that scopes the request to fonts identified by PostScript names. Only fonts exactly matching the names in the list will be returned.
+In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `postscriptNames` option that scopes the request to fonts identified by PostScript names. Only fonts exactly matching the names in the list will be returned.
 
 User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
 
@@ -254,7 +254,7 @@ User agents may provide a different user interface to support this. For example,
 // User activation is needed.
 requestFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query({select: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
+    const array = await navigator.fonts.query({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(metadata => {
       console.log(\`Access granted for ${metadata.postscriptName}\`);
@@ -407,14 +407,14 @@ The <dfn>font task source</dfn> is a new generic [=/task source=] which is used 
 <div class="domintro note">
 
 : await navigator . fonts . {{FontManager/query()}}
-: await navigator . fonts . {{FontManager/query()|query}}({ {{QueryOptions/select}}: [ ... ] })
+: await navigator . fonts . {{FontManager/query()|query}}({ {{QueryOptions/postscriptNames}}: [ ... ] })
   :: Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of {{FontMetadata}} objects.
 
      If the method is not called while the document has [=/transient activation=] (e.g. in response to a click event), the returned promise will be rejected.
 
      The user will be prompted for permission for access local fonts. If the permission is not granted, the returned promise will rejected.
 
-     If the {{QueryOptions/select}} option is a non-empty array, then only fonts with matching PostScript names will be included in the results.
+     If the {{QueryOptions/postscriptNames}} option is a non-empty array, then only fonts with matching PostScript names will be included in the results.
 
 </div>
 
@@ -444,7 +444,7 @@ interface FontManager {
 };
 
 dictionary QueryOptions {
-  sequence<DOMString> select;
+  sequence<DOMString> postscriptNames;
 };
 </xmp>
 
@@ -464,7 +464,7 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
         1. Set |representation|'s [=font representation/data bytes=] to a SFNT [[!SFNT]] serialization of the representation.
         1. Let |postscriptName| be |representation|'s [=font representation/name string=] 6 for \``en`\`.
         1. If |postscriptName| is not valid according to the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification, then [=iteration/continue=].
-        1. If |options|[{{QueryOptions/"select"}}] [=map/exists=] and |options|[{{QueryOptions/"select"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
+        1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontMetadata}} instance associated with |representation| to |selectable fonts|.
     1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor|, and let |result| be the result.
         <aside class=note>User agents that choose to make the permission a binary choice rather than displaying a picker can have the permission call return all local fonts on the system.</aside>
