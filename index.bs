@@ -308,23 +308,28 @@ A [=/font table=] has a <dfn>tag</dfn>, which is a {{ByteString}} of length 4, g
 
 A [=/font representation=] has a <dfn for="font representation">name table</dfn>, which is the [=/font table=] in its [=font representation/table list=] with [=font table/tag=] \``name`\`.
 
-The [=font representation/name table=] has a [=/map=] <dfn for="name table">names</dfn>, which is a mapping from an {{unsigned short}} (a <dfn>name ID</dfn>) to a [=/localized string table=]. [=/Name IDs=] are defined as part of the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
+The [=font representation/name table=] has a [=/map=] <dfn for="name table">names</dfn>, which is a mapping from an {{unsigned short}} (a <dfn>name ID</dfn>) to a [=/localized string=]. [=/Name IDs=] are defined as part of the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
 
-A <dfn>localized string table</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
+A <dfn>localized string</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
+
+Note: [[!OPENTYPE]] does not actually specify the usage of [[BCP47]] language tags; instead, platform specific language IDs are used, e.g. US English is language ID = 0x409 for Windows and language ID = 0 for Macintosh. This specification assumes a mapping exists.
 
 <div algorithm >
 
 A [=/font representation=]'s <dfn for="font representation" lt="name string">name string |id| for |language|</dfn> is given by these steps:
 
 1. Let |names| be the [=/font representation=]'s [=font representation/name table=]'s [=name table/names=].
-1. Let |table| be |names|[|id|].
-1. Return |table|[|language|].
+1. Let |name| be |names|[|id|], a [=/localized string=].
+1. If |name|[|language|] [=map/exists=], then return it.
+1. Otherwise, return the first entry in |name|.
 
-Issue: What if there is no matching |id| or |language|? Empty string? Where does fallback occur?
+Issue: What if there is no matching |id|? Where does fallback to a different name occur?
 
-Issue: Matching scheme needs to be defined, so that queries for "en" will find "en-US" and vice versa as needed.
+Issue: Matching scheme needs to be defined, with the caveat that some OSes don't expose the data here.
 
 </div>
+
+A [=/font representation=]'s <dfn for="font representation">PostScript name</dfn> is its [=font representation/name string=] 6 for \``en-US\``.
 
 The <dfn>user language</dfn> is a valid BCP 47 language tag representing either [=/a plausible language=] or the user's most preferred language. [[!BCP47]]
 
@@ -414,7 +419,7 @@ The <dfn>font task source</dfn> is a new generic [=/task source=] which is used 
 
      The user will be prompted for permission for access local fonts. If the permission is not granted, the returned promise will rejected.
 
-     If the {{QueryOptions/postscriptNames}} option is a non-empty array, then only fonts with matching PostScript names will be included in the results.
+     If the {{QueryOptions/postscriptNames}} option is given, then only fonts with matching PostScript names will be included in the results.
 
 </div>
 
@@ -462,7 +467,7 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
     1. [=list/For each=] font |font| in |system fonts|, run these steps:
         1. Let |representation| be a [=/font representation=] for |font|.
         1. Set |representation|'s [=font representation/data bytes=] to a SFNT [[!SFNT]] serialization of the representation.
-        1. Let |postscriptName| be |representation|'s [=font representation/name string=] 6 for \``en`\`.
+        1. Let |postscriptName| be |representation|'s [=font representation/PostScript name=].
         1. If |postscriptName| is not valid according to the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification, then [=iteration/continue=].
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontMetadata}} instance associated with |representation| to |selectable fonts|.
@@ -516,7 +521,7 @@ interface FontMetadata {
 
 <div dfn-for="FontMetadata">
 
-The <dfn attribute>postscriptName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 6 for \``en`\`.
+The <dfn attribute>postscriptName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/PostScript name=].
 
 The <dfn attribute>fullName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/name string=] 4 for the [=/user language=].
 
@@ -570,15 +575,15 @@ Issue: Document internationalization consideration, e.g. string localization
 ## Font Names ## {#i18n-names}
 <!-- ============================================================ -->
 
-The \``name`\` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en`\` and \``zh-Hant-HK`\`.
+The \``name`\` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en-US`\` and \``zh-Hant-HK`\`.
 
-The {{FontMetadata}} properties {{FontMetadata/postscriptName}}, {{FontMetadata/fullName}}, {{FontMetadata/family}}, and {{FontMetadata/style}} are provided by this API simply as strings, using the \``en`\` locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
+The {{FontMetadata}} properties {{FontMetadata/postscriptName}}, {{FontMetadata/fullName}}, {{FontMetadata/family}}, and {{FontMetadata/style}} are provided by this API simply as strings, using the \``en-US`\` locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
 
 Issue: The above does not match the spec/implementation. Resolve the ambiguity.
 
 Web applications that need to provide names in other languages can request and parse the \``name`\` table directly.
 
-Issue: Should we define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en`\` if not present?
+Issue: Should we define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en-US`\` if not present?
 
 
 <!-- ============================================================ -->
