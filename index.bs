@@ -50,7 +50,7 @@ This specification describes a font enumeration API for web browsers which may, 
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
 
-Font enumeration helps by enabling:
+Font enumeration helps:
 
 * Improving styling options for user-generated content.
 * Matching fonts declared by existing content.
