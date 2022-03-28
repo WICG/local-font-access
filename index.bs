@@ -90,7 +90,7 @@ The API should:
 * Enable a memory efficient implementation, avoiding leaks and copies by design
 * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the Permissions Policy spec
 * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterable which will be sorted by given font names
-* Provide access to the raw bytes of the font data. Most uses of this API will to provide the full font data to existing libraries that only expect to consume entire font files. Providing only access to pre-parsed font table data would require developers to reassemble a blob containing all of the data in order to use such libraries.
+* Provide access to the raw bytes of the font data. Most uses of this API will be to provide the full font data to existing libraries that only expect to consume entire font files. Providing only access to pre-parsed font table data would require developers to reassemble a blob containing all of the data in order to use such libraries.
 
 <!--
 The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
