@@ -472,7 +472,7 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontMetadata}} instance associated with |representation| to |selectable fonts|.
     1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor|, and let |result| be the result.
-        <aside class=note>User agents that choose to make the permission a binary choice rather than displaying a picker can have the permission call return all local fonts on the system.</aside>
+        User agents may present a yes/no choice instead of a list of choices, and in that case they should set |result| to |selectable fonts|.
     1. If |result| is {{PermissionState/"denied"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Sort |result| in [=list/sort in ascending order|ascending order=] by using {{FontMetadata/postscriptName}} as the sort key and store the result as |result|.
     1. [=/Queue a task=] on the [=/font task source=] to [=/resolve=] |promise| with |result|.
