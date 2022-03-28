@@ -308,9 +308,9 @@ A [=/font table=] has a <dfn>tag</dfn>, which is a {{ByteString}} of length 4, g
 
 A [=/font representation=] has a <dfn for="font representation">name table</dfn>, which is the [=/font table=] in its [=font representation/table list=] with [=font table/tag=] \``name`\`.
 
-The [=font representation/name table=] has a [=/map=] <dfn for="name table">names</dfn>, which is a mapping from an {{unsigned short}} (a <dfn>name ID</dfn>) to a [=/localized string=]. [=/Name IDs=] are defined as part of the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
+The [=font representation/name table=] has a [=/map=] <dfn for="name table">names</dfn>, which is a mapping from an {{unsigned short}} (a <dfn>name ID</dfn>) to a [=/localized string map=]. [=/Name IDs=] are defined as part of the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
 
-A <dfn>localized string</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
+A <dfn>localized string map</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
 
 Note: [[!OPENTYPE]] does not actually specify the usage of [[BCP47]] language tags; instead, platform specific language IDs are used, e.g. US English is language ID = 0x409 for Windows and language ID = 0 for Macintosh. This specification assumes a mapping exists.
 
@@ -319,7 +319,7 @@ Note: [[!OPENTYPE]] does not actually specify the usage of [[BCP47]] language ta
 A [=/font representation=]'s <dfn for="font representation" lt="name string">name string |id| for |language|</dfn> is given by these steps:
 
 1. Let |names| be the [=/font representation=]'s [=font representation/name table=]'s [=name table/names=].
-1. Let |name| be |names|[|id|], a [=/localized string=].
+1. Let |name| be |names|[|id|], a [=/localized string map=].
 1. If |name|[|language|] [=map/exists=], then return it.
 1. Otherwise, return the first entry in |name|.
 
@@ -468,6 +468,7 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
         1. Let |representation| be a [=/font representation=] for |font|.
         1. Set |representation|'s [=font representation/data bytes=] to a SFNT [[!SFNT]] serialization of the representation.
         1. Let |postscriptName| be |representation|'s [=font representation/PostScript name=].
+        1. If the user agent determines that the user should never expose the font to the web, then it may [=iteration/continue=].
         1. If |postscriptName| is not valid according to the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification, then [=iteration/continue=].
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontMetadata}} instance associated with |representation| to |selectable fonts|.
