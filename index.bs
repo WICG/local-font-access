@@ -66,7 +66,7 @@ While the web has its origins as a text-focused medium and user agents provide v
 
 * System font engines (and browser stacks) may display certain glyphs differently. These differences are necessary, in general, to create fidelity with the underlying OS (so web content doesn't "look wrong"). These differences reduce consistency for applications that span across multiple platforms, e.g. when pixel-accurate layout and rendering is required.
 * Design tools need access to font data to do their own layout in a platform-independent way, and for actions such as performing vector filters or transforms on the glyph shapes.
-* Developers may provide font selection UI based on metrics or themes, or automatic font matching based on metrics and other metadata, which require direct access to font data.
+* Developers may provide font selection UI based on metrics or themes, or automatic font matching based on metrics and other data, which require direct access to font data.
 * Some fonts may not be licensed for delivery over the web. For example, Linotype has a license for some fonts that only includes desktop use.
 
 Professional-quality design and graphics tools have historically been difficult to deliver on the web. These tools provide extensive typographic features and controls as core capabilities.
@@ -118,11 +118,11 @@ showLocalFontsButton.onclick = async function() {
   try {
     const array = await navigator.fonts.query();
 
-    array.forEach(metadata => {
-      console.log(metadata.postscriptName);
-      console.log(\` full name: ${metadata.fullName}\`);
-      console.log(\` family: ${metadata.family}\`);
-      console.log(\` style: ${metadata.style}\`);
+    array.forEach(font => {
+      console.log(font.postscriptName);
+      console.log(\` full name: ${font.fullName}\`);
+      console.log(\` family: ${font.family}\`);
+      console.log(\` style: ${font.style}\`);
     });
    } catch(e) {
     // Handle error, e.g. user cancelled the operation.
@@ -169,11 +169,11 @@ useLocalFontsButton.onclick = async function() {
     };
 
     // Populate the list with the available fonts.
-    array.forEach(metadata => {
+    array.forEach(font => {
       const option = document.createElement("option");
-      option.text = metadata.fullName;
+      option.text = font.fullName;
       // postscriptName can be used with @font-face src: local to style elements.
-      option.value = metadata.postscriptName;
+      option.value = font.postscriptName;
       fontSelect.append(option);
     });
 
@@ -206,10 +206,10 @@ useLocalFontsButton.onclick = async function() {
   try {
     const array = await navigator.fonts.query();
 
-    array.forEach(metadata => {
+    array.forEach(font => {
       // blob() returns a Blob containing valid and complete SFNT
       // wrapped font data.
-      const sfnt = await metadata.blob();
+      const sfnt = await font.blob();
 
       // Slice out only the bytes we need: the first 4 bytes are the SFNT
       // version info.
@@ -227,7 +227,7 @@ useLocalFontsButton.onclick = async function() {
           outlineFormat = "cff";
           break;
       }
-      console.log(\`${metadata.fullName} outline format: ${outlineFormat}\`);
+      console.log(\`${font.fullName} outline format: ${outlineFormat}\`);
     }
   } catch(e) {
     // Handle error. It could be a permission error.
@@ -256,8 +256,8 @@ requestFontsButton.onclick = async function() {
   try {
     const array = await navigator.fonts.query({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
-    array.forEach(metadata => {
-      console.log(\`Access granted for ${metadata.postscriptName}\`);
+    array.forEach(font => {
+      console.log(\`Access granted for ${font.postscriptName}\`);
     });
 
   } catch(e) {
@@ -413,7 +413,7 @@ The <dfn>font task source</dfn> is a new generic [=/task source=] which is used 
 
 : await navigator . fonts . {{FontManager/query()}}
 : await navigator . fonts . {{FontManager/query()|query}}({ {{QueryOptions/postscriptNames}}: [ ... ] })
-  :: Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of {{FontMetadata}} objects.
+  :: Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of {{FontData}} objects.
 
      If the method is not called while the document has [=/transient activation=] (e.g. in response to a click event), the returned promise will be rejected.
 
@@ -445,7 +445,7 @@ Issue: Define {{Worker}} support.
 [SecureContext,
  Exposed=Window]
 interface FontManager {
-  Promise<sequence<FontMetadata>> query(optional QueryOptions options = {});
+  Promise<sequence<FontData>> query(optional QueryOptions options = {});
 };
 
 dictionary QueryOptions {
@@ -471,11 +471,11 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
         1. If the user agent determines that the user should never expose the font to the web, then it may [=iteration/continue=].
         1. If |postscriptName| is not valid according to the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification, then [=iteration/continue=].
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
-        1. [=list/Append=] a new {{FontMetadata}} instance associated with |representation| to |selectable fonts|.
+        1. [=list/Append=] a new {{FontData}} instance associated with |representation| to |selectable fonts|.
     1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor|, and let |result| be the result.
         User agents may present a yes/no choice instead of a list of choices, and in that case they should set |result| to |selectable fonts|.
     1. If |result| is {{PermissionState/"denied"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
-    1. Sort |result| in [=list/sort in ascending order|ascending order=] by using {{FontMetadata/postscriptName}} as the sort key and store the result as |result|.
+    1. Sort |result| in [=list/sort in ascending order|ascending order=] by using {{FontData/postscriptName}} as the sort key and store the result as |result|.
     1. [=/Queue a task=] on the [=/font task source=] to [=/resolve=] |promise| with |result|.
 1. Return |promise|.
 
@@ -485,23 +485,23 @@ Issue: The above permission checks preclude {{Worker}} support as written.
 
 
 <!-- ============================================================ -->
-## The {{FontMetadata}} interface ## {#fontmetadata-interface}
+## The {{FontData}} interface ## {#fontdata-interface}
 <!-- ============================================================ -->
 
-A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has an associated [=/font representation=].
+A {{FontData}} provides details about a font face. Each {{FontData}} has an associated [=/font representation=].
 
 <div class="domintro note">
 
-    : |metadata| . {{FontMetadata/postscriptName}}
+    : |fontdata| . {{FontData/postscriptName}}
     :: The PostScript name for the font. Example: "`Arial-Bold`".
 
-    : |metadata| . {{FontMetadata/fullName}}
+    : |fontdata| . {{FontData/fullName}}
     :: The full font name, including family subfamily names. Example: "`Arial Bold`"
 
-    : |metadata| . {{FontMetadata/family}}
+    : |fontdata| . {{FontData/family}}
     :: The font family name. This corresponds with the CSS 'font-family' property. Example: "`Arial`"
 
-    : |metadata| . {{FontMetadata/style}}
+    : |fontdata| . {{FontData/style}}
     :: The font style (or subfamily) name. Example: "`Regular`", "`Bold Italic`"
 
 </div>
@@ -509,7 +509,7 @@ A {{FontMetadata}} provides details about a font face. Each {{FontMetadata}} has
 
 <xmp class=idl>
 [Exposed=Window]
-interface FontMetadata {
+interface FontData {
   Promise<Blob> blob();
 
   // Names
@@ -520,7 +520,7 @@ interface FontMetadata {
 };
 </xmp>
 
-<div dfn-for="FontMetadata">
+<div dfn-for="FontData">
 
 The <dfn attribute>postscriptName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/PostScript name=].
 
@@ -545,14 +545,14 @@ Issue: Include `name` ID 3 (Unique identifier) as well?
 
 <div class="domintro note">
 
-    : await |blob| = |metadata| . {{FontMetadata/blob()}}
-    :: Request the font data of |metadata|. The result |blob| contains [=font representation/data bytes=].
+    : await |blob| = |fontdata| . {{FontData/blob()}}
+    :: Request the underlying bytes of a font. The result |blob| contains [=font representation/data bytes=].
 
 </div>
 
 <div algorithm>
 
-The <dfn method for=FontMetadata>blob()</dfn> method steps are:
+The <dfn method for=FontData>blob()</dfn> method steps are:
 
 1. Let |realm| be [=/this=]'s [=/relevant Realm=].
 1. Let |promise| be [=/a new promise=] in |realm|.
@@ -578,7 +578,7 @@ Issue: Document internationalization consideration, e.g. string localization
 
 The \``name`\` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en-US`\` and \``zh-Hant-HK`\`.
 
-The {{FontMetadata}} properties {{FontMetadata/postscriptName}}, {{FontMetadata/fullName}}, {{FontMetadata/family}}, and {{FontMetadata/style}} are provided by this API simply as strings, using the \``en-US`\` locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
+The {{FontData}} properties {{FontData/postscriptName}}, {{FontData/fullName}}, {{FontData/family}}, and {{FontData/style}} are provided by this API simply as strings, using the \``en-US`\` locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
 
 Issue: The above does not match the spec/implementation. Resolve the ambiguity.
 
@@ -607,7 +607,7 @@ There are no known security impacts of this feature.
 ## Fingerprinting ## {#privacy-fingerprinting}
 <!-- ============================================================ -->
 
-The font metadata includes:
+The font data includes:
 
 * Fonts included in the operating system distribution.
 * Fonts installed by particular applications installed on the system, for example office suites.
