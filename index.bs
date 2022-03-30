@@ -223,9 +223,6 @@ useLocalFontsButton.onclick = async function() {
         case 'OTTO':
           outlineFormat = "cff";
           break;
-        default:
-          outlineFormat = "unknown";
-          break;
       }
       console.log(\`${font.fullName} outline format: ${outlineFormat}\`);
     }
@@ -284,12 +281,28 @@ A <dfn>font representation</dfn> is some concrete representation of a font. Exam
 <div dfn-for="font representation">
 
 * The <dfn>data bytes</dfn>, which is a [=/byte sequence=] containing a serialization of the font.
-* The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold". This must be valid as defined in [[!RFC8081]].
+* The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold". This must be a [=/valid PostScript name=].
 * The <dfn>full name</dfn>, which is a {{DOMString}}. This is usually a human-readable name used to identify the font, e.g. "Optima Bold".
 * The <dfn>family name</dfn>, which is a {{DOMString}}. This defines a set of fonts that vary among attributes such as weight and slope, e.g. "Optima"
 * The <dfn>style name</dfn>, which is a {{DOMString}}. This defines the variation of the font within a family, e.g. "Bold".
 
 </div>
+
+A <dfn>valid PostScript name</dfn> is a [=/scalar value string=] with [=string/length=] less than 64 and consisting only of characters in the range U+0021 (!) to U+007E (~) except for the 10 code units
+U+005B ([),
+U+005D (]),
+U+0028 LEFT PARENTHESIS,
+U+0029 RIGHT PARENTHESIS,
+U+007B ({),
+U+007D (}),
+U+003C (&lt;),
+U+003E (&gt;),
+U+002F (/), and
+U+0025 (%).
+
+<aside class=note>
+This is intended to match the requirements for <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name#name-ids">nameID = 6</a> in [[!OPENTYPE]].
+</aside>
 
 Defined in terms of OpenType [[!OPENTYPE]] font data:
 * The [=font representation/data bytes=] are the SFNT [[!SFNT]] serialization of the font.
@@ -304,36 +317,38 @@ These name properties are exposed to align with property usage in [[CSS-FONTS-4]
 
 
 <!-- ============================================================ -->
-# Permissions Integration # {#permissions-integration}
-<!-- ============================================================ -->
-
-Enumeration of local fonts requires a permission to be granted.
-
-<!-- ============================================================ -->
 ## System Fonts ## {#concept-system-fonts}
 <!-- ============================================================ -->
 
 A <dfn>system font</dfn> is a font that is available system-wide provided by the operating system.
 
-To <dfn lt="read as font representation">read a system font as a font representation</dfn> is to provide a [=/font representation=] equivalent to the font, or failure otherwise. This means providing all properties of a [=/font representation=]:
+To <dfn lt="read as a font representation">read a system font as a font representation</dfn> is to provide a [=/font representation=] equivalent to the font. This means providing all properties of a [=/font representation=]:
 * [=font representation/Data bytes=].
 * [=font representation/PostScript name=], which must be valid.
 * [=font representation/Full name=].
 * [=font representation/Family name=].
 * [=font representation/Style name=].
 
+This operation can fail if providing a [=/font representation=] is not possible.
+
 
 <div algorithm>
 To <dfn>get all system font representations</dfn>, run these steps:
-1. Let |fonts| be a subset of [=/system fonts=].
+1. Let |fonts| be a [=/list=] of all [=/system fonts=].
 1. Let |result| be a new [=/list=].
 1. [=list/For each=] |font| in |fonts|.
-    1. Let |representation| be |font| [=/read as font representations=]. On failure, [=iteration/continue=].
+    1. Let |representation| be |font| [=/read as a font representation=]. On failure, [=iteration/continue=].
     1. If the user agent determines that the user should never expose the font to the web, then it may [=iteration/continue=].
     1. Append |representation| to |result|.
 1. Return |result|.
 
 </div>
+
+<!-- ============================================================ -->
+# Permissions Integration # {#permissions-integration}
+<!-- ============================================================ -->
+
+Enumeration of local fonts requires a permission to be granted.
 
 <!-- ============================================================ -->
 ## Permissions ## {#permissions}
