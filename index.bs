@@ -53,7 +53,7 @@ div.head h1 { clear: left; }
 # Introduction # {#introduction}
 <!-- ============================================================ -->
 
-This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to an SFNT [[!SFNT]] container provides full font data.
+This specification describes a font enumeration API for web browsers which may, optionally, allow users to grant access to the full set of available system fonts. For each font, low-level (byte-oriented) access to an SFNT [[!SFNT]] container or the equivalent provides full font data.
 
 Web developers historically lack anything more than heuristic information about which local fonts are available for use in styling page content. Web developers often include complex lists of `font-family` values in their CSS to control font fallback in a heuristic way. Generating good fallbacks is such a complex task for designers that tools have been built to help "eyeball" likely-available local matches.
 
@@ -86,7 +86,6 @@ The API should:
 * Allow multiple levels of privacy preservation; e.g., full access for "trusted" sites and degraded access for untrusted scenarios
 * Reflect local font access state in the Permissions API
 * Provide unique identification of families and instances (variants like "bold" and "italic"), including PostScript names
-* Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
 * Enable a memory efficient implementation, avoiding leaks and copies by design
 * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the Permissions Policy spec
 * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .queryLocalFonts() returns an iterable which will be sorted by given font names
@@ -207,14 +206,12 @@ useLocalFontsButton.onclick = async function() {
     const array = await self.queryLocalFonts();
 
     array.forEach(font => {
-      // blob() returns a Blob containing valid and complete SFNT
-      // wrapped font data.
-      const sfnt = await font.blob();
+      // blob() returns a Blob containing the bytes of the font.
+      const bytes = await font.blob();
 
-      // Slice out only the bytes we need: the first 4 bytes are the SFNT
-      // version info.
+      // Inspect the first four bytes, which for SFNT define the format.
       // Spec: https://docs.microsoft.com/en-us/typography/opentype/spec/otff#organization-of-an-opentype-font
-      const sfntVersion = await sfnt.slice(0, 4).text();
+      const sfntVersion = await bytes.slice(0, 4).text();
 
       let outlineFormat = "UNKNOWN";
       switch (sfntVersion) {
@@ -225,6 +222,9 @@ useLocalFontsButton.onclick = async function() {
           break;
         case 'OTTO':
           outlineFormat = "cff";
+          break;
+        default:
+          outlineFormat = "unknown";
           break;
       }
       console.log(\`${font.fullName} outline format: ${outlineFormat}\`);
@@ -273,7 +273,7 @@ requestFontsButton.onclick = async function() {
 # Concepts # {#concepts}
 <!-- ============================================================ -->
 
-Issue: Define any new concepts beyond just the API
+The <dfn>user language</dfn> is a valid BCP 47 language tag representing either [=/a plausible language=] or the user's most preferred language. [[!BCP47]]
 
 <!-- ============================================================ -->
 ## Font Representation ## {#concept-font-representation}
@@ -298,7 +298,10 @@ Defined in terms of OpenType [[!OPENTYPE]] font data:
 * The [=font representation/family name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 1; if multiple localizations are available, the [=/user language=] version must be used if provided, or the first localization otherwise.
 * The [=font representation/style name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 2; if multiple localizations are available, the [=/user language=] version must be used if provided, or the first localization otherwise.
 
-The <dfn>user language</dfn> is a valid BCP 47 language tag representing either [=/a plausible language=] or the user's most preferred language. [[!BCP47]]
+<aside class=note>
+These name properties are exposed to align with property usage in [[CSS-FONTS-4]], e.g. ''@font-face'', 'font-family', and so on. The [=font representation/PostScript name=] can be used as a unique key, for example when specifying a font when creating content or matching fonts against existing content. The [=font representation/full name=] or [=font representation/family name=] can be used for user-visible font selection UI, and the [=font representation/style name=] can be used to provide more specific selections.
+</aside>
+
 
 <!-- ============================================================ -->
 # Permissions Integration # {#permissions-integration}
@@ -509,9 +512,6 @@ Verify source for all of the above. See [Microsoft Typography](https://docs.micr
 
 </aside>
 
-Issue: Include `name` ID 3 (Unique identifier) as well?
-
-
 <div class="domintro note">
 
     : await |blob| = |fontdata| . {{FontData/blob()}}
@@ -547,13 +547,11 @@ Issue: Document internationalization consideration, e.g. string localization
 
 The \``name`\` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en-US`\` and \``zh-Hant-HK`\`.
 
-The {{FontData}} properties {{FontData/postscriptName}}, {{FontData/fullName}}, {{FontData/family}}, and {{FontData/style}} are provided by this API simply as strings, using the \``en-US`\` locale. This matches the behavior of the {{FontFace}} {{FontFace/family}} property.
-
-Issue: The above does not match the spec/implementation. Resolve the ambiguity.
+The {{FontData}} properties {{FontData/postscriptName}}, {{FontData/fullName}}, {{FontData/family}}, and {{FontData/style}} are provided by this API simply as strings, using either the US English localization or the [=/user language=] localization depending on the name, or the first localization as a fallback.
 
 Web applications that need to provide names in other languages can request and parse the \``name`\` table directly.
 
-Issue: Should we define an option to the {{Window/queryLocalFonts()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en-US`\` if not present?
+Issue(69): Should we define an option to the {{Window/queryLocalFonts()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en-US`\` if not present? Or provide access to all the names, e.g. as a map from [[BCP47]] language tag to name?
 
 
 <!-- ============================================================ -->
