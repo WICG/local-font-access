@@ -279,68 +279,26 @@ Issue: Define any new concepts beyond just the API
 ## Font Representation ## {#concept-font-representation}
 <!-- ============================================================ -->
 
-A <dfn>font representation</dfn> is an OpenType [[!OPENTYPE]] definition of a font. Even if the font was originally described in another file format, it is assumed that if it is supported by a user agent then an OpenType representation can be derived for it. This includes True Type [[TrueType]], Web Open Font Format 1.0 [[WOFF]] and Web Open Font Format 2.0 [[WOFF2]] files.
+A <dfn>font representation</dfn> is some concrete representation of a font. Examples include OpenType [[!OPENTYPE]], TrueType [[!TRUETYPE]], bitmap fonts, Type1 fonts, SVG fonts, and future font formats. This specification defines the properties of a [=/font representation=] as:
 
 <div dfn-for="font representation">
 
-The <dfn>data bytes</dfn> of a [=/font representation=] is the SFNT [[!SFNT]] serialization of the representation, which is a [=/byte sequence=] encoding a <dfn>table list</dfn>, a [=/list=] of [=/font tables=].
+* The <dfn>data bytes</dfn>, which is a [=/byte sequence=] containing a serialization of the font.
+* The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold". This must be valid as defined in [[!RFC8081]].
+* The <dfn>full name</dfn>, which is a {{DOMString}}. This is usually a human-readable name used to identify the font, e.g. "Optima Bold".
+* The <dfn>family name</dfn>, which is a {{DOMString}}. This defines a set of fonts that vary among attributes such as weight and slope, e.g. "Optima"
+* The <dfn>style name</dfn>, which is a {{DOMString}}. This defines the variation of the font within a family, e.g. "Bold".
 
 </div>
 
-<!-- ============================================================ -->
-## Font Table ## {#concept-font-table}
-<!-- ============================================================ -->
-
-A <dfn>font table</dfn> is an OpenType [[!OPENTYPE]] table.
-
-<div dfn-for="font table">
-
-A [=/font table=] has a <dfn>tag</dfn>, which is a {{ByteString}} of length 4, given by the bytes of the `Tag` of the table record.
-
-</div>
-
-
-<!-- ============================================================ -->
-## Name Table ## {#concept-name-table}
-<!-- ============================================================ -->
-
-A [=/font representation=] has a <dfn for="font representation">name table</dfn>, which is the [=/font table=] in its [=font representation/table list=] with [=font table/tag=] \``name`\`.
-
-The [=font representation/name table=] has a [=/map=] <dfn for="name table">names</dfn>, which is a mapping from an {{unsigned short}} (a <dfn>name ID</dfn>) to a [=/localized string map=]. [=/Name IDs=] are defined as part of the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
-
-A <dfn>localized string map</dfn> is a [=/map=] from a BCP 47 language tag to a {{USVString}}. [[BCP47]]
-
-Note: [[!OPENTYPE]] does not actually specify the usage of [[BCP47]] language tags; instead, platform specific language IDs are used, e.g. US English is language ID = 0x409 for Windows and language ID = 0 for Macintosh. This specification assumes a mapping exists.
-
-<div algorithm >
-
-A [=/font representation=]'s <dfn for="font representation" lt="name string">name string |id| for |language|</dfn> is given by these steps:
-
-1. Let |names| be the [=/font representation=]'s [=font representation/name table=]'s [=name table/names=].
-1. Let |name| be |names|[|id|], a [=/localized string map=].
-1. If |name|[|language|] [=map/exists=], then return it.
-1. Otherwise, return the first entry in |name|.
-
-Issue: What if there is no matching |id|? Where does fallback to a different name occur?
-
-Issue: Matching scheme needs to be defined, with the caveat that some OSes don't expose the data here.
-
-</div>
+Defined in terms of OpenType [[!OPENTYPE]] font data:
+* The [=font representation/data bytes=] are the SFNT [[!SFNT]] serialization of the font.
+* The [=font representation/PostScript name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 6; if multiple localizations are available, the US English version must be used if provided, or the first localization otherwise.
+* The [=font representation/full name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 4; if multiple localizations are available, the [=/user language=] version must be used if provided, or the first localization otherwise.
+* The [=font representation/family name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 1; if multiple localizations are available, the [=/user language=] version must be used if provided, or the first localization otherwise.
+* The [=font representation/style name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 2; if multiple localizations are available, the [=/user language=] version must be used if provided, or the first localization otherwise.
 
 The <dfn>user language</dfn> is a valid BCP 47 language tag representing either [=/a plausible language=] or the user's most preferred language. [[!BCP47]]
-
-<div dfn-for="font representation">
-
-A [=/font representation=]'s <dfn>PostScript name</dfn> is its [=font representation/name string=] 6 for \``en-US\``.
-
-A [=/font representation=]'s <dfn>full name</dfn> is its [=font representation/name string=] 4 for the [=/user language=].
-
-A [=/font representation=]'s <dfn>family name</dfn> is its [=font representation/name string=] 1 for the [=/user language=].
-
-A [=/font representation=]'s <dfn>style name</dfn> is its [=font representation/name string=] 2 for the [=/user language=].
-
-</div>
-
 
 <!-- ============================================================ -->
 # Permissions Integration # {#permissions-integration}
@@ -356,7 +314,7 @@ A <dfn>system font</dfn> is a font that is available system-wide provided by the
 
 To <dfn lt="read as font representation">read a system font as a font representation</dfn> is to provide a [=/font representation=] equivalent to the font, or failure otherwise. This means providing all properties of a [=/font representation=]:
 * [=font representation/Data bytes=].
-* [=font representation/PostScript name=], which must be valid according to the [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">naming table</a> specification.
+* [=font representation/PostScript name=], which must be valid.
 * [=font representation/Full name=].
 * [=font representation/Family name=].
 * [=font representation/Style name=].
