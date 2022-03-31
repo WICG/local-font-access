@@ -519,14 +519,6 @@ The <dfn attribute>style</dfn> getter steps are to return [=/this=]'s associated
 
 </div>
 
-<aside class=issue>
-Verify source for all of the above. See [Microsoft Typography](https://docs.microsoft.com/en-us/typography/opentype/spec/name)
-
-* Encoding - assume everything has been successfully transcoded to UTF-16 (USVStrings) ?
-* Localization - we will provide "en-us"-equivalent labels here - define that behavior.
-
-</aside>
-
 <div class="domintro note">
 
     : await |blob| = |fontdata| . {{FontData/blob()}}
@@ -554,7 +546,7 @@ The <dfn method for=FontData>blob()</dfn> method steps are:
 # Internationalization considerations # {#i18n}
 <!-- ============================================================ -->
 
-Issue: Document internationalization consideration, e.g. string localization
+Issue: Document internationalization considerations other than string localization, e.g. https://github.com/WICG/local-font-access/issues/72, https://github.com/WICG/local-font-access/issues/59, etc.
 
 <!-- ============================================================ -->
 ## Font Names ## {#i18n-names}
