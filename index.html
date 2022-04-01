@@ -7,7 +7,7 @@
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="09bc77c337f66ffab666c887bfdfcdbdb777f692" name="document-revision">
+  <meta content="975ca58126a53490312e3084bcad4d963308587e" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -610,7 +610,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-03-29">29 March 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-01">1 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -939,11 +939,11 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
    <h2 class="heading settled" data-level="5" id="permissions-integration"><span class="secno">5. </span><span class="content">Permissions Integration</span><a class="self-link" href="#permissions-integration"></a></h2>
    <p>Enumeration of local fonts requires a permission to be granted.</p>
    <h3 class="heading settled" data-level="5.1" id="permissions"><span class="secno">5.1. </span><span class="content">Permissions</span><a class="self-link" href="#permissions"></a></h3>
-   <p>The Local Font Access API is a <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-default-powerful-feature" id="ref-for-dfn-default-powerful-feature">default powerful feature</a> that is identified by the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-name" id="ref-for-dfn-name">name</a> <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-font-access"><code>"font-access"</code></dfn>.</p>
+   <p>The Local Font Access API is a <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-default-powerful-feature" id="ref-for-dfn-default-powerful-feature">default powerful feature</a> that is identified by the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-name" id="ref-for-dfn-name">name</a> <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-local-fonts"><code>"local-fonts"</code></dfn>.</p>
    <p class="issue" id="issue-9b4d7999"><a class="self-link" href="#issue-9b4d7999"></a> File bug against <a data-link-type="biblio" href="#biblio-permissions">[PERMISSIONS]</a>, to add to the registry.</p>
    <aside class="example" id="example-request-permission">
     <a class="self-link" href="#example-request-permission"></a> Permission to enumerate local fonts can be queried using the <code>navigator.permissions</code> API: 
-<pre class="language-js highlight"><c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"font-access"</c-> <c- p>});</c->
+<pre class="language-js highlight"><c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
 <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>===</c-> <c- u>"granted"</c-><c- p>)</c->
   console<c- p>.</c->log<c- p>(</c-><c- u>"permission was granted 👍"</c-><c- p>);</c->
 <c- k>else</c-> <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>===</c-> <c- u>"prompt"</c-><c- p>)</c->
@@ -1013,7 +1013,7 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p>Let <var>descriptor</var> be a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor">PermissionDescriptor</a></code> with its <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name">name</a></code> set to <code class="idl"><a data-link-type="idl" href="#dom-permissionname-font-access" id="ref-for-dom-permissionname-font-access">"font-access"</a></code>.</p>
+      <p>Let <var>descriptor</var> be a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor">PermissionDescriptor</a></code> with its <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name">name</a></code> set to <code class="idl"><a data-link-type="idl" href="#dom-permissionname-local-fonts" id="ref-for-dom-permissionname-local-fonts">"local-fonts"</a></code>.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, and return <var>promise</var>.</p>
      <li data-md>
@@ -1243,7 +1243,6 @@ Jake Archibald</p>
    <li><a href="#dom-fontdata-blob">blob()</a><span>, in § 6.3</span>
    <li><a href="#font-representation-data-bytes">data bytes</a><span>, in § 4.1</span>
    <li><a href="#dom-fontdata-family">family</a><span>, in § 6.3</span>
-   <li><a href="#dom-permissionname-font-access">"font-access"</a><span>, in § 5.1</span>
    <li><a href="#fontdata">FontData</a><span>, in § 6.3</span>
    <li><a href="#fontmanager">FontManager</a><span>, in § 6.2</span>
    <li><a href="#font-representation">font representation</a><span>, in § 4.1</span>
@@ -1251,7 +1250,12 @@ Jake Archibald</p>
    <li><a href="#font-table">font table</a><span>, in § 4.2</span>
    <li><a href="#font-task-source">font task source</a><span>, in § 6.1</span>
    <li><a href="#dom-fontdata-fullname">fullName</a><span>, in § 6.3</span>
-   <li><a href="#dom-permissionpolicy-local-fonts">"local-fonts"</a><span>, in § 5.2</span>
+   <li>
+    "local-fonts"
+    <ul>
+     <li><a href="#dom-permissionname-local-fonts">enum-value for PermissionName</a><span>, in § 5.1</span>
+     <li><a href="#dom-permissionpolicy-local-fonts">enum-value for PermissionPolicy</a><span>, in § 5.2</span>
+    </ul>
    <li><a href="#localized-string-map">localized string map</a><span>, in § 4.3</span>
    <li><a href="#name-id">name ID</a><span>, in § 4.3</span>
    <li><a href="#name-table-names">names</a><span>, in § 4.3</span>
@@ -1850,10 +1854,10 @@ Jake Archibald</p>
     <li><a href="#ref-for-user-language">6.3. The FontData interface</a> <a href="#ref-for-user-language①">(2)</a> <a href="#ref-for-user-language②">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-permissionname-font-access">
-   <b><a href="#dom-permissionname-font-access">#dom-permissionname-font-access</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-permissionname-local-fonts">
+   <b><a href="#dom-permissionname-local-fonts">#dom-permissionname-local-fonts</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-permissionname-font-access">6.2. Font manager</a>
+    <li><a href="#ref-for-dom-permissionname-local-fonts">6.2. Font manager</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-permissionpolicy-local-fonts">
