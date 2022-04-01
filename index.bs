@@ -89,7 +89,7 @@ The API should:
 * Shield applications from unnecessary complexity by requiring that browser implementations produce valid SFNT data in the returned data
 * Enable a memory efficient implementation, avoiding leaks and copies by design
 * Restrict access to local font data to Secure Contexts and to only the top-most frame by default via the Permissions Policy spec
-* Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .query() returns an iterable which will be sorted by given font names
+* Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .queryLocalFonts() returns an iterable which will be sorted by given font names
 * Provide access to the raw bytes of the font data. Most uses of this API will be to provide the full font data to existing libraries that only expect to consume entire font files. Providing only access to pre-parsed font table data would require developers to reassemble a blob containing all of the data in order to use such libraries.
 
 <!--
@@ -116,7 +116,7 @@ The following code queries the available local fonts, and logs the names and met
 ```js
 showLocalFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     array.forEach(font => {
       console.log(font.postscriptName);
@@ -146,7 +146,7 @@ The following code populates a drop-down selection form element with the availab
 useLocalFontsButton.onclick = async function() {
   try {
     // Query for allowed local fonts.
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     // Create an element to style.
     const exampleText = document.createElement("p");
@@ -204,7 +204,7 @@ Here we use enumeration to access specific local font data; we can use this to p
 ```js
 useLocalFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     array.forEach(font => {
       // blob() returns a Blob containing valid and complete SFNT
@@ -244,7 +244,7 @@ Parsing font files in more detail, for example enumerating the contained tables,
 ## Requesting specific fonts ## {#example-requesting-specific-fonts}
 <!-- ============================================================ -->
 
-In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `query()` call takes a `postscriptNames` option that scopes the request to fonts identified by PostScript names. Only fonts exactly matching the names in the list will be returned.
+In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The `queryLocalFonts()` call takes a `postscriptNames` option that scopes the request to fonts identified by PostScript names. Only fonts exactly matching the names in the list will be returned.
 
 User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
 
@@ -254,7 +254,7 @@ User agents may provide a different user interface to support this. For example,
 // User activation is needed.
 requestFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
+    const array = await self.queryLocalFonts({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(font => {
       console.log(\`Access granted for ${font.postscriptName}\`);
@@ -352,7 +352,7 @@ Issue: File bug against [[PERMISSIONS]], to add to the registry.
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.query({ name: "local-fonts" });
+const status = await navigator.permissions.queryLocalFonts({ name: "local-fonts" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
 else if (status.state === "prompt")
@@ -411,13 +411,13 @@ The <dfn>font task source</dfn> is a new generic [=/task source=] which is used 
 
 <div class="domintro note">
 
-: await navigator . fonts . {{FontManager/query()}}
-: await navigator . fonts . {{FontManager/query()|query}}({ {{QueryOptions/postscriptNames}}: [ ... ] })
+: await self . {{Window/queryLocalFonts()}}
+: await self . {{Window/queryLocalFonts()|queryLocalFonts}}({ {{QueryOptions/postscriptNames}}: [ ... ] })
   :: Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of {{FontData}} objects.
 
      If the method is not called while the document has [=/transient activation=] (e.g. in response to a click event), the returned promise will be rejected.
 
-     The user will be prompted for permission for access local fonts. If the permission is not granted, the returned promise will rejected.
+     The user will be prompted for permission for access local fonts or to select fonts to provide to the site. If the permission is not granted, the returned promise will rejected.
 
      If the {{QueryOptions/postscriptNames}} option is given, then only fonts with matching PostScript names will be included in the results.
 
@@ -426,26 +426,8 @@ The <dfn>font task source</dfn> is a new generic [=/task source=] which is used 
 
 <xmp class=idl>
 [SecureContext]
-interface mixin NavigatorFonts {
-  [SameObject] readonly attribute FontManager fonts;
-};
-Navigator includes NavigatorFonts;
-</xmp>
-
-<div algorithm>
-Each {{Navigator}} has an associated {{FontManager}} object.
-
-The <dfn attribute for=NavigatorFonts>fonts</dfn> getter steps are to return [=/this=]'s [=/relevant global object=]'s {{Navigator}}'s {{FontManager}} object.
-</div>
-
-Issue: Define {{Worker}} support.
-
-
-<xmp class=idl>
-[SecureContext,
- Exposed=Window]
-interface FontManager {
-  Promise<sequence<FontData>> query(optional QueryOptions options = {});
+partial interface Window {
+  Promise<sequence<FontData>> queryLocalFonts(optional QueryOptions options = {});
 };
 
 dictionary QueryOptions {
@@ -454,7 +436,7 @@ dictionary QueryOptions {
 </xmp>
 
 <div algorithm>
-The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
+The <dfn method for=Window>queryLocalFonts(|options|)</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
 1. Let |descriptor| be a {{PermissionDescriptor}} with its {{PermissionDescriptor/name}} set to {{PermissionName/"local-fonts"}}.
@@ -481,8 +463,7 @@ The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
 
 </div>
 
-Issue: The above permission checks preclude {{Worker}} support as written.
-
+Issue: Move to {{WindowOrWorkerGlobalScope}} and sort out permission issues.
 
 <!-- ============================================================ -->
 ## The {{FontData}} interface ## {#fontdata-interface}
@@ -584,7 +565,7 @@ Issue: The above does not match the spec/implementation. Resolve the ambiguity.
 
 Web applications that need to provide names in other languages can request and parse the \``name`\` table directly.
 
-Issue: Should we define an option to the {{FontManager/query()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en-US`\` if not present?
+Issue: Should we define an option to the {{Window/queryLocalFonts()}} method to specify the desired language for strings (e.g. `{lang: 'zh'}`), falling back to \``en-US`\` if not present?
 
 
 <!-- ============================================================ -->

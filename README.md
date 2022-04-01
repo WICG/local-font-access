@@ -121,7 +121,7 @@ showLocalFontsButton.onclick = async function() {
   // In the future, query() could take filters e.g. family name, and/or options
   // e.g. locale.
   try {
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     array.forEach(metadata => {
       console.log(metadata.postscriptName);
@@ -150,7 +150,7 @@ useLocalFontsButton.onclick = async function() {
 
   try {
     // Query for allowed local fonts.
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     // Create an element to style.
     const exampleText = document.createElement("p");
@@ -206,7 +206,7 @@ useLocalFontsButton.onclick = async function() {
   // e.g. locale. A user agent may return all fonts, or show UI allowing selection
   // of a subset of fonts.
   try {
-    const array = await navigator.fonts.query();
+    const array = await self.queryLocalFonts();
 
     array.forEach(metadata => {
       // blob() returns a Blob containing valid and complete SFNT
@@ -248,7 +248,7 @@ Other scenarios would benefit from access to local fonts on an ongoing basis. Fo
 // User activation is required.
 includeLocalFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query({persistentAccess: true});
+    const array = await self.queryLocalFonts({persistentAccess: true});
 
     // Was persistent access granted?
     console.log('Expect granted: ' + (await navigator.permission.query('font-access')).state);
@@ -271,7 +271,7 @@ User agents may provide a different user interface to support this. For example,
 // User activation is required.
 requestFontsButton.onclick = async function() {
   try {
-    const array = await navigator.fonts.query({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
+    const array = await self.queryLocalFonts({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(metadata => {
       console.log(`Access granted for ${metadata.postscriptName}`);
