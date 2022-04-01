@@ -71,7 +71,7 @@ While the web has its origins as a text-focused medium and user agents provide v
 
 Professional-quality design and graphics tools have historically been difficult to deliver on the web. These tools provide extensive typographic features and controls as core capabilities.
 
-This API provides these tools access to the same underlying font data that browser layout and rasterization engines use for drawing text. Examples include the OpenType [[!OPENTYPE]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/glyf">glyf</a> table for glyph vector data, the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gpos">GPOS</a> table for glyph placement, and the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gsub">GSUB</a> table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
+This API provides these tools access to the same underlying font data that browser layout and rasterization engines use for drawing text. Examples include the [[OPENTYPE|OpenType]] <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/glyf">glyf</a> table for glyph vector data, the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gpos">GPOS</a> table for glyph placement, and the <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/gsub">GSUB</a> table for ligatures and other glyph substitution. This information is necessary for these tools in order to guarantee both platform-independence of the resulting output (by embedding vector descriptions rather than codepoints) and to enable font-based art (treating fonts as the basis for manipulated shapes).
 
 
 <!-- ============================================================ -->
@@ -276,7 +276,7 @@ The <dfn>user language</dfn> is a valid BCP 47 language tag representing either 
 ## Font Representation ## {#concept-font-representation}
 <!-- ============================================================ -->
 
-A <dfn>font representation</dfn> is some concrete representation of a font. Examples include OpenType [[!OPENTYPE]], TrueType [[!TRUETYPE]], bitmap fonts, Type1 fonts, SVG fonts, and future font formats. This specification defines the properties of a [=/font representation=] as:
+A <dfn>font representation</dfn> is some concrete representation of a font. Examples include [[OPENTYPE|OpenType]], [[TRUETYPE|TrueType]], bitmap fonts, Type1 fonts, SVG fonts, and future font formats. This specification defines the properties of a [=/font representation=] as:
 
 <div dfn-for="font representation">
 
@@ -331,6 +331,7 @@ To <dfn lt="read as a font representation">read a system font as a font represen
 
 This operation can fail if providing a [=/font representation=] is not possible.
 
+A user agent may use any algorithm to provide a [=/font representation=] for a [=/system font=]. In practice, contemporary operating systems and system APIs support fonts that are persisted in SFNT [[!SFNT]] font file formats, such as [[OPENTYPE|OpenType]], [[TRUETYPE|TrueType]], [[WOFF|Web Open Font Format]], etc. which satisfy these requirements, as well as the means to efficiently enumerate font collections with these common name properties provided for each font.
 
 <div algorithm>
 To <dfn>get all system font representations</dfn>, run these steps:
@@ -357,6 +358,8 @@ Enumeration of local fonts requires a permission to be granted.
 The Local Font Access API is a [=/default powerful feature=] that is identified by the [=powerful feature/name=] <dfn for=PermissionName export enum-value>"local-fonts"</dfn>.
 
 Issue: File bug against [[PERMISSIONS]], to add to the registry.
+
+When the {{FontManager/query()}} API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".
 
 <aside class=example id=example-request-permission>
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
@@ -552,7 +555,7 @@ Issue: Document internationalization considerations other than string localizati
 ## Font Names ## {#i18n-names}
 <!-- ============================================================ -->
 
-The \``name`\` table in OpenType [[!OPENTYPE]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en-US`\` and \``zh-Hant-HK`\`.
+The \``name`\` table in [[OPENTYPE|OpenType]] fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to [[BCP47]]. For example, a font could have family name strings defined for both \``en-US`\` and \``zh-Hant-HK`\`.
 
 The {{FontData}} properties {{FontData/postscriptName}}, {{FontData/fullName}}, {{FontData/family}}, and {{FontData/style}} are provided by this API simply as strings, using either the US English localization or the [=/user language=] localization depending on the name, or the first localization as a fallback.
 
