@@ -344,7 +344,7 @@ Enumeration of local fonts requires a permission to be granted.
 ## Permissions ## {#permissions}
 <!-- ============================================================ -->
 
-The Local Font Access API is a [=/default powerful feature=] that is identified by the [=powerful feature/name=] <dfn for=PermissionName export enum-value>"font-access"</dfn>.
+The Local Font Access API is a [=/default powerful feature=] that is identified by the [=powerful feature/name=] <dfn for=PermissionName export enum-value>"local-fonts"</dfn>.
 
 Issue: File bug against [[PERMISSIONS]], to add to the registry.
 
@@ -352,7 +352,7 @@ Issue: File bug against [[PERMISSIONS]], to add to the registry.
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.query({ name: "font-access" });
+const status = await navigator.permissions.query({ name: "local-fonts" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
 else if (status.state === "prompt")
@@ -457,7 +457,7 @@ dictionary QueryOptions {
 The <dfn method for=FontManager>query(|options|)</dfn> method steps are:
 
 1. Let |promise| be [=/a new promise=].
-1. Let |descriptor| be a {{PermissionDescriptor}} with its {{PermissionDescriptor/name}} set to {{PermissionName/"font-access"}}.
+1. Let |descriptor| be a {{PermissionDescriptor}} with its {{PermissionDescriptor/name}} set to {{PermissionName/"local-fonts"}}.
 1. If [=/this=]’s [=relevant settings object=]'s [=origin=] is an [=/opaque origin=], then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
 1. If [=/this=]’s [=relevant global object=]'s [=/associated Document=] is not [=/allowed to use=] the [=/policy-controlled feature=] named {{PermissionPolicy/"local-fonts"}}, then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
 1. If [=/this=]’s [=relevant global object=] does not have [=/transient activation=], then [=/reject=] |promise| with a "{{SecurityError}}" {{DOMException}}, and return |promise|.
