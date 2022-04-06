@@ -341,22 +341,3 @@ We are not considering these options right now for the API, but we'll keep them 
 
 (Parts of ICU are being incrementally exposed to the web via the [ECMA-402](https://ecma-international.org/ecma-402/) effort.)
 
-## References & acknowledgements
-
-Former editors:
-
-* Emil A. Eklund
-
-The following references have been invaluable:
-
-* [MSDN DirectWrite overview](https://docs.microsoft.com/en-us/windows/desktop/directwrite/introducing-directwrite#accessing-the-font-system)
-* [OpenType Specification](https://docs.microsoft.com/en-us/typography/opentype/spec/)
-* [OpenType Font Table overview](https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2)
-
-We'd like to acknowledge the contributions of:
-
-* Daniel Nishi, Owen Campbell-Moore, and Mike Tsao who helped pioneer the previous local font access proposal
-* Evan Wallace, Biru, Leah Cassidy, Katie Gregorio, Morgan Kennedy, and Noah Levin of Figma who have patiently enumerated the needs of their ambitious web product.
-* Tab Atkins and the CSS Working Group who have provided usable base-classes which only need slight extension to enable these cases
-* Domenic Denicola, Dominik Röttsches, Igor Kopylov and Jake Archibald for their thoughtful feedback
-* Lastly, we would like to express our gratitude to former editor Emil A. Eklund, who passed away in 2020. Emil was instrumental in getting this proposal underway, providing technical guidance, and championing the needs of users and developers
