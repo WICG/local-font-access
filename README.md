@@ -21,6 +21,7 @@
   - [Enumerating Local Fonts](#enumerating-local-fonts)
   - [Styling with Local Fonts](#styling-with-local-fonts)
   - [Accessing Full Font Data](#accessing-full-font-data)
+  - [Requesting specific fonts](#requesting-specific-fonts)
 - [Detailed design discussion (data)](#detailed-design-discussion-data)
 - [Detailed design discussion (enumeration)](#detailed-design-discussion-enumeration)
   - [Privacy and Security Considerations](#privacy-and-security-considerations)
@@ -30,7 +31,6 @@
   - [Exposing Font Tables as a map](#exposing-font-tables-as-a-map)
   - [Metadata Properties](#metadata-properties)
 - [Exposing Building Blocks](#exposing-building-blocks)
-- [References & acknowledgements](#references--acknowledgements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
