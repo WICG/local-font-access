@@ -5,12 +5,9 @@
 [![CI](https://github.com/WICG/local-font-access/actions/workflows/auto-publish.yml/badge.svg)](https://github.com/WICG/local-font-access/actions/workflows/auto-publish.yml)
 
 > August 14th, 2018<br>
-> Last Update: October 7th, 2020
+> Last Update: April 6th, 2022
 >
-> Alex Russell `<slightlyoff@google.com>`<br>
-> Josh Bell `<jsbell@google.com>`<br>
-> Chase Phillips `<cmp@google.com>`<br>
-> Olivier Yiptong `<oyiptong@google.com>`<br>
+> Josh Bell `<jsbell@google.com>`
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -237,29 +234,6 @@ useLocalFontsButton.onclick = async function() {
   }
 };
 ```
-
-### Persistent Access
-
-In the above examples, the `query()` call allows the user agent to prompt the user for access to some or all local fonts at the time of the call. For example, this could show a font picker interface allowing selection of fonts.
-
-Other scenarios would benefit from access to local fonts on an ongoing basis. For example, a web application could offer font selection UI showing both fonts provided by the web application's server as well as local fonts. Calling `query()` with `{persistentAccess:true}` will request a permission (`"font-access"`). If that permission is granted, then subsequent calls to `query()` with that option will not prompt the user.
-
-```js
-// User activation is required.
-includeLocalFontsButton.onclick = async function() {
-  try {
-    const array = await self.queryLocalFonts({persistentAccess: true});
-
-    // Was persistent access granted?
-    console.log('Expect granted: ' + (await navigator.permission.query('font-access')).state);
-
-  } catch(e) {
-    // Handle error. It could be a permission error.
-    console.warn(`Local font access not available: ${e.message}`);
-  }
-};
-```
-
 
 ### Requesting specific fonts
 
