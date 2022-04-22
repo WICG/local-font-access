@@ -365,7 +365,7 @@ When the {{FontManager/query()}} API is invoked, the user agent may present a li
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.queryLocalFonts({ name: "local-fonts" });
+const status = await navigator.permissions.query({ name: "local-fonts" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
 else if (status.state === "prompt")
