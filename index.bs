@@ -359,13 +359,14 @@ The Local Font Access API is a [=/default powerful feature=] that is identified 
 
 Issue: File bug against [[PERMISSIONS]], to add to the registry.
 
-When the {{FontManager/query()}} API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".
+When the {{Window/queryLocalFonts()}} API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".
 
 <aside class=example id=example-request-permission>
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
 
 ```js
-const status = await navigator.permissions.queryLocalFonts({ name: "local-fonts" });
+// This just queries the existing state of the permission, it does not change it.
+const status = await navigator.permissions.query({ name: "local-fonts" });
 if (status.state === "granted")
   console.log("permission was granted 👍");
 else if (status.state === "prompt")
