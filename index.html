@@ -7,7 +7,7 @@
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="1877ae4c49b2b9c23f995b3913fbebaa75665176" name="document-revision">
+  <meta content="529ba1b12a7114c1fa0a37b172a106b0145c4835" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -610,7 +610,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-06">6 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-22">22 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -983,10 +983,11 @@ U+0025 (%).</p>
    <h3 class="heading settled" data-level="5.1" id="permissions"><span class="secno">5.1. </span><span class="content">Permissions</span><a class="self-link" href="#permissions"></a></h3>
    <p>The Local Font Access API is a <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-default-powerful-feature" id="ref-for-dfn-default-powerful-feature">default powerful feature</a> that is identified by the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-name" id="ref-for-dfn-name">name</a> <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionName" data-dfn-type="enum-value" data-export id="dom-permissionname-local-fonts"><code>"local-fonts"</code></dfn>.</p>
    <p class="issue" id="issue-9b4d7999"><a class="self-link" href="#issue-9b4d7999"></a> File bug against <a data-link-type="biblio" href="#biblio-permissions">[PERMISSIONS]</a>, to add to the registry.</p>
-   <p>When the <code class="idl"><a data-link-type="idl">query()</a></code> API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".</p>
+   <p>When the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts">queryLocalFonts()</a></code> API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".</p>
    <aside class="example" id="example-request-permission">
     <a class="self-link" href="#example-request-permission"></a> Permission to enumerate local fonts can be queried using the <code>navigator.permissions</code> API: 
-<pre class="language-js highlight"><c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->queryLocalFonts<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
+<pre class="language-js highlight"><c- c1>// This just queries the existing state of the permission, it does not change it.</c->
+<c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
 <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>===</c-> <c- u>"granted"</c-><c- p>)</c->
   console<c- p>.</c->log<c- p>(</c-><c- u>"permission was granted 👍"</c-><c- p>);</c->
 <c- k>else</c-> <c- k>if</c-> <c- p>(</c->status<c- p>.</c->state <c- o>===</c-> <c- u>"prompt"</c-><c- p>)</c->
@@ -1020,8 +1021,8 @@ U+0025 (%).</p>
    <h3 class="heading settled" data-level="6.2" id="font-manager-api"><span class="secno">6.2. </span><span class="content">Font manager</span><a class="self-link" href="#font-manager-api"></a></h3>
    <div class="domintro note" role="note">
     <dl>
-     <dt data-md>await self . <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts">queryLocalFonts()</a></code>
-     <dt data-md>await self . <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts①">queryLocalFonts</a></code>({ <code class="idl"><a data-link-type="idl" href="#dom-queryoptions-postscriptnames" id="ref-for-dom-queryoptions-postscriptnames">postscriptNames</a></code>: [ ... ] })
+     <dt data-md>await self . <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts①">queryLocalFonts()</a></code>
+     <dt data-md>await self . <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts②">queryLocalFonts</a></code>({ <code class="idl"><a data-link-type="idl" href="#dom-queryoptions-postscriptnames" id="ref-for-dom-queryoptions-postscriptnames">postscriptNames</a></code>: [ ... ] })
      <dd data-md>
       <p>Asynchronously query for available/allowed fonts. If successful, the returned promise resolves to an array of <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata">FontData</a></code> objects.</p>
       <p>If the method is not called while the document has <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation">transient activation</a> (e.g. in response to a click event), the returned promise will be rejected.</p>
@@ -1031,7 +1032,7 @@ U+0025 (%).</p>
    </div>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window"><c- g>Window</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontdata" id="ref-for-fontdata①"><c- n>FontData</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts②"><c- g>queryLocalFonts</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="idl-code" data-dfn-for="Window/queryLocalFonts(options), Window/queryLocalFonts()" data-dfn-type="argument" data-export id="dom-window-querylocalfonts-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-window-querylocalfonts-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontdata" id="ref-for-fontdata①"><c- n>FontData</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts③"><c- g>queryLocalFonts</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="idl-code" data-dfn-for="Window/queryLocalFonts(options), Window/queryLocalFonts()" data-dfn-type="argument" data-export id="dom-window-querylocalfonts-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-window-querylocalfonts-options-options"></a></dfn> = {});
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-queryoptions"><code><c- g>QueryOptions</c-></code></dfn> {
@@ -1156,7 +1157,7 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
    <p>The `<code>name</code>` table in <a data-link-type="biblio" href="#biblio-opentype">OpenType</a> fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a>. For example, a font could have family name strings defined for both `<code>en-US</code>` and `<code>zh-Hant-HK</code>`.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑥">FontData</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontdata-postscriptname" id="ref-for-dom-fontdata-postscriptname③">postscriptName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-fullname" id="ref-for-dom-fontdata-fullname②">fullName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-family" id="ref-for-dom-fontdata-family②">family</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontdata-style" id="ref-for-dom-fontdata-style②">style</a></code> are provided by this API simply as strings, using either the US English localization or the <a data-link-type="dfn" href="#user-language" id="ref-for-user-language③">user language</a> localization depending on the name, or the first localization as a fallback.</p>
    <p>Web applications that need to provide names in other languages can request and parse the `<code>name</code>` table directly.</p>
-   <p class="issue" id="issue-05afe850"><a class="self-link" href="#issue-05afe850"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts③">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a></p>
+   <p class="issue" id="issue-05afe850"><a class="self-link" href="#issue-05afe850"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts④">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a></p>
    <h2 class="heading settled" data-level="8" id="a11y"><span class="secno">8. </span><span class="content">Accessibility considerations</span><a class="self-link" href="#a11y"></a></h2>
    <p>There are no known accessibility impacts of this feature.</p>
    <h2 class="heading settled" data-level="9" id="security"><span class="secno">9. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
@@ -1851,8 +1852,9 @@ Jake Archibald</p>
   <aside class="dfn-panel" data-for="dom-window-querylocalfonts">
    <b><a href="#dom-window-querylocalfonts">#dom-window-querylocalfonts</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-querylocalfonts">6.2. Font manager</a> <a href="#ref-for-dom-window-querylocalfonts①">(2)</a> <a href="#ref-for-dom-window-querylocalfonts②">(3)</a>
-    <li><a href="#ref-for-dom-window-querylocalfonts③">7.1. Font Names</a>
+    <li><a href="#ref-for-dom-window-querylocalfonts">5.1. Permissions</a>
+    <li><a href="#ref-for-dom-window-querylocalfonts①">6.2. Font manager</a> <a href="#ref-for-dom-window-querylocalfonts②">(2)</a> <a href="#ref-for-dom-window-querylocalfonts③">(3)</a>
+    <li><a href="#ref-for-dom-window-querylocalfonts④">7.1. Font Names</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fontdata">
