@@ -7,7 +7,7 @@
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="529ba1b12a7114c1fa0a37b172a106b0145c4835" name="document-revision">
+  <meta content="b4876d9c61e5c291df0b74a45c8ecc568306da3e" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -610,7 +610,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-22">22 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-25">25 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -905,7 +905,7 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
      <li data-md>
       <p>The <dfn class="dfn-paneled" data-dfn-for="font representation" data-dfn-type="dfn" data-noexport id="font-representation-data-bytes">data bytes</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence">byte sequence</a> containing a serialization of the font.</p>
      <li data-md>
-      <p>The <dfn class="dfn-paneled" data-dfn-for="font representation" data-dfn-type="dfn" data-noexport id="font-representation-postscript-name">PostScript name</dfn>, which is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString">DOMString</a></code>. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold". This must be a <a data-link-type="dfn" href="#valid-postscript-name" id="ref-for-valid-postscript-name">valid PostScript name</a>.</p>
+      <p>The <dfn class="dfn-paneled" data-dfn-for="font representation" data-dfn-type="dfn" data-noexport id="font-representation-postscript-name">PostScript name</dfn>, which is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString">DOMString</a></code>. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold".</p>
      <li data-md>
       <p>The <dfn class="dfn-paneled" data-dfn-for="font representation" data-dfn-type="dfn" data-noexport id="font-representation-full-name">full name</dfn>, which is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①">DOMString</a></code>. This is usually a human-readable name used to identify the font, e.g. "Optima Bold".</p>
      <li data-md>
@@ -1065,6 +1065,8 @@ U+0025 (%).</p>
          <li data-md>
           <p>Let <var>postscriptName</var> be <var>representation</var>’s <a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name③">PostScript name</a>.</p>
          <li data-md>
+          <p class="assertion">Assert: <var>postscriptName</var> is a <a data-link-type="dfn" href="#valid-postscript-name" id="ref-for-valid-postscript-name">valid PostScript name</a>.</p>
+         <li data-md>
           <p>If <var>options</var>[<code class="idl"><a data-link-type="idl" href="#dom-queryoptions-postscriptnames" id="ref-for-dom-queryoptions-postscriptnames②">"postscriptNames"</a></code>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a> and <var>options</var>[<code class="idl"><a data-link-type="idl" href="#dom-queryoptions-postscriptnames" id="ref-for-dom-queryoptions-postscriptnames③">"postscriptNames"</a></code>] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contain</a> <var>postscriptName</var>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue②">continue</a>.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> a new <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata②">FontData</a></code> instance associated with <var>representation</var> to <var>selectable fonts</var>.</p>
@@ -1114,10 +1116,20 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
 };
 </pre>
    <div>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-postscriptname"><code>postscriptName</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑥">font representation</a>'s <a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name④">PostScript name</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-fullname"><code>fullName</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>'s <a data-link-type="dfn" href="#font-representation-full-name" id="ref-for-font-representation-full-name③">full name</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-family"><code>family</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-family-name" id="ref-for-font-representation-family-name③">family name</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-style"><code>style</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name③">style name</a>.</p>
+    <div class="algorithm" data-algorithm="postscriptName">
+      The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-postscriptname"><code>postscriptName</code></dfn> getter steps are: 
+     <ol>
+      <li data-md>
+       <p>Let <var>postscriptName</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name④">PostScript name</a>.</p>
+      <li data-md>
+       <p class="assertion">Assert: <var>postscriptName</var> is a <a data-link-type="dfn" href="#valid-postscript-name" id="ref-for-valid-postscript-name①">valid PostScript name</a>.</p>
+      <li data-md>
+       <p>Return <var>postscriptName</var>.</p>
+     </ol>
+    </div>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-fullname"><code>fullName</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑥">font representation</a>'s <a data-link-type="dfn" href="#font-representation-full-name" id="ref-for-font-representation-full-name③">full name</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-family"><code>family</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>'s <a data-link-type="dfn" href="#font-representation-family-name" id="ref-for-font-representation-family-name③">family name</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-style"><code>style</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name③">style name</a>.</p>
    </div>
    <div class="domintro note" role="note">
     <dl>
@@ -1137,7 +1149,7 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
       <p>Run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bytes</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①⓪">font representation</a>'s <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes③">data bytes</a>.</p>
+        <p>Let <var>bytes</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes③">data bytes</a>.</p>
        <li data-md>
         <p>Let <var>type</var> be `<code>application/octet-stream</code>`.</p>
        <li data-md>
@@ -1750,7 +1762,7 @@ Jake Archibald</p>
    <ul>
     <li><a href="#ref-for-font-representation">4.1. Font Representation</a>
     <li><a href="#ref-for-font-representation①">4.2. System Fonts</a> <a href="#ref-for-font-representation②">(2)</a> <a href="#ref-for-font-representation③">(3)</a> <a href="#ref-for-font-representation④">(4)</a>
-    <li><a href="#ref-for-font-representation⑤">6.3. The FontData interface</a> <a href="#ref-for-font-representation⑥">(2)</a> <a href="#ref-for-font-representation⑦">(3)</a> <a href="#ref-for-font-representation⑧">(4)</a> <a href="#ref-for-font-representation⑨">(5)</a> <a href="#ref-for-font-representation①⓪">(6)</a>
+    <li><a href="#ref-for-font-representation⑤">6.3. The FontData interface</a> <a href="#ref-for-font-representation⑥">(2)</a> <a href="#ref-for-font-representation⑦">(3)</a> <a href="#ref-for-font-representation⑧">(4)</a> <a href="#ref-for-font-representation⑨">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="font-representation-data-bytes">
@@ -1797,7 +1809,8 @@ Jake Archibald</p>
   <aside class="dfn-panel" data-for="valid-postscript-name">
    <b><a href="#valid-postscript-name">#valid-postscript-name</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-valid-postscript-name">4.1. Font Representation</a>
+    <li><a href="#ref-for-valid-postscript-name">6.2. Font manager</a>
+    <li><a href="#ref-for-valid-postscript-name①">6.3. The FontData interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="system-font">
