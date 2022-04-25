@@ -281,7 +281,7 @@ A <dfn>font representation</dfn> is some concrete representation of a font. Exam
 <div dfn-for="font representation">
 
 * The <dfn>data bytes</dfn>, which is a [=/byte sequence=] containing a serialization of the font.
-* The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold". This must be a [=/valid PostScript name=].
+* The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold".
 * The <dfn>full name</dfn>, which is a {{DOMString}}. This is usually a human-readable name used to identify the font, e.g. "Optima Bold".
 * The <dfn>family name</dfn>, which is a {{DOMString}}. This defines a set of fonts that vary among attributes such as weight and slope, e.g. "Optima"
 * The <dfn>style name</dfn>, which is a {{DOMString}}. This defines the variation of the font within a family, e.g. "Bold".
@@ -462,6 +462,7 @@ The <dfn method for=Window>queryLocalFonts(|options|)</dfn> method steps are:
     1. Let |selectable fonts| be a new [=/list=].
     1. [=list/For each=] font |representation| in |system fonts|, run these steps:
         1. Let |postscriptName| be |representation|'s [=font representation/PostScript name=].
+        1. Assert: |postscriptName| is a [=/valid PostScript name=].
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontData}} instance associated with |representation| to |selectable fonts|.
     1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor|, and let |result| be the result.
@@ -513,7 +514,14 @@ interface FontData {
 
 <div dfn-for="FontData">
 
-The <dfn attribute>postscriptName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/PostScript name=].
+<div algorithm>
+The <dfn attribute>postscriptName</dfn> getter steps are:
+
+1. Let |postscriptName| be [=/this=]'s [=font representation/PostScript name=].
+1. Assert: |postscriptName| is a [=/valid PostScript name=].
+1. Return |postscriptName|.
+
+</div>
 
 The <dfn attribute>fullName</dfn> getter steps are to return [=/this=]'s associated [=/font representation=]'s [=font representation/full name=].
 
