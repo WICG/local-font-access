@@ -614,6 +614,8 @@ User agents could mitigate this in certain cases (e.g. when the permission is de
 
 User agents may also allow the user to select a set of fonts to make available via the API.
 
+When multiple localizations of font names are provided by a font, the user's locale is potentially exposed through the font name.
+
 <!-- ============================================================ -->
 ## Identification ## {#privacy-identification}
 <!-- ============================================================ -->
