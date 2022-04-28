@@ -91,6 +91,8 @@ The API should:
 * Sort any result list by font name to reduce possible fingerprinting entropy bits; e.g. .queryLocalFonts() returns an iterable which will be sorted by given font names
 * Provide access to the raw bytes of the font data. Most uses of this API will be to provide the full font data to existing libraries that only expect to consume entire font files. Providing only access to pre-parsed font table data would require developers to reassemble a blob containing all of the data in order to use such libraries.
 
+Issue: Although Worker support is called as a goal out above, the API as specified is currently only exposed to Window contexts.
+
 <!--
 The ability to uniquely identify a specific font in the case of conflicting names (e.g., Web Font aliases vs. local PostScript font names)
 -->
@@ -287,6 +289,10 @@ A <dfn>font representation</dfn> is some concrete representation of a font. Exam
 * The <dfn>style name</dfn>, which is a {{DOMString}}. This defines the variation of the font within a family, e.g. "Bold".
 
 </div>
+
+<aside class=note>
+The [=/font representation=]'s [=font representation/data bytes=] are generally expected to be the exact byte-by-byte representation of font files on the user's filesystem. UAs aren't expected to normalize the font data, so font representations would not vary across user agents for a given user on a particular OS. The lack of normalization supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font.
+</aside>
 
 A <dfn>valid PostScript name</dfn> is a [=/scalar value string=] with [=string/length=] less than 64 and consisting only of characters in the range U+0021 (!) to U+007E (~) except for the 10 code units
 U+005B ([),
@@ -531,6 +537,8 @@ The <dfn attribute>style</dfn> getter steps are to return [=/this=]'s associated
 
 </div>
 
+Issue: Consider making {{FontData}} [=/serializable objects=] so that the results of {{Window/queryLocalFonts()}} can be passed to Workers.
+
 <div class="domintro note">
 
     : await |blob| = |fontdata| . {{FontData/blob()}}
@@ -605,6 +613,8 @@ This provides several "bits of entropy" to distinguish users.
 User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.
 
 User agents may also allow the user to select a set of fonts to make available via the API.
+
+When multiple localizations of font names are provided by a font, the user's locale is potentially exposed through the font name. User agents should ensure that if a locale is exposed in this way, it's the same locale that's exposed by <code>navigator.{{NavigatorLanguage/language}}</code>.
 
 <!-- ============================================================ -->
 ## Identification ## {#privacy-identification}
