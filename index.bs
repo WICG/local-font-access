@@ -614,7 +614,7 @@ User agents could mitigate this in certain cases (e.g. when the permission is de
 
 User agents may also allow the user to select a set of fonts to make available via the API.
 
-When multiple localizations of font names are provided by a font, the user's locale is potentially exposed through the font name.
+When multiple localizations of font names are provided by a font, the user's locale is potentially exposed through the font name. User agents should ensure that if a locale is exposed in this way, it's the same locale that's exposed by <code>navigator.{{NavigatorLanguage/language}}</code>.
 
 <!-- ============================================================ -->
 ## Identification ## {#privacy-identification}
