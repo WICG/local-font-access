@@ -291,7 +291,7 @@ A <dfn>font representation</dfn> is some concrete representation of a font. Exam
 </div>
 
 <aside class=note>
-The [=/font representation=]'s [=font representation/data bytes=] are generally expected to be the exact byte-by-byte representation of font files on the user's filesystem, and for a given user on a particular OS would not vary across user agents. UAs would not be expected to normalize the font data. This supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font.
+The [=/font representation=]'s [=font representation/data bytes=] are generally expected to be the exact byte-by-byte representation of font files on the user's filesystem. UAs aren't expected to normalize the font data, so font representations would not vary across user agents for a given user on a particular OS. The lack of normalization supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font.
 </aside>
 
 A <dfn>valid PostScript name</dfn> is a [=/scalar value string=] with [=string/length=] less than 64 and consisting only of characters in the range U+0021 (!) to U+007E (~) except for the 10 code units
