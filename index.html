@@ -7,7 +7,7 @@
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="b4876d9c61e5c291df0b74a45c8ecc568306da3e" name="document-revision">
+  <meta content="b30f6bb77d38f16dacd7d97fbebd6a740cb0a20c" name="document-revision">
 <style>
 /* Default ED/WD stylesheets set "both"; not needed for logo floated right */
 div.head h1 { clear: left; }
@@ -610,7 +610,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-25">25 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-28">28 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -764,6 +764,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p>Provide access to the raw bytes of the font data. Most uses of this API will be to provide the full font data to existing libraries that only expect to consume entire font files. Providing only access to pre-parsed font table data would require developers to reassemble a blob containing all of the data in order to use such libraries.</p>
    </ul>
+   <p class="issue" id="issue-3f43aefd"><a class="self-link" href="#issue-3f43aefd"></a> Although Worker support is called as a goal out above, the API as specified is currently only exposed to Window contexts.</p>
    <h2 class="heading settled" data-level="3" id="examples"><span class="secno">3. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
    <p><em>This section is non-normative.</em></p>
    <h3 class="heading settled" data-level="3.1" id="example-enumerate-local-fonts"><span class="secno">3.1. </span><span class="content">Enumerating local fonts</span><a class="self-link" href="#example-enumerate-local-fonts"></a></h3>
@@ -914,6 +915,7 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
       <p>The <dfn class="dfn-paneled" data-dfn-for="font representation" data-dfn-type="dfn" data-noexport id="font-representation-style-name">style name</dfn>, which is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString③">DOMString</a></code>. This defines the variation of the font within a family, e.g. "Bold".</p>
     </ul>
    </div>
+   <aside class="note"> The <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①">font representation</a>'s <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes">data bytes</a> are generally expected to be the exact byte-by-byte representation of font files on the user’s filesystem. UAs aren’t expected to normalize the font data, so font representations would not vary across user agents for a given user on a particular OS. The lack of normalization supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font. </aside>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-postscript-name">valid PostScript name</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#scalar-value-string" id="ref-for-scalar-value-string">scalar value string</a> with <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length">length</a> less than 64 and consisting only of characters in the range U+0021 (!) to U+007E (~) except for the 10 code units
 U+005B ([),
 U+005D (]),
@@ -929,7 +931,7 @@ U+0025 (%).</p>
    <p>Defined in terms of OpenType <a data-link-type="biblio" href="#biblio-opentype">[OPENTYPE]</a> font data:</p>
    <ul>
     <li data-md>
-     <p>The <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes">data bytes</a> are the SFNT <a data-link-type="biblio" href="#biblio-sfnt">[SFNT]</a> serialization of the font.</p>
+     <p>The <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes①">data bytes</a> are the SFNT <a data-link-type="biblio" href="#biblio-sfnt">[SFNT]</a> serialization of the font.</p>
     <li data-md>
      <p>The <a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name">PostScript name</a> is found in the font’s <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 6; if multiple localizations are available, the US English version must be used if provided, or the first localization otherwise.</p>
     <li data-md>
@@ -942,10 +944,10 @@ U+0025 (%).</p>
    <aside class="note"> These name properties are exposed to align with property usage in <a data-link-type="biblio" href="#biblio-css-fonts-4">[CSS-FONTS-4]</a>, e.g. <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-fonts-5/#at-font-face-rule" id="ref-for-at-font-face-rule">@font-face</a>, <a class="property css" data-link-type="property" href="https://drafts.csswg.org/css-fonts-4/#propdef-font-family" id="ref-for-propdef-font-family">font-family</a>, and so on. The <a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name①">PostScript name</a> can be used as a unique key, for example when specifying a font when creating content or matching fonts against existing content. The <a data-link-type="dfn" href="#font-representation-full-name" id="ref-for-font-representation-full-name①">full name</a> or <a data-link-type="dfn" href="#font-representation-family-name" id="ref-for-font-representation-family-name①">family name</a> can be used for user-visible font selection UI, and the <a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name①">style name</a> can be used to provide more specific selections. </aside>
    <h3 class="heading settled" data-level="4.2" id="concept-system-fonts"><span class="secno">4.2. </span><span class="content">System Fonts</span><a class="self-link" href="#concept-system-fonts"></a></h3>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="system-font">system font</dfn> is a font that is available system-wide provided by the operating system.</p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="read as a font representation" data-noexport id="read-as-a-font-representation">read a system font as a font representation</dfn> is to provide a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①">font representation</a> equivalent to the font. This means providing all properties of a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation②">font representation</a>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="read as a font representation" data-noexport id="read-as-a-font-representation">read a system font as a font representation</dfn> is to provide a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation②">font representation</a> equivalent to the font. This means providing all properties of a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation③">font representation</a>:</p>
    <ul>
     <li data-md>
-     <p><a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes①">Data bytes</a>.</p>
+     <p><a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes②">Data bytes</a>.</p>
     <li data-md>
      <p><a data-link-type="dfn" href="#font-representation-postscript-name" id="ref-for-font-representation-postscript-name②">PostScript name</a>, which must be valid.</p>
     <li data-md>
@@ -955,8 +957,8 @@ U+0025 (%).</p>
     <li data-md>
      <p><a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name②">Style name</a>.</p>
    </ul>
-   <p>This operation can fail if providing a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation③">font representation</a> is not possible.</p>
-   <p>A user agent may use any algorithm to provide a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation④">font representation</a> for a <a data-link-type="dfn" href="#system-font" id="ref-for-system-font">system font</a>. In practice, contemporary operating systems and system APIs support fonts that are persisted in SFNT <a data-link-type="biblio" href="#biblio-sfnt">[SFNT]</a> font file formats, such as <a data-link-type="biblio" href="#biblio-opentype">OpenType</a>, <a data-link-type="biblio" href="#biblio-truetype">TrueType</a>, <a data-link-type="biblio" href="#biblio-woff">Web Open Font Format</a>, etc. which satisfy these requirements, as well as the means to efficiently enumerate font collections with these common name properties provided for each font.</p>
+   <p>This operation can fail if providing a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation④">font representation</a> is not possible.</p>
+   <p>A user agent may use any algorithm to provide a <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑤">font representation</a> for a <a data-link-type="dfn" href="#system-font" id="ref-for-system-font">system font</a>. In practice, contemporary operating systems and system APIs support fonts that are persisted in SFNT <a data-link-type="biblio" href="#biblio-sfnt">[SFNT]</a> font file formats, such as <a data-link-type="biblio" href="#biblio-opentype">OpenType</a>, <a data-link-type="biblio" href="#biblio-truetype">TrueType</a>, <a data-link-type="biblio" href="#biblio-woff">Web Open Font Format</a>, etc. which satisfy these requirements, as well as the means to efficiently enumerate font collections with these common name properties provided for each font.</p>
    <div class="algorithm" data-algorithm="get all system font representations">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-all-system-font-representations">get all system font representations</dfn>, run these steps: 
     <ol>
@@ -1087,7 +1089,7 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
    </div>
    <p class="issue" id="issue-285d5db6"><a class="self-link" href="#issue-285d5db6"></a> Move to <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> and sort out permission issues.</p>
    <h3 class="heading settled" data-level="6.3" id="fontdata-interface"><span class="secno">6.3. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata③">FontData</a></code> interface</span><a class="self-link" href="#fontdata-interface"></a></h3>
-   <p>A <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata④">FontData</a></code> provides details about a font face. Each <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑤">FontData</a></code> has an associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑤">font representation</a>.</p>
+   <p>A <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata④">FontData</a></code> provides details about a font face. Each <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑤">FontData</a></code> has an associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑥">font representation</a>.</p>
    <div class="domintro note" role="note">
     <dl>
      <dt data-md><var>fontdata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontdata-postscriptname" id="ref-for-dom-fontdata-postscriptname①">postscriptName</a></code>
@@ -1127,15 +1129,16 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
        <p>Return <var>postscriptName</var>.</p>
      </ol>
     </div>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-fullname"><code>fullName</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑥">font representation</a>'s <a data-link-type="dfn" href="#font-representation-full-name" id="ref-for-font-representation-full-name③">full name</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-family"><code>family</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>'s <a data-link-type="dfn" href="#font-representation-family-name" id="ref-for-font-representation-family-name③">family name</a>.</p>
-    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-style"><code>style</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name③">style name</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-fullname"><code>fullName</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑦">font representation</a>'s <a data-link-type="dfn" href="#font-representation-full-name" id="ref-for-font-representation-full-name③">full name</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-family"><code>family</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑧">font representation</a>'s <a data-link-type="dfn" href="#font-representation-family-name" id="ref-for-font-representation-family-name③">family name</a>.</p>
+    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="FontData" data-dfn-type="attribute" data-export id="dom-fontdata-style"><code>style</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-style-name" id="ref-for-font-representation-style-name③">style name</a>.</p>
    </div>
+   <p class="issue" id="issue-dd57d86d"><a class="self-link" href="#issue-dd57d86d"></a> Consider making <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑥">FontData</a></code> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects" id="ref-for-serializable-objects">serializable objects</a> so that the results of <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts④">queryLocalFonts()</a></code> can be passed to Workers.</p>
    <div class="domintro note" role="note">
     <dl>
      <dt data-md>await <var>blob</var> = <var>fontdata</var> . <code class="idl"><a data-link-type="idl" href="#dom-fontdata-blob" id="ref-for-dom-fontdata-blob①">blob()</a></code>
      <dd data-md>
-      <p>Request the underlying bytes of a font. The result <var>blob</var> contains <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes②">data bytes</a>.</p>
+      <p>Request the underlying bytes of a font. The result <var>blob</var> contains <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes③">data bytes</a>.</p>
     </dl>
    </div>
    <div class="algorithm" data-algorithm="blob()" data-algorithm-for="FontData">
@@ -1149,7 +1152,7 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
       <p>Run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bytes</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation⑨">font representation</a>'s <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes③">data bytes</a>.</p>
+        <p>Let <var>bytes</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s associated <a data-link-type="dfn" href="#font-representation" id="ref-for-font-representation①⓪">font representation</a>'s <a data-link-type="dfn" href="#font-representation-data-bytes" id="ref-for-font-representation-data-bytes④">data bytes</a>.</p>
        <li data-md>
         <p>Let <var>type</var> be `<code>application/octet-stream</code>`.</p>
        <li data-md>
@@ -1167,9 +1170,9 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
    <p class="issue" id="issue-bab84d16"><a class="self-link" href="#issue-bab84d16"></a> Document internationalization considerations other than string localization, e.g. https://github.com/WICG/local-font-access/issues/72, https://github.com/WICG/local-font-access/issues/59, etc.</p>
    <h3 class="heading settled" data-level="7.1" id="i18n-names"><span class="secno">7.1. </span><span class="content">Font Names</span><a class="self-link" href="#i18n-names"></a></h3>
    <p>The `<code>name</code>` table in <a data-link-type="biblio" href="#biblio-opentype">OpenType</a> fonts allows names (family, subfamily, etc) to have multilingual strings, using either platform-specific numeric language identifiers or language-tag strings conforming to <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a>. For example, a font could have family name strings defined for both `<code>en-US</code>` and `<code>zh-Hant-HK</code>`.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑥">FontData</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontdata-postscriptname" id="ref-for-dom-fontdata-postscriptname③">postscriptName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-fullname" id="ref-for-dom-fontdata-fullname②">fullName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-family" id="ref-for-dom-fontdata-family②">family</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontdata-style" id="ref-for-dom-fontdata-style②">style</a></code> are provided by this API simply as strings, using either the US English localization or the <a data-link-type="dfn" href="#user-language" id="ref-for-user-language③">user language</a> localization depending on the name, or the first localization as a fallback.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#fontdata" id="ref-for-fontdata⑦">FontData</a></code> properties <code class="idl"><a data-link-type="idl" href="#dom-fontdata-postscriptname" id="ref-for-dom-fontdata-postscriptname③">postscriptName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-fullname" id="ref-for-dom-fontdata-fullname②">fullName</a></code>, <code class="idl"><a data-link-type="idl" href="#dom-fontdata-family" id="ref-for-dom-fontdata-family②">family</a></code>, and <code class="idl"><a data-link-type="idl" href="#dom-fontdata-style" id="ref-for-dom-fontdata-style②">style</a></code> are provided by this API simply as strings, using either the US English localization or the <a data-link-type="dfn" href="#user-language" id="ref-for-user-language③">user language</a> localization depending on the name, or the first localization as a fallback.</p>
    <p>Web applications that need to provide names in other languages can request and parse the `<code>name</code>` table directly.</p>
-   <p class="issue" id="issue-05afe850"><a class="self-link" href="#issue-05afe850"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts④">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a></p>
+   <p class="issue" id="issue-05afe850"><a class="self-link" href="#issue-05afe850"></a> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts⑤">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a></p>
    <h2 class="heading settled" data-level="8" id="a11y"><span class="secno">8. </span><span class="content">Accessibility considerations</span><a class="self-link" href="#a11y"></a></h2>
    <p>There are no known accessibility impacts of this feature.</p>
    <h2 class="heading settled" data-level="9" id="security"><span class="secno">9. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
@@ -1190,6 +1193,7 @@ User agents may present a yes/no choice instead of a list of choices, and in tha
    <p>This provides several "bits of entropy" to distinguish users.</p>
    <p>User agents could mitigate this in certain cases (e.g. when the permission is denied, or in Private Browsing / "incognito" mode) by providing an enumeration of a fixed set of fonts provided with the user agent.</p>
    <p>User agents may also allow the user to select a set of fonts to make available via the API.</p>
+   <p>When multiple localizations of font names are provided by a font, the user’s locale is potentially exposed through the font name. User agents should ensure that if a locale is exposed in this way, it’s the same locale that’s exposed by <code>navigator.<code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language" id="ref-for-dom-navigator-language">language</a></code></code>.</p>
    <h3 class="heading settled" data-level="10.2" id="privacy-identification"><span class="secno">10.2. </span><span class="content">Identification</span><a class="self-link" href="#privacy-identification"></a></h3>
    <p>Users from a particular organization could have specific fonts installed. Employees of "Example Co." could all have an "Example Corporate Typeface" installed by their system administrator, which would allow distinguishing users of a site as employees.</p>
    <p>There are services which create fonts based on handwriting samples. If these fonts are given names including personally identifiable information (e.g. "Alice’s Handwriting Font"), then personally identifiable information would be made available. This may not be apparent to users if the information is included as properties within the font, not just the font name.</p>
@@ -1362,6 +1366,12 @@ Jake Archibald</p>
     <li><a href="#ref-for-in-parallel①">6.3. The FontData interface</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-navigator-language">
+   <a href="https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language">https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-navigator-language">10.1. Fingerprinting</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin-opaque">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque">https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque</a><b>Referenced in:</b>
    <ul>
@@ -1398,6 +1408,12 @@ Jake Archibald</p>
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-relevant-settings-object">6.2. Font manager</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-serializable-objects">
+   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects">https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-serializable-objects">6.3. The FontData interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-task-source">
@@ -1629,12 +1645,14 @@ Jake Archibald</p>
      <li><span class="dfn-paneled" id="term-for-concept-document-window">associated document</span>
      <li><span class="dfn-paneled" id="term-for-the-iframe-element">iframe</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
+     <li><span class="dfn-paneled" id="term-for-dom-navigator-language">language</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-opaque">opaque origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-queue-a-task">queue a task</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global">relevant global object</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-realm">relevant realm</span>
      <li><span class="dfn-paneled" id="term-for-relevant-settings-object">relevant settings object</span>
+     <li><span class="dfn-paneled" id="term-for-serializable-objects">serializable objects</span>
      <li><span class="dfn-paneled" id="term-for-task-source">task source</span>
      <li><span class="dfn-paneled" id="term-for-transient-activation">transient activation</span>
     </ul>
@@ -1744,9 +1762,11 @@ Jake Archibald</p>
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
+   <div class="issue"> Although Worker support is called as a goal out above, the API as specified is currently only exposed to Window contexts. <a class="issue-return" href="#issue-3f43aefd" title="Jump to section">↵</a></div>
    <div class="issue"> File bug against <a data-link-type="biblio" href="#biblio-permissions">[PERMISSIONS]</a>, to add to the registry. <a class="issue-return" href="#issue-9b4d7999" title="Jump to section">↵</a></div>
    <div class="issue"> File bug against <a data-link-type="biblio" href="#biblio-permissions-policy">[PERMISSIONS-POLICY]</a> to add policy to its <a href="https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md">list</a>. <a class="issue-return" href="#issue-3575f1be" title="Jump to section">↵</a></div>
    <div class="issue"> Move to <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> and sort out permission issues. <a class="issue-return" href="#issue-285d5db6" title="Jump to section">↵</a></div>
+   <div class="issue"> Consider making <code class="idl"><a data-link-type="idl" href="#fontdata">FontData</a></code> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects">serializable objects</a> so that the results of <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts">queryLocalFonts()</a></code> can be passed to Workers. <a class="issue-return" href="#issue-dd57d86d" title="Jump to section">↵</a></div>
    <div class="issue"> Document internationalization considerations other than string localization, e.g. https://github.com/WICG/local-font-access/issues/72, https://github.com/WICG/local-font-access/issues/59, etc. <a class="issue-return" href="#issue-bab84d16" title="Jump to section">↵</a></div>
    <div class="issue"> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a> <a class="issue-return" href="#issue-05afe850" title="Jump to section">↵</a></div>
   </div>
@@ -1760,17 +1780,17 @@ Jake Archibald</p>
   <aside class="dfn-panel" data-for="font-representation">
    <b><a href="#font-representation">#font-representation</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-font-representation">4.1. Font Representation</a>
-    <li><a href="#ref-for-font-representation①">4.2. System Fonts</a> <a href="#ref-for-font-representation②">(2)</a> <a href="#ref-for-font-representation③">(3)</a> <a href="#ref-for-font-representation④">(4)</a>
-    <li><a href="#ref-for-font-representation⑤">6.3. The FontData interface</a> <a href="#ref-for-font-representation⑥">(2)</a> <a href="#ref-for-font-representation⑦">(3)</a> <a href="#ref-for-font-representation⑧">(4)</a> <a href="#ref-for-font-representation⑨">(5)</a>
+    <li><a href="#ref-for-font-representation">4.1. Font Representation</a> <a href="#ref-for-font-representation①">(2)</a>
+    <li><a href="#ref-for-font-representation②">4.2. System Fonts</a> <a href="#ref-for-font-representation③">(2)</a> <a href="#ref-for-font-representation④">(3)</a> <a href="#ref-for-font-representation⑤">(4)</a>
+    <li><a href="#ref-for-font-representation⑥">6.3. The FontData interface</a> <a href="#ref-for-font-representation⑦">(2)</a> <a href="#ref-for-font-representation⑧">(3)</a> <a href="#ref-for-font-representation⑨">(4)</a> <a href="#ref-for-font-representation①⓪">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="font-representation-data-bytes">
    <b><a href="#font-representation-data-bytes">#font-representation-data-bytes</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-font-representation-data-bytes">4.1. Font Representation</a>
-    <li><a href="#ref-for-font-representation-data-bytes①">4.2. System Fonts</a>
-    <li><a href="#ref-for-font-representation-data-bytes②">6.3. The FontData interface</a> <a href="#ref-for-font-representation-data-bytes③">(2)</a>
+    <li><a href="#ref-for-font-representation-data-bytes">4.1. Font Representation</a> <a href="#ref-for-font-representation-data-bytes①">(2)</a>
+    <li><a href="#ref-for-font-representation-data-bytes②">4.2. System Fonts</a>
+    <li><a href="#ref-for-font-representation-data-bytes③">6.3. The FontData interface</a> <a href="#ref-for-font-representation-data-bytes④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="font-representation-postscript-name">
@@ -1867,15 +1887,16 @@ Jake Archibald</p>
    <ul>
     <li><a href="#ref-for-dom-window-querylocalfonts">5.1. Permissions</a>
     <li><a href="#ref-for-dom-window-querylocalfonts①">6.2. Font manager</a> <a href="#ref-for-dom-window-querylocalfonts②">(2)</a> <a href="#ref-for-dom-window-querylocalfonts③">(3)</a>
-    <li><a href="#ref-for-dom-window-querylocalfonts④">7.1. Font Names</a>
+    <li><a href="#ref-for-dom-window-querylocalfonts④">6.3. The FontData interface</a>
+    <li><a href="#ref-for-dom-window-querylocalfonts⑤">7.1. Font Names</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fontdata">
    <b><a href="#fontdata">#fontdata</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fontdata">6.2. Font manager</a> <a href="#ref-for-fontdata①">(2)</a> <a href="#ref-for-fontdata②">(3)</a>
-    <li><a href="#ref-for-fontdata③">6.3. The FontData interface</a> <a href="#ref-for-fontdata④">(2)</a> <a href="#ref-for-fontdata⑤">(3)</a>
-    <li><a href="#ref-for-fontdata⑥">7.1. Font Names</a>
+    <li><a href="#ref-for-fontdata③">6.3. The FontData interface</a> <a href="#ref-for-fontdata④">(2)</a> <a href="#ref-for-fontdata⑤">(3)</a> <a href="#ref-for-fontdata⑥">(4)</a>
+    <li><a href="#ref-for-fontdata⑦">7.1. Font Names</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-fontdata-postscriptname">
