@@ -297,7 +297,7 @@ The [=/font representation=]'s [=font representation/data bytes=] are generally 
 </div>
 
 <aside class=note>
-As an example, the [=/font representation=] of an OpenType [[!OPENTYPE]] font would be as follows:
+This specification doesn't precisely define the values of the above fields for any particular font format, so that differences between operating systems don't make UAs non-compliant. However, for an OpenType [[!OPENTYPE]] font the following values would be sensible:
 * The [=font representation/data bytes=] are the SFNT [[!SFNT]] serialization of the font.
 * The [=font representation/PostScript name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 6; if multiple localizations are available, the US English version is used if provided, or the first localization otherwise.
 * The [=font representation/full name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 4; if multiple localizations are available, the [=/user language=] version is used if provided, or the first localization otherwise.
