@@ -644,10 +644,11 @@ We'd like to acknowledge the contributions of:
 Special thanks (again!) to Tab Atkins, Jr. for creating and maintaining [Bikeshed](https://github.com/tabatkins/bikeshed), the specification authoring tool used to create this document.
 
 And thanks to
+Anne van Kesteren,
 Chase Phillips,
 Domenic Denicola,
 Dominik Röttsches,
-Igor Kopylov, and
-Jake Archibald
-
+Igor Kopylov,
+Jake Archibald, and
+Jeffrey Yasskin
 for suggestions, reviews, and other feedback.
