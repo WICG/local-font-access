@@ -473,7 +473,7 @@ The <dfn method for=Window>queryLocalFonts(|options|)</dfn> method steps are:
         1. Assert: |postscriptName| is a [=/valid PostScript name=].
         1. If |options|[{{QueryOptions/"postscriptNames"}}] [=map/exists=] and |options|[{{QueryOptions/"postscriptNames"}}] does not [=list/contain=] |postscriptName|, then [=iteration/continue=].
         1. [=list/Append=] a new {{FontData}} instance associated with |representation| to |selectable fonts|.
-    1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor|, and let |result| be the result.
+    1. [=/Prompt the user to choose=] one or more items from |selectable fonts|, with |descriptor| and <var ignore>allowMultiple</var> set to true, and let |result| be the result.
         User agents may present a yes/no choice instead of a list of choices, and in that case they should set |result| to |selectable fonts|.
     1. If |result| is {{PermissionState/"denied"}}, then [=/reject=] |promise| with a "{{NotAllowedError}}" {{DOMException}}, and abort these steps.
     1. Sort |result| in [=list/sort in ascending order|ascending order=] by using {{FontData/postscriptName}} as the sort key and store the result as |result|.
