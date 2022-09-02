@@ -7,8 +7,10 @@ Group: WICG
 ED: https://wicg.github.io/local-font-access/
 Repository: WICG/local-font-access
 Abstract: This specification documents web browser support for allowing users to grant web sites access to the full set of available system fonts for enumeration, and access to the raw data of fonts, allowing for more detailed custom text rendering.
-Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com
+Editor: Joshua Bell, Google Inc. https://google.com, jsbell@google.com, w3cid 61302
 Former Editor: Emil A. Eklund
+Former Editor: Alex Russell
+Former Editor: Olivier Yiptong
 Assume Explicit For: yes
 Markup Shorthands: markdown yes, css yes
 Complain About: accidental-2119 yes, missing-example-ids yes
