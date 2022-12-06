@@ -399,9 +399,6 @@ else
 
 This specification defines a [=/policy-controlled feature=] identified by the string <dfn for=PermissionPolicy enum-value>"local-fonts"</dfn>. Its [=/default allowlist=] is `'self'`.
 
-Issue: File bug against [[PERMISSIONS-POLICY]] to add policy to its [list](https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md).
-
-
 <div class=note>
   The [=/default allowlist=] of `'self'` allows usage of this feature on same-origin nested frames by default but prevents access by third-party content.
 
