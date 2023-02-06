@@ -395,10 +395,10 @@ else
 ## Permissions policy ## {#permissions-policy}
 <!-- ============================================================ -->
 
-This specification defines a [=/policy-controlled feature=] identified by the string <dfn for=PermissionPolicy enum-value>"local-fonts"</dfn>. Its [=/default allowlist=] is `'self'`.
+This specification defines a [=/policy-controlled feature=] identified by the string <dfn for=PermissionPolicy enum-value>"local-fonts"</dfn>. Its [=policy-controlled feature/default allowlist=] is `'self'`.
 
 <div class=note>
-  The [=/default allowlist=] of `'self'` allows usage of this feature on same-origin nested frames by default but prevents access by third-party content.
+  The [=policy-controlled feature/default allowlist=] of `'self'` allows usage of this feature on same-origin nested frames by default but prevents access by third-party content.
 
   Third-party usage can be selectively enabled by adding the `allow="local-fonts"` attribute to an <{iframe}> element:
 
