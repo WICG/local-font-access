@@ -293,9 +293,7 @@ A <dfn>font representation</dfn> is some concrete representation of a font. Exam
 
 * The <dfn>data bytes</dfn>, which is a [=/byte sequence=] containing a serialization of the font.
 
-<aside class=note>
-The [=/font representation=]'s [=font representation/data bytes=] are generally expected to be the exact byte-by-byte representation of font files on the user's filesystem. UAs aren't expected to normalize the font data, so font representations would not vary across user agents for a given user on a particular OS. The lack of normalization supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font.
-</aside>
+note: The [=/font representation=]'s [=font representation/data bytes=] are generally expected to be the exact byte-by-byte representation of font files on the user's filesystem. UAs aren't expected to normalize the font data, so font representations would not vary across user agents for a given user on a particular OS. The lack of normalization supports the goal of enabling web applications that perform text rendering for content creation with the full fidelity of the font.
 
 
 * The <dfn>PostScript name</dfn>, which is a {{DOMString}}. This is commonly used as a unique identifier for the font during font loading, e.g. "Optima-Bold".
@@ -305,7 +303,8 @@ The [=/font representation=]'s [=font representation/data bytes=] are generally 
 
 </div>
 
-<aside class=note>
+<div class=note>
+<span class="marker">note:</span>
 This specification doesn't precisely define the values of the above fields for any particular font format, so that differences between operating systems don't make UAs non-compliant. However, for an OpenType [[!OPENTYPE]] font the following values would be sensible:
 * The [=font representation/data bytes=] are the SFNT [[!SFNT]] serialization of the font.
 * The [=font representation/PostScript name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 6; if multiple localizations are available, the US English version is used if provided, or the first localization otherwise.
@@ -314,7 +313,7 @@ This specification doesn't precisely define the values of the above fields for a
 * The [=font representation/style name=] is found in the font's <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name">name table</a>, in the name record with nameID = 2; if multiple localizations are available, the [=/user language=] version is used if provided, or the first localization otherwise.
 
 These name properties are exposed to align with property usage in [[CSS-FONTS-4]], e.g. ''@font-face'', 'font-family', and so on. The [=font representation/PostScript name=] can be used as a unique key, for example when specifying a font when creating content or matching fonts against existing content. The [=font representation/full name=] or [=font representation/family name=] can be used for user-visible font selection UI, and the [=font representation/style name=] can be used to provide more specific selections.
-</aside>
+</div>
 
 A <dfn>valid PostScript name</dfn> is a [=/scalar value string=] with [=string/length=] less than 64 and consisting only of characters in the range U+0021 (!) to U+007E (~) except for the 10 code units
 U+005B ([),
@@ -328,9 +327,7 @@ U+003E (&gt;),
 U+002F (/), and
 U+0025 (%).
 
-<aside class=note>
-This is intended to match the requirements for <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name#name-ids">nameID = 6</a> in [[!OPENTYPE]].
-</aside>
+note: This is intended to match the requirements for <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/name#name-ids">nameID = 6</a> in [[!OPENTYPE]].
 
 
 <!-- ============================================================ -->
@@ -398,6 +395,7 @@ else
 This specification defines a [=/policy-controlled feature=] identified by the string <dfn for=PermissionPolicy enum-value>"local-fonts"</dfn>. Its [=policy-controlled feature/default allowlist=] is `'self'`.
 
 <div class=note>
+  <span class="marker">note:</span>
   The [=policy-controlled feature/default allowlist=] of `'self'` allows usage of this feature on same-origin nested frames by default but prevents access by third-party content.
 
   Third-party usage can be selectively enabled by adding the `allow="local-fonts"` attribute to an <{iframe}> element:
