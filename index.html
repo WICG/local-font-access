@@ -7,7 +7,7 @@
   <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="2c8d5e1e8eab39e1cf8a3bc8b0d97c3348809ea6" name="document-revision">
+  <meta content="8fa5a6882c4919aa8e30fd153475b75e5c2da841" name="document-revision">
 <style>
 .domintro::before {
     content: 'For web developers (non-normative)';
@@ -692,7 +692,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-30">30 May 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-31">31 May 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -858,7 +858,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p><em>This section is non-normative.</em></p>
    <h3 class="heading settled" data-level="3.1" id="example-enumerate-local-fonts"><span class="secno">3.1. </span><span class="content">Enumerating local fonts</span><a class="self-link" href="#example-enumerate-local-fonts"></a></h3>
    <p>The API allows script to enumerate local fonts, including properties about each font.</p>
-   <aside class="example" id="example-async-query">
+   <div class="example" id="example-async-query">
     <a class="self-link" href="#example-async-query"></a> The following code queries the available local fonts, and logs the names and metrics of each to the console. 
 <pre class="language-js highlight">showLocalFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>function</c-><c- p>()</c-> <c- p>{</c->
   <c- k>try</c-> <c- p>{</c->
@@ -876,10 +876,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <c- p>}</c->
 <c- p>};</c->
 </pre>
-   </aside>
+   </div>
    <h3 class="heading settled" data-level="3.2" id="example-style-with-local-fonts"><span class="secno">3.2. </span><span class="content">Styling with local fonts</span><a class="self-link" href="#example-style-with-local-fonts"></a></h3>
    <p>Advanced creative tools can offer the ability to style text using all available local fonts. In this case, getting access to the local font name allows the user to select from a richer set of choices:</p>
-   <aside class="example" id="example-query-build-ui">
+   <div class="example" id="example-query-build-ui">
     <a class="self-link" href="#example-query-build-ui"></a> 
     <p>The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.</p>
 <pre class="language-js highlight">useLocalFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>function</c-><c- p>()</c-> <c- p>{</c->
@@ -926,10 +926,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <c- p>}</c->
 <c- p>};</c->
 </pre>
-   </aside>
+   </div>
    <h3 class="heading settled" data-level="3.3" id="example-accessing-font-data"><span class="secno">3.3. </span><span class="content">Accessing font data</span><a class="self-link" href="#example-accessing-font-data"></a></h3>
    <p>The API allows script to request font data.</p>
-   <aside class="example" id="example-font-data">
+   <div class="example" id="example-font-data">
     <a class="self-link" href="#example-font-data"></a> The following code queries the available local fonts, and logs details about each to the console. 
     <p>Here we use enumeration to access specific local font data; we can use this to parse out specific tables or feed it into, e.g., WASM version of <a href="https://www.freedesktop.org/wiki/Software/HarfBuzz/">HarfBuzz</a> or <a href="https://www.freetype.org/">Freetype</a>:</p>
 <pre class="language-js highlight">useLocalFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>function</c-><c- p>()</c-> <c- p>{</c->
@@ -964,11 +964,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 <c- p>};</c->
 </pre>
     <p>Parsing font files in more detail, for example enumerating the contained tables, is beyond the scope of this specification.</p>
-   </aside>
+   </div>
    <h3 class="heading settled" data-level="3.4" id="example-requesting-specific-fonts"><span class="secno">3.4. </span><span class="content">Requesting specific fonts</span><a class="self-link" href="#example-requesting-specific-fonts"></a></h3>
    <p>In some cases, a web application may wish to request access to specific fonts. For example, it may be presenting previously authored content that embeds font names. The <code>queryLocalFonts()</code> call takes a <code>postscriptNames</code> option that scopes the request to fonts identified by PostScript names. Only fonts exactly matching the names in the list will be returned.</p>
    <p>User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.</p>
-   <aside class="example" id="example-specific-fonts">
+   <div class="example" id="example-specific-fonts">
     <a class="self-link" href="#example-specific-fonts"></a> 
 <pre class="language-js highlight"><c- c1>// User activation is needed.</c->
 requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>function</c-><c- p>()</c-> <c- p>{</c->
@@ -985,7 +985,7 @@ requestFontsButton<c- p>.</c->onclick <c- o>=</c-> <c- k>async</c-> <c- a>functi
   <c- p>}</c->
 <c- p>};</c->
 </pre>
-   </aside>
+   </div>
    <h2 class="heading settled" data-level="4" id="concepts"><span class="secno">4. </span><span class="content">Concepts</span><a class="self-link" href="#concepts"></a></h2>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="user-language">user language</dfn> is a valid BCP 47 language tag representing either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/system-state.html#a-plausible-language" id="ref-for-a-plausible-language">a plausible language</a> or the user’s most preferred language. <a data-link-type="biblio" href="#biblio-bcp47" title="Tags for Identifying Languages">[BCP47]</a></p>
    <h3 class="heading settled" data-level="4.1" id="concept-font-representation"><span class="secno">4.1. </span><span class="content">Font Representation</span><a class="self-link" href="#concept-font-representation"></a></h3>
@@ -1078,7 +1078,7 @@ U+0025 (%).</p>
    <h3 class="heading settled" data-level="5.1" id="permissions"><span class="secno">5.1. </span><span class="content">Permissions</span><a class="self-link" href="#permissions"></a></h3>
    <p>The Local Font Access API is a <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-default-powerful-feature" id="ref-for-dfn-default-powerful-feature">default powerful feature</a> that is identified by the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-name" id="ref-for-dfn-name">name</a> "<dfn class="dfn-paneled idl-code" data-dfn-type="permission" data-export id="permissiondef-local-fonts"><code>local-fonts</code></dfn>".</p>
    <p>When the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts">queryLocalFonts()</a></code> API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".</p>
-   <aside class="example" id="example-request-permission">
+   <div class="example" id="example-request-permission">
     <a class="self-link" href="#example-request-permission"></a> Permission to enumerate local fonts can be queried using the <code>navigator.permissions</code> API: 
 <pre class="language-js highlight"><c- c1>// This just queries the existing state of the permission, it does not change it.</c->
 <c- a>const</c-> status <c- o>=</c-> <c- k>await</c-> navigator<c- p>.</c->permissions<c- p>.</c->query<c- p>({</c-> name<c- o>:</c-> <c- u>"local-fonts"</c-> <c- p>});</c->
@@ -1089,7 +1089,7 @@ U+0025 (%).</p>
 <c- k>else</c->
   console<c- p>.</c->log<c- p>(</c-><c- u>"permission was denied 👎"</c-><c- p>);</c->
 </pre>
-   </aside>
+   </div>
    <h3 class="heading settled" data-level="5.2" id="permissions-policy"><span class="secno">5.2. </span><span class="content">Permissions policy</span><a class="self-link" href="#permissions-policy"></a></h3>
    <p>This specification defines a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature">policy-controlled feature</a> identified by the string <dfn class="dfn-paneled idl-code" data-dfn-for="PermissionPolicy" data-dfn-type="enum-value" data-export id="dom-permissionpolicy-local-fonts"><code>"local-fonts"</code></dfn>. Its <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist" id="ref-for-policy-controlled-feature-default-allowlist">default allowlist</a> is <code>'self'</code>.</p>
    <div class="note" role="note">
