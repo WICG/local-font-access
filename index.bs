@@ -120,7 +120,7 @@ The ability to uniquely identify a specific font in the case of conflicting name
 
 The API allows script to enumerate local fonts, including properties about each font.
 
-<aside class=example id=example-async-query>
+<div class=example id=example-async-query>
 The following code queries the available local fonts, and logs the names and metrics of each to the console.
 
 ```js
@@ -140,7 +140,7 @@ showLocalFontsButton.onclick = async function() {
   }
 };
 ```
-</aside>
+</div>
 
 <!-- ============================================================ -->
 ## Styling with local fonts ## {#example-style-with-local-fonts}
@@ -148,7 +148,7 @@ showLocalFontsButton.onclick = async function() {
 
 Advanced creative tools can offer the ability to style text using all available local fonts. In this case, getting access to the local font name allows the user to select from a richer set of choices:
 
-<aside class=example id=example-query-build-ui>
+<div class=example id=example-query-build-ui>
 
 The following code populates a drop-down selection form element with the available local fonts, and could be used as part of the user interface for an editing application.
 
@@ -197,7 +197,7 @@ useLocalFontsButton.onclick = async function() {
   }
 };
 ```
-</aside>
+</div>
 
 
 <!-- ============================================================ -->
@@ -206,7 +206,7 @@ useLocalFontsButton.onclick = async function() {
 
 The API allows script to request font data.
 
-<aside class=example id=example-font-data>
+<div class=example id=example-font-data>
 The following code queries the available local fonts, and logs details about each to the console.
 
 Here we use enumeration to access specific local font data; we can use this to parse out specific tables or feed it into, e.g., WASM version of [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/) or [Freetype](https://www.freetype.org/):
@@ -245,7 +245,7 @@ useLocalFontsButton.onclick = async function() {
 ```
 
 Parsing font files in more detail, for example enumerating the contained tables, is beyond the scope of this specification.
-</aside>
+</div>
 
 
 <!-- ============================================================ -->
@@ -256,7 +256,7 @@ In some cases, a web application may wish to request access to specific fonts. F
 
 User agents may provide a different user interface to support this. For example, if the fingerprinting risk is deemed minimal, the request may be satisfied without prompting the user for permission. Alternately, a picker could be shown with only the requested fonts included.
 
-<aside class=example id=example-specific-fonts>
+<div class=example id=example-specific-fonts>
 
 ```js
 // User activation is needed.
@@ -275,7 +275,7 @@ requestFontsButton.onclick = async function() {
 };
 ```
 
-</aside>
+</div>
 
 <!-- ============================================================ -->
 # Concepts # {#concepts}
@@ -373,7 +373,7 @@ The Local Font Access API is a [=/default powerful feature=] that is identified 
 
 When the {{Window/queryLocalFonts()}} API is invoked, the user agent may present a list of font choices, a yes/no choice, or other interface options. The user agent should present the results of the choice in the permission in an appropriate way. For example, if the user has selected a set of fonts to expose to the site and further API calls will return the same set of fonts, the permission state could be "granted". If the user will be prompted again, the permission state could be "prompt".
 
-<aside class=example id=example-request-permission>
+<div class=example id=example-request-permission>
 Permission to enumerate local fonts can be queried using the `navigator.permissions` API:
 
 ```js
@@ -386,7 +386,7 @@ else if (status.state === "prompt")
 else
   console.log("permission was denied 👎");
 ```
-</aside>
+</div>
 
 <!-- ============================================================ -->
 ## Permissions policy ## {#permissions-policy}
