@@ -130,13 +130,13 @@ showLocalFontsButton.onclick = async function() {
 
     array.forEach(font => {
       console.log(font.postscriptName);
-      console.log(\` full name: ${font.fullName}\`);
-      console.log(\` family: ${font.family}\`);
-      console.log(\` style: ${font.style}\`);
+      console.log(` full name: ${font.fullName}`);
+      console.log(` family: ${font.family}`);
+      console.log(` style: ${font.style}`);
     });
    } catch(e) {
     // Handle error, e.g. user cancelled the operation.
-    console.warn(\`Local font access not available: ${e.message}\`);
+    console.warn(`Local font access not available: ${e.message}`);
   }
 };
 ```
@@ -171,11 +171,11 @@ useLocalFontsButton.onclick = async function() {
       const postscriptName = fontSelect.value;
       console.log("selected:", postscriptName);
       // An example of styling using @font-face src: local matching.
-      textStyle.textContent = \`
+      textStyle.textContent = `
         @font-face {
           font-family: "dynamic-font";
           src: local("${postscriptName}");
-        }\`;
+        }`;
     };
 
     // Populate the list with the available fonts.
@@ -193,7 +193,7 @@ useLocalFontsButton.onclick = async function() {
     document.body.appendChild(fontSelect);
   } catch(e) {
     // Handle error, e.g. user cancelled the operation.
-    console.warn(\`Local font access not available: ${e.message}\`);
+    console.warn(`Local font access not available: ${e.message}`);
   }
 };
 ```
@@ -235,11 +235,11 @@ useLocalFontsButton.onclick = async function() {
           outlineFormat = "cff";
           break;
       }
-      console.log(\`${font.fullName} outline format: ${outlineFormat}\`);
+      console.log(`${font.fullName} outline format: ${outlineFormat}`);
     }
   } catch(e) {
     // Handle error. It could be a permission error.
-    console.warn(\`Local font access not available: ${e.message}\`);
+    console.warn(`Local font access not available: ${e.message}`);
   }
 };
 ```
@@ -265,12 +265,12 @@ requestFontsButton.onclick = async function() {
     const array = await self.queryLocalFonts({postscriptNames: ['Verdana', 'Verdana-Bold', 'Verdana-Italic']});
 
     array.forEach(font => {
-      console.log(\`Access granted for ${font.postscriptName}\`);
+      console.log(`Access granted for ${font.postscriptName}`);
     });
 
   } catch(e) {
     // Handle error. It could be a permission error.
-    console.warn(\`Local font access not available: ${e.message}\`);
+    console.warn(`Local font access not available: ${e.message}`);
   }
 };
 ```
