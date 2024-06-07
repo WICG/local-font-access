@@ -4,10 +4,12 @@
   <title>Local Font Access API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version b06c00b8e, updated Tue Jul 11 13:41:16 2023 -0700" name="generator">
+  <meta content="Bikeshed version 4afc1fdf9, updated Tue May 28 15:43:17 2024 -0700" name="generator">
   <link href="https://wicg.github.io/local-font-access/" rel="canonical">
   <link href="logo-font-enumeration.svg" rel="icon">
-  <meta content="b2f189d6c7ccb304ef9504d6e70752b184520ed1" name="document-revision">
+  <meta content="f54b2b7b7e560d1f12220495b115abec39ccba53" name="revision">
+  <meta content="dark light" name="color-scheme">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
 .domintro::before {
     content: 'For web developers (non-normative)';
@@ -102,7 +104,6 @@ pre .property::before, pre .property::after {
 }
 </style>
 <style>/* Boilerplate: style-colors */
-
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
 :root {
     color-scheme: light dark;
@@ -356,11 +357,15 @@ figcaption:not(.no-marker)::before {
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
+    --dfnpanel-target-bg: #ffc;
+    --dfnpanel-target-outline: orange;
 }
 @media (prefers-color-scheme: dark) {
     :root {
         --dfnpanel-bg: #222;
         --dfnpanel-text: var(--text);
+        --dfnpanel-target-bg: #333;
+        --dfnpanel-target-outline: silver;
     }
 }
 .dfn-panel {
@@ -383,11 +388,13 @@ figcaption:not(.no-marker)::before {
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel a:focus {
+    outline: 5px auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+}
 .dfn-panel > b + b { margin-top: 0.25em; }
 .dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
 .dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
     max-width: calc(300px - 1.5em - 1em);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -396,67 +403,84 @@ figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
-    left: .5em;
+    left: 8px;
     bottom: 2em;
     margin: 0 auto;
     max-width: calc(100vw - 1.5em - .4em - .5em);
     max-height: 30vh;
+    transition: left 1s ease-out, bottom 1s ease-out;
 }
 
-.dfn-paneled[role="button"] { cursor: pointer; }
+.dfn-panel .link-item:hover {
+    text-decoration: underline;
+}
+.dfn-panel .link-item .copy-icon {
+    opacity: 0;
+}
+.dfn-panel .link-item:hover .copy-icon,
+.dfn-panel .link-item .copy-icon:focus {
+    opacity: 1;
+}
+
+.dfn-panel .copy-icon {
+    display: inline-block;
+    margin-right: 0.5em;
+    width: 0.85em;
+    height: 1em;
+    border-radius: 3px;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.dfn-panel .copy-icon .icon {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.dfn-panel .copy-icon .icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #ccc;
+    opacity: 0.25;
+    transform: translate(3px, -3px);
+}
+
+.dfn-panel .copy-icon:active .icon::before {
+    opacity: 1;
+}
+
+.dfn-paneled[role="button"] { cursor: help; }
+
+.highlighted {
+    animation: target-fade 3s;
+}
+
+@keyframes target-fade {
+    from {
+        background-color: var(--dfnpanel-target-bg);
+        outline: 5px solid var(--dfnpanel-target-outline);
+    }
+    to {
+        color: var(--a-normal-text);
+        background-color: transparent;
+        outline: transparent;
+    }
+}
 </style>
-<style>/* Boilerplate: style-dfn-panel */
-:root {
-    --dfnpanel-bg: #ddd;
-    --dfnpanel-text: var(--text);
+<style>/* Boilerplate: style-idl-highlighting */
+pre.idl.highlight {
+    background: var(--borderedblock-bg, var(--def-bg));
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --dfnpanel-bg: #222;
-        --dfnpanel-text: var(--text);
-    }
-}
-.dfn-panel {
-    position: absolute;
-    z-index: 35;
-    width: 20em;
-    width: 300px;
-    height: auto;
-    max-height: 500px;
-    overflow: auto;
-    padding: 0.5em 0.75em;
-    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-    background: var(--dfnpanel-bg);
-    color: var(--dfnpanel-text);
-    border: outset 0.2em;
-    white-space: normal; /* in case it's moved into a pre */
-}
-.dfn-panel:not(.on) { display: none; }
-.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-.dfn-panel > b { display: block; }
-.dfn-panel a { color: var(--dfnpanel-text); }
-.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-.dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
-.dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
-    max-width: calc(300px - 1.5em - 1em);
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dfn-panel.activated {
-    display: inline-block;
-    position: fixed;
-    left: .5em;
-    bottom: 2em;
-    margin: 0 auto;
-    max-width: calc(100vw - 1.5em - .4em - .5em);
-    max-height: 30vh;
-}
-
-.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* Boilerplate: style-issues */
 a[href].issue-return {
@@ -477,8 +501,40 @@ a[href].issue-return {
     margin-bottom: 0;
 }
 </style>
-<style>/* Boilerplate: style-selflinks */
+<style>/* Boilerplate: style-ref-hints */
+:root {
+    --ref-hint-bg: #ddd;
+    --ref-hint-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ref-hint-bg: #222;
+        --ref-hint-text: var(--text);
+    }
+}
 
+.ref-hint {
+    display: inline-block;
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.5em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--ref-hint-bg);
+    color: var(--ref-hint-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+
+.ref-hint * { margin: 0; padding: 0; text-indent: 0; }
+
+.ref-hint ul { padding: 0 0 0 1em; list-style: none; }
+</style>
+<style>/* Boilerplate: style-selflinks */
 :root {
     --selflink-text: white;
     --selflink-bg: gray;
@@ -538,14 +594,6 @@ a.self-link::before            { content: "¶"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
 <style>/* Boilerplate: style-syntax-highlighting */
-
-            pre.idl.highlight {
-                background: var(--borderedblock-bg, var(--def-bg));
-            }
-            
-</style>
-<style>/* Boilerplate: style-syntax-highlighting */
-
 code.highlight { padding: .1em; border-radius: .3em; }
 pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
 
@@ -602,7 +650,6 @@ c-[vc] { color: #0077aa } /* Name.Variable.Class */
 c-[vg] { color: #0077aa } /* Name.Variable.Global */
 c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-
 
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
@@ -679,20 +726,20 @@ D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
 5 = lab(85,-10,-50)
 6 = lab(85,35,-15)
 */
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+[data-algorithm] var { cursor: pointer; }
+var[data-var-color="0"] { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var[data-var-color="1"] { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var[data-var-color="2"] { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var[data-var-color="3"] { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var[data-var-color="4"] { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var[data-var-color="5"] { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
 </style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Local Font Access API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-11">11 July 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-06-07">7 June 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -711,7 +758,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2023 the Contributors to the Local Font Access API Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 the Contributors to the Local Font Access API Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
 A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
@@ -1125,11 +1172,11 @@ U+0025 (%).</p>
    </div>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window"><c- g>Window</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontdata" id="ref-for-fontdata①"><c- n>FontData</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts③"><c- g>queryLocalFonts</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="idl-code" data-dfn-for="Window/queryLocalFonts(options), Window/queryLocalFonts()" data-dfn-type="argument" data-export id="dom-window-querylocalfonts-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-window-querylocalfonts-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fontdata" id="ref-for-fontdata①"><c- n>FontData</c-></a>>> <a class="idl-code" data-link-type="method" href="#dom-window-querylocalfonts" id="ref-for-dom-window-querylocalfonts③"><c- g>queryLocalFonts</c-></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-queryoptions" id="ref-for-dictdef-queryoptions"><c- n>QueryOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Window/queryLocalFonts(options), Window/queryLocalFonts()" data-dfn-type="argument" data-export id="dom-window-querylocalfonts-options-options"><code><c- g>options</c-></code></dfn> = {});
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-queryoptions"><code><c- g>QueryOptions</c-></code></dfn> {
-  <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="QueryOptions" data-dfn-type="dict-member" data-export data-type="sequence<DOMString> " id="dom-queryoptions-postscriptnames"><code><c- g>postscriptNames</c-></code></dfn>;
+  <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="QueryOptions" data-dfn-type="dict-member" data-export data-type="sequence<DOMString>" id="dom-queryoptions-postscriptnames"><code><c- g>postscriptNames</c-></code></dfn>;
 };
 </pre>
    <div class="algorithm" data-algorithm="queryLocalFonts(options)" data-algorithm-for="Window">
@@ -1344,7 +1391,7 @@ for suggestions, reviews, and other feedback.</p>
     like this: </p>
    <p class="note" role="note">Note, this is an informative note.</p>
   </div>
-<script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
@@ -1487,9 +1534,9 @@ for suggestions, reviews, and other feedback.</p>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-css-fonts-4">[CSS-FONTS-4]
-   <dd>John Daggett; Myles Maxfield; Chris Lilley. <a href="https://drafts.csswg.org/css-fonts-4/"><cite>CSS Fonts Module Level 4</cite></a>. URL: <a href="https://drafts.csswg.org/css-fonts-4/">https://drafts.csswg.org/css-fonts-4/</a>
+   <dd>Chris Lilley. <a href="https://drafts.csswg.org/css-fonts-4/"><cite>CSS Fonts Module Level 4</cite></a>. URL: <a href="https://drafts.csswg.org/css-fonts-4/">https://drafts.csswg.org/css-fonts-4/</a>
    <dt id="biblio-css-fonts-5">[CSS-FONTS-5]
-   <dd>Myles Maxfield; Chris Lilley. <a href="https://drafts.csswg.org/css-fonts-5/"><cite>CSS Fonts Module Level 5</cite></a>. URL: <a href="https://drafts.csswg.org/css-fonts-5/">https://drafts.csswg.org/css-fonts-5/</a>
+   <dd>Chris Lilley. <a href="https://drafts.csswg.org/css-fonts-5/"><cite>CSS Fonts Module Level 5</cite></a>. URL: <a href="https://drafts.csswg.org/css-fonts-5/">https://drafts.csswg.org/css-fonts-5/</a>
    <dt id="biblio-truetype">[TRUETYPE]
    <dd><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/"><cite>TrueType™ Reference Manual</cite></a>. URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
    <dt id="biblio-woff">[WOFF]
@@ -1502,7 +1549,7 @@ for suggestions, reviews, and other feedback.</p>
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-queryoptions"><code><c- g>QueryOptions</c-></code></a> {
-  <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-queryoptions-postscriptnames"><code><c- g>postscriptNames</c-></code></a>;
+  <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString>" href="#dom-queryoptions-postscriptnames"><code><c- g>postscriptNames</c-></code></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
@@ -1525,391 +1572,8 @@ for suggestions, reviews, and other feedback.</p>
    <div class="issue"> Document internationalization considerations other than string localization, e.g. https://github.com/WICG/local-font-access/issues/72, https://github.com/WICG/local-font-access/issues/59, etc. <a class="issue-return" href="#issue-bab84d16" title="Jump to section">↵</a></div>
    <div class="issue"> Should we define an option to the <code class="idl"><a data-link-type="idl" href="#dom-window-querylocalfonts">queryLocalFonts()</a></code> method to specify the desired language for strings (e.g. <code>{lang: 'zh'}</code>), falling back to `<code>en-US</code>` if not present? Or provide access to all the names, e.g. as a map from <a data-link-type="biblio" href="#biblio-bcp47" title="Tags for Identifying Languages">[BCP47]</a> language tag to name? <a href="https://github.com/WICG/local-font-access/issues/69">[Issue #69]</a> <a class="issue-return" href="#issue-05afe850" title="Jump to section">↵</a></div>
   </div>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel-json */
-window.dfnpanelData = {};
-window.dfnpanelData['d65d17df'] = {"dfnID": "d65d17df", "url": "https://drafts.csswg.org/css-fonts-4/#propdef-font-family", "dfnText": "font-family", "refSections": [{"refs": [{"id": "ref-for-propdef-font-family"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-propdef-font-family\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['0497de86'] = {"dfnID": "0497de86", "url": "https://drafts.csswg.org/css-fonts-5/#at-font-face-rule", "dfnText": "@font-face", "refSections": [{"refs": [{"id": "ref-for-at-font-face-rule"}], "title": "4.1. Font Representation"}], "external": true};
-window.dfnpanelData['b7d73f5b'] = {"dfnID": "b7d73f5b", "url": "https://w3c.github.io/FileAPI/#dfn-Blob", "dfnText": "Blob", "refSections": [{"refs": [{"id": "ref-for-dfn-Blob"}, {"id": "ref-for-dfn-Blob\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['e303c02d'] = {"dfnID": "e303c02d", "url": "https://w3c.github.io/FileAPI/#dfn-type", "dfnText": "type", "refSections": [{"refs": [{"id": "ref-for-dfn-type"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['5d7209e9'] = {"dfnID": "5d7209e9", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window", "dfnText": "Window", "refSections": [{"refs": [{"id": "ref-for-window"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['5f6d392d'] = {"dfnID": "5f6d392d", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope", "dfnText": "WindowOrWorkerGlobalScope", "refSections": [{"refs": [{"id": "ref-for-windoworworkerglobalscope"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['76b2f4af'] = {"dfnID": "76b2f4af", "url": "https://html.spec.whatwg.org/multipage/system-state.html#a-plausible-language", "dfnText": "a plausible language", "refSections": [{"refs": [{"id": "ref-for-a-plausible-language"}], "title": "4. Concepts"}], "external": true};
-window.dfnpanelData['3610bd67'] = {"dfnID": "3610bd67", "url": "https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use", "dfnText": "allowed to use", "refSections": [{"refs": [{"id": "ref-for-allowed-to-use"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['3349d69f'] = {"dfnID": "3349d69f", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window", "dfnText": "associated document", "refSections": [{"refs": [{"id": "ref-for-concept-document-window"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['87fcd40c'] = {"dfnID": "87fcd40c", "url": "https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element", "dfnText": "iframe", "refSections": [{"refs": [{"id": "ref-for-the-iframe-element"}], "title": "5.2. Permissions policy"}], "external": true};
-window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-in-parallel\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['8fd4495f'] = {"dfnID": "8fd4495f", "url": "https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language", "dfnText": "language", "refSections": [{"refs": [{"id": "ref-for-dom-navigator-language"}], "title": "10.1. Fingerprinting"}], "external": true};
-window.dfnpanelData['b01b1359'] = {"dfnID": "b01b1359", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque", "dfnText": "opaque origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin-opaque"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['086e3aff'] = {"dfnID": "086e3aff", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['9a517a7d'] = {"dfnID": "9a517a7d", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task", "dfnText": "queue a task", "refSections": [{"refs": [{"id": "ref-for-queue-a-task"}], "title": "6.1. Font task source"}, {"refs": [{"id": "ref-for-queue-a-task\u2460"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-queue-a-task\u2461"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global", "dfnText": "relevant global object", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-global"}, {"id": "ref-for-concept-relevant-global\u2460"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['5991ccfb'] = {"dfnID": "5991ccfb", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm", "dfnText": "relevant realm", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-realm"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['9c4c1e66'] = {"dfnID": "9c4c1e66", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object", "dfnText": "relevant settings object", "refSections": [{"refs": [{"id": "ref-for-relevant-settings-object"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['0a422d04'] = {"dfnID": "0a422d04", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects", "dfnText": "serializable object", "refSections": [{"refs": [{"id": "ref-for-serializable-objects"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['c3b2d08c'] = {"dfnID": "c3b2d08c", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#task-source", "dfnText": "task source", "refSections": [{"refs": [{"id": "ref-for-task-source"}], "title": "6.1. Font task source"}], "external": true};
-window.dfnpanelData['47fe679e'] = {"dfnID": "47fe679e", "url": "https://html.spec.whatwg.org/multipage/interaction.html#transient-activation", "dfnText": "transient activation", "refSections": [{"refs": [{"id": "ref-for-transient-activation"}, {"id": "ref-for-transient-activation\u2460"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.spec.whatwg.org/#list-append", "dfnText": "append", "refSections": [{"refs": [{"id": "ref-for-list-append"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['3de9e659'] = {"dfnID": "3de9e659", "url": "https://infra.spec.whatwg.org/#byte-sequence", "dfnText": "byte sequence", "refSections": [{"refs": [{"id": "ref-for-byte-sequence"}], "title": "4.1. Font Representation"}], "external": true};
-window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['f937b7b6'] = {"dfnID": "f937b7b6", "url": "https://infra.spec.whatwg.org/#iteration-continue", "dfnText": "continue", "refSections": [{"refs": [{"id": "ref-for-iteration-continue"}, {"id": "ref-for-iteration-continue\u2460"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-iteration-continue\u2461"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist", "refSections": [{"refs": [{"id": "ref-for-map-exists"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.spec.whatwg.org/#list-iterate", "dfnText": "for each", "refSections": [{"refs": [{"id": "ref-for-list-iterate"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-list-iterate\u2460"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['0fa357c3'] = {"dfnID": "0fa357c3", "url": "https://infra.spec.whatwg.org/#string-length", "dfnText": "length", "refSections": [{"refs": [{"id": "ref-for-string-length"}], "title": "4.1. Font Representation"}], "external": true};
-window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-list\u2461"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['762869d3'] = {"dfnID": "762869d3", "url": "https://infra.spec.whatwg.org/#scalar-value-string", "dfnText": "scalar value string", "refSections": [{"refs": [{"id": "ref-for-scalar-value-string"}], "title": "4.1. Font Representation"}], "external": true};
-window.dfnpanelData['5ecc2082'] = {"dfnID": "5ecc2082", "url": "https://infra.spec.whatwg.org/#list-sort-in-ascending-order", "dfnText": "sort in ascending order", "refSections": [{"refs": [{"id": "ref-for-list-sort-in-ascending-order"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['ebb01253'] = {"dfnID": "ebb01253", "url": "https://w3c.github.io/permissions/#dom-permissiondescriptor", "dfnText": "PermissionDescriptor", "refSections": [{"refs": [{"id": "ref-for-dom-permissiondescriptor"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['ba1bd741'] = {"dfnID": "ba1bd741", "url": "https://w3c.github.io/permissions/#dfn-default-powerful-feature", "dfnText": "default powerful feature", "refSections": [{"refs": [{"id": "ref-for-dfn-default-powerful-feature"}], "title": "5.1. Permissions"}], "external": true};
-window.dfnpanelData['2cb28cb0'] = {"dfnID": "2cb28cb0", "url": "https://w3c.github.io/permissions/#dom-permissionstate-denied", "dfnText": "denied", "refSections": [{"refs": [{"id": "ref-for-dom-permissionstate-denied"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['0310eecd'] = {"dfnID": "0310eecd", "url": "https://w3c.github.io/permissions/#dom-permissiondescriptor-name", "dfnText": "name (for PermissionDescriptor)", "refSections": [{"refs": [{"id": "ref-for-dom-permissiondescriptor-name"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['e740d7e5'] = {"dfnID": "e740d7e5", "url": "https://w3c.github.io/permissions/#dfn-name", "dfnText": "name (for powerful feature)", "refSections": [{"refs": [{"id": "ref-for-dfn-name"}], "title": "5.1. Permissions"}], "external": true};
-window.dfnpanelData['c2430fbb'] = {"dfnID": "c2430fbb", "url": "https://w3c.github.io/permissions/#dfn-prompt-the-user-to-choose", "dfnText": "prompt the user to choose", "refSections": [{"refs": [{"id": "ref-for-dfn-prompt-the-user-to-choose"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['1570624a'] = {"dfnID": "1570624a", "url": "https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist", "dfnText": "default allowlist", "refSections": [{"refs": [{"id": "ref-for-policy-controlled-feature-default-allowlist"}, {"id": "ref-for-policy-controlled-feature-default-allowlist\u2460"}], "title": "5.2. Permissions policy"}], "external": true};
-window.dfnpanelData['cc890cc1'] = {"dfnID": "cc890cc1", "url": "https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature", "dfnText": "policy-controlled feature", "refSections": [{"refs": [{"id": "ref-for-policy-controlled-feature"}], "title": "5.2. Permissions policy"}, {"refs": [{"id": "ref-for-policy-controlled-feature\u2460"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['dca2de17'] = {"dfnID": "dca2de17", "url": "https://webidl.spec.whatwg.org/#idl-DOMException", "dfnText": "DOMException", "refSections": [{"refs": [{"id": "ref-for-idl-DOMException"}, {"id": "ref-for-idl-DOMException\u2460"}, {"id": "ref-for-idl-DOMException\u2461"}, {"id": "ref-for-idl-DOMException\u2462"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['8855a9aa'] = {"dfnID": "8855a9aa", "url": "https://webidl.spec.whatwg.org/#idl-DOMString", "dfnText": "DOMString", "refSections": [{"refs": [{"id": "ref-for-idl-DOMString"}, {"id": "ref-for-idl-DOMString\u2460"}, {"id": "ref-for-idl-DOMString\u2461"}, {"id": "ref-for-idl-DOMString\u2462"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-idl-DOMString\u2463"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['ba556545'] = {"dfnID": "ba556545", "url": "https://webidl.spec.whatwg.org/#notallowederror", "dfnText": "NotAllowedError", "refSections": [{"refs": [{"id": "ref-for-notallowederror"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-idl-promise\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['b75bb3bd'] = {"dfnID": "b75bb3bd", "url": "https://webidl.spec.whatwg.org/#SecureContext", "dfnText": "SecureContext", "refSections": [{"refs": [{"id": "ref-for-SecureContext"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['c3e881ef'] = {"dfnID": "c3e881ef", "url": "https://webidl.spec.whatwg.org/#securityerror", "dfnText": "SecurityError", "refSections": [{"refs": [{"id": "ref-for-securityerror"}, {"id": "ref-for-securityerror\u2460"}, {"id": "ref-for-securityerror\u2461"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['b0d7f3c3'] = {"dfnID": "b0d7f3c3", "url": "https://webidl.spec.whatwg.org/#idl-USVString", "dfnText": "USVString", "refSections": [{"refs": [{"id": "ref-for-idl-USVString"}, {"id": "ref-for-idl-USVString\u2460"}, {"id": "ref-for-idl-USVString\u2461"}, {"id": "ref-for-idl-USVString\u2462"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-a-new-promise\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}, {"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-resolve\u2460"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['9cce47fd'] = {"dfnID": "9cce47fd", "url": "https://webidl.spec.whatwg.org/#idl-sequence", "dfnText": "sequence", "refSections": [{"refs": [{"id": "ref-for-idl-sequence"}, {"id": "ref-for-idl-sequence\u2460"}], "title": "6.2. Font manager"}], "external": true};
-window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.spec.whatwg.org/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}, {"id": "ref-for-this\u2460"}, {"id": "ref-for-this\u2461"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-this\u2462"}, {"id": "ref-for-this\u2463"}, {"id": "ref-for-this\u2464"}, {"id": "ref-for-this\u2465"}, {"id": "ref-for-this\u2466"}, {"id": "ref-for-this\u2467"}], "title": "6.3. The FontData interface"}], "external": true};
-window.dfnpanelData['user-language'] = {"dfnID": "user-language", "url": "#user-language", "dfnText": "user language", "refSections": [{"refs": [{"id": "ref-for-user-language"}, {"id": "ref-for-user-language\u2460"}, {"id": "ref-for-user-language\u2461"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-user-language\u2462"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['font-representation'] = {"dfnID": "font-representation", "url": "#font-representation", "dfnText": "font representation", "refSections": [{"refs": [{"id": "ref-for-font-representation"}, {"id": "ref-for-font-representation\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation\u2461"}, {"id": "ref-for-font-representation\u2462"}, {"id": "ref-for-font-representation\u2463"}, {"id": "ref-for-font-representation\u2464"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation\u2465"}, {"id": "ref-for-font-representation\u2466"}, {"id": "ref-for-font-representation\u2467"}, {"id": "ref-for-font-representation\u2468"}, {"id": "ref-for-font-representation\u2460\u24ea"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['font-representation-data-bytes'] = {"dfnID": "font-representation-data-bytes", "url": "#font-representation-data-bytes", "dfnText": "data bytes", "refSections": [{"refs": [{"id": "ref-for-font-representation-data-bytes"}, {"id": "ref-for-font-representation-data-bytes\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation-data-bytes\u2461"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation-data-bytes\u2462"}, {"id": "ref-for-font-representation-data-bytes\u2463"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['font-representation-postscript-name'] = {"dfnID": "font-representation-postscript-name", "url": "#font-representation-postscript-name", "dfnText": "PostScript name", "refSections": [{"refs": [{"id": "ref-for-font-representation-postscript-name"}, {"id": "ref-for-font-representation-postscript-name\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation-postscript-name\u2461"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation-postscript-name\u2462"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-font-representation-postscript-name\u2463"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['font-representation-full-name'] = {"dfnID": "font-representation-full-name", "url": "#font-representation-full-name", "dfnText": "full name", "refSections": [{"refs": [{"id": "ref-for-font-representation-full-name"}, {"id": "ref-for-font-representation-full-name\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation-full-name\u2461"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation-full-name\u2462"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['font-representation-family-name'] = {"dfnID": "font-representation-family-name", "url": "#font-representation-family-name", "dfnText": "family name", "refSections": [{"refs": [{"id": "ref-for-font-representation-family-name"}, {"id": "ref-for-font-representation-family-name\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation-family-name\u2461"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation-family-name\u2462"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['font-representation-style-name'] = {"dfnID": "font-representation-style-name", "url": "#font-representation-style-name", "dfnText": "style name", "refSections": [{"refs": [{"id": "ref-for-font-representation-style-name"}, {"id": "ref-for-font-representation-style-name\u2460"}], "title": "4.1. Font Representation"}, {"refs": [{"id": "ref-for-font-representation-style-name\u2461"}], "title": "4.2. System Fonts"}, {"refs": [{"id": "ref-for-font-representation-style-name\u2462"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['valid-postscript-name'] = {"dfnID": "valid-postscript-name", "url": "#valid-postscript-name", "dfnText": "valid PostScript name", "refSections": [{"refs": [{"id": "ref-for-valid-postscript-name"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-valid-postscript-name\u2460"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['system-font'] = {"dfnID": "system-font", "url": "#system-font", "dfnText": "system font", "refSections": [{"refs": [{"id": "ref-for-system-font"}, {"id": "ref-for-system-font\u2460"}], "title": "4.2. System Fonts"}], "external": false};
-window.dfnpanelData['read-as-a-font-representation'] = {"dfnID": "read-as-a-font-representation", "url": "#read-as-a-font-representation", "dfnText": "read a system font as a font representation", "refSections": [{"refs": [{"id": "ref-for-read-as-a-font-representation"}], "title": "4.2. System Fonts"}], "external": false};
-window.dfnpanelData['get-all-system-font-representations'] = {"dfnID": "get-all-system-font-representations", "url": "#get-all-system-font-representations", "dfnText": "get all system font representations", "refSections": [{"refs": [{"id": "ref-for-get-all-system-font-representations"}], "title": "6.2. Font manager"}], "external": false};
-window.dfnpanelData['permissiondef-local-fonts'] = {"dfnID": "permissiondef-local-fonts", "url": "#permissiondef-local-fonts", "dfnText": "local-fonts", "refSections": [{"refs": [{"id": "ref-for-permissiondef-local-fonts"}], "title": "6.2. Font manager"}], "external": false};
-window.dfnpanelData['dom-permissionpolicy-local-fonts'] = {"dfnID": "dom-permissionpolicy-local-fonts", "url": "#dom-permissionpolicy-local-fonts", "dfnText": "\"local-fonts\"", "refSections": [{"refs": [{"id": "ref-for-dom-permissionpolicy-local-fonts"}], "title": "6.2. Font manager"}], "external": false};
-window.dfnpanelData['font-task-source'] = {"dfnID": "font-task-source", "url": "#font-task-source", "dfnText": "font task source", "refSections": [{"refs": [{"id": "ref-for-font-task-source"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-font-task-source\u2460"}], "title": "6.3. The FontData interface"}], "external": false};
-window.dfnpanelData['dictdef-queryoptions'] = {"dfnID": "dictdef-queryoptions", "url": "#dictdef-queryoptions", "dfnText": "QueryOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-queryoptions"}], "title": "6.2. Font manager"}], "external": false};
-window.dfnpanelData['dom-queryoptions-postscriptnames'] = {"dfnID": "dom-queryoptions-postscriptnames", "url": "#dom-queryoptions-postscriptnames", "dfnText": "postscriptNames", "refSections": [{"refs": [{"id": "ref-for-dom-queryoptions-postscriptnames"}, {"id": "ref-for-dom-queryoptions-postscriptnames\u2460"}, {"id": "ref-for-dom-queryoptions-postscriptnames\u2461"}, {"id": "ref-for-dom-queryoptions-postscriptnames\u2462"}], "title": "6.2. Font manager"}], "external": false};
-window.dfnpanelData['dom-window-querylocalfonts'] = {"dfnID": "dom-window-querylocalfonts", "url": "#dom-window-querylocalfonts", "dfnText": "queryLocalFonts(options)", "refSections": [{"refs": [{"id": "ref-for-dom-window-querylocalfonts"}], "title": "5.1. Permissions"}, {"refs": [{"id": "ref-for-dom-window-querylocalfonts\u2460"}, {"id": "ref-for-dom-window-querylocalfonts\u2461"}, {"id": "ref-for-dom-window-querylocalfonts\u2462"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-dom-window-querylocalfonts\u2463"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-dom-window-querylocalfonts\u2464"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['fontdata'] = {"dfnID": "fontdata", "url": "#fontdata", "dfnText": "FontData", "refSections": [{"refs": [{"id": "ref-for-fontdata"}, {"id": "ref-for-fontdata\u2460"}, {"id": "ref-for-fontdata\u2461"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-fontdata\u2462"}, {"id": "ref-for-fontdata\u2463"}, {"id": "ref-for-fontdata\u2464"}, {"id": "ref-for-fontdata\u2465"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-fontdata\u2466"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['dom-fontdata-postscriptname'] = {"dfnID": "dom-fontdata-postscriptname", "url": "#dom-fontdata-postscriptname", "dfnText": "postscriptName", "refSections": [{"refs": [{"id": "ref-for-dom-fontdata-postscriptname"}], "title": "6.2. Font manager"}, {"refs": [{"id": "ref-for-dom-fontdata-postscriptname\u2460"}, {"id": "ref-for-dom-fontdata-postscriptname\u2461"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-dom-fontdata-postscriptname\u2462"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['dom-fontdata-fullname'] = {"dfnID": "dom-fontdata-fullname", "url": "#dom-fontdata-fullname", "dfnText": "fullName", "refSections": [{"refs": [{"id": "ref-for-dom-fontdata-fullname"}, {"id": "ref-for-dom-fontdata-fullname\u2460"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-dom-fontdata-fullname\u2461"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['dom-fontdata-family'] = {"dfnID": "dom-fontdata-family", "url": "#dom-fontdata-family", "dfnText": "family", "refSections": [{"refs": [{"id": "ref-for-dom-fontdata-family"}, {"id": "ref-for-dom-fontdata-family\u2460"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-dom-fontdata-family\u2461"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['dom-fontdata-style'] = {"dfnID": "dom-fontdata-style", "url": "#dom-fontdata-style", "dfnText": "style", "refSections": [{"refs": [{"id": "ref-for-dom-fontdata-style"}, {"id": "ref-for-dom-fontdata-style\u2460"}], "title": "6.3. The FontData interface"}, {"refs": [{"id": "ref-for-dom-fontdata-style\u2461"}], "title": "7.1. Font Names"}], "external": false};
-window.dfnpanelData['dom-fontdata-blob'] = {"dfnID": "dom-fontdata-blob", "url": "#dom-fontdata-blob", "dfnText": "blob()", "refSections": [{"refs": [{"id": "ref-for-dom-fontdata-blob"}, {"id": "ref-for-dom-fontdata-blob\u2460"}], "title": "6.3. The FontData interface"}], "external": false};
-</script>
 <script>/* Boilerplate: script-dom-helper */
+"use strict";
 function query(sel) { return document.querySelector(sel); }
 
 function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
@@ -2103,103 +1767,830 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
+}</script>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+let dfnPanelData = {
+"0310eecd": {"dfnID":"0310eecd","dfnText":"name (for PermissionDescriptor)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissiondescriptor-name"}],"title":"6.2. Font manager"}],"url":"https://w3c.github.io/permissions/#dom-permissiondescriptor-name"},
+"0497de86": {"dfnID":"0497de86","dfnText":"@font-face","external":true,"refSections":[{"refs":[{"id":"ref-for-at-font-face-rule"}],"title":"4.1. Font Representation"}],"url":"https://drafts.csswg.org/css-fonts-5/#at-font-face-rule"},
+"086e3aff": {"dfnID":"086e3aff","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
+"0a422d04": {"dfnID":"0a422d04","dfnText":"serializable object","external":true,"refSections":[{"refs":[{"id":"ref-for-serializable-objects"}],"title":"6.3. The FontData interface"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects"},
+"0fa357c3": {"dfnID":"0fa357c3","dfnText":"length","external":true,"refSections":[{"refs":[{"id":"ref-for-string-length"}],"title":"4.1. Font Representation"}],"url":"https://infra.spec.whatwg.org/#string-length"},
+"1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
+"1570624a": {"dfnID":"1570624a","dfnText":"default allowlist","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-controlled-feature-default-allowlist"},{"id":"ref-for-policy-controlled-feature-default-allowlist\u2460"}],"title":"5.2. Permissions policy"}],"url":"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist"},
+"16d07e10": {"dfnID":"16d07e10","dfnText":"for each","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-list-iterate\u2460"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
+"2cb28cb0": {"dfnID":"2cb28cb0","dfnText":"denied","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissionstate-denied"}],"title":"6.2. Font manager"}],"url":"https://w3c.github.io/permissions/#dom-permissionstate-denied"},
+"3349d69f": {"dfnID":"3349d69f","dfnText":"associated document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-window"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window"},
+"3610bd67": {"dfnID":"3610bd67","dfnText":"allowed to use","external":true,"refSections":[{"refs":[{"id":"ref-for-allowed-to-use"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use"},
+"3b90bdcd": {"dfnID":"3b90bdcd","dfnText":"resolve","external":true,"refSections":[{"refs":[{"id":"ref-for-resolve"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-resolve\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#resolve"},
+"3de9e659": {"dfnID":"3de9e659","dfnText":"byte sequence","external":true,"refSections":[{"refs":[{"id":"ref-for-byte-sequence"}],"title":"4.1. Font Representation"}],"url":"https://infra.spec.whatwg.org/#byte-sequence"},
+"4013a022": {"dfnID":"4013a022","dfnText":"this","external":true,"refSections":[{"refs":[{"id":"ref-for-this"},{"id":"ref-for-this\u2460"},{"id":"ref-for-this\u2461"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-this\u2462"},{"id":"ref-for-this\u2463"},{"id":"ref-for-this\u2464"},{"id":"ref-for-this\u2465"},{"id":"ref-for-this\u2466"},{"id":"ref-for-this\u2467"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#this"},
+"47fe679e": {"dfnID":"47fe679e","dfnText":"transient activation","external":true,"refSections":[{"refs":[{"id":"ref-for-transient-activation"},{"id":"ref-for-transient-activation\u2460"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation"},
+"53275e46": {"dfnID":"53275e46","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#list-append"},
+"5991ccfb": {"dfnID":"5991ccfb","dfnText":"relevant realm","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-realm"}],"title":"6.3. The FontData interface"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm"},
+"5d7209e9": {"dfnID":"5d7209e9","dfnText":"Window","external":true,"refSections":[{"refs":[{"id":"ref-for-window"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"},
+"5ecc2082": {"dfnID":"5ecc2082","dfnText":"sort in ascending order","external":true,"refSections":[{"refs":[{"id":"ref-for-list-sort-in-ascending-order"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#list-sort-in-ascending-order"},
+"5f6d392d": {"dfnID":"5f6d392d","dfnText":"WindowOrWorkerGlobalScope","external":true,"refSections":[{"refs":[{"id":"ref-for-windoworworkerglobalscope"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"},
+"649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"},{"id":"ref-for-list\u2460"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-list\u2461"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#list"},
+"762869d3": {"dfnID":"762869d3","dfnText":"scalar value string","external":true,"refSections":[{"refs":[{"id":"ref-for-scalar-value-string"}],"title":"4.1. Font Representation"}],"url":"https://infra.spec.whatwg.org/#scalar-value-string"},
+"76b2f4af": {"dfnID":"76b2f4af","dfnText":"a plausible language","external":true,"refSections":[{"refs":[{"id":"ref-for-a-plausible-language"}],"title":"4. Concepts"}],"url":"https://html.spec.whatwg.org/multipage/system-state.html#a-plausible-language"},
+"87fcd40c": {"dfnID":"87fcd40c","dfnText":"iframe","external":true,"refSections":[{"refs":[{"id":"ref-for-the-iframe-element"}],"title":"5.2. Permissions policy"}],"url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element"},
+"8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"},{"id":"ref-for-idl-DOMString\u2460"},{"id":"ref-for-idl-DOMString\u2461"},{"id":"ref-for-idl-DOMString\u2462"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-idl-DOMString\u2463"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
+"889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
+"8fd4495f": {"dfnID":"8fd4495f","dfnText":"language","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-language"}],"title":"10.1. Fingerprinting"}],"url":"https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language"},
+"9a517a7d": {"dfnID":"9a517a7d","dfnText":"queue a task","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-task"}],"title":"6.1. Font task source"},{"refs":[{"id":"ref-for-queue-a-task\u2460"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-queue-a-task\u2461"}],"title":"6.3. The FontData interface"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task"},
+"9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"9cce47fd": {"dfnID":"9cce47fd","dfnText":"sequence","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-sequence"},{"id":"ref-for-idl-sequence\u2460"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#idl-sequence"},
+"a72449dd": {"dfnID":"a72449dd","dfnText":"in parallel","external":true,"refSections":[{"refs":[{"id":"ref-for-in-parallel"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-in-parallel\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
+"ae8def21": {"dfnID":"ae8def21","dfnText":"contain","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
+"b01b1359": {"dfnID":"b01b1359","dfnText":"opaque origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin-opaque"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
+"b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"},{"id":"ref-for-idl-USVString\u2460"},{"id":"ref-for-idl-USVString\u2461"},{"id":"ref-for-idl-USVString\u2462"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
+"b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"},{"id":"ref-for-reject\u2461"},{"id":"ref-for-reject\u2462"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#reject"},
+"b75bb3bd": {"dfnID":"b75bb3bd","dfnText":"SecureContext","external":true,"refSections":[{"refs":[{"id":"ref-for-SecureContext"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#SecureContext"},
+"b7d73f5b": {"dfnID":"b7d73f5b","dfnText":"Blob","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-Blob"},{"id":"ref-for-dfn-Blob\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://w3c.github.io/FileAPI/#dfn-Blob"},
+"ba1bd741": {"dfnID":"ba1bd741","dfnText":"default powerful feature","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-default-powerful-feature"}],"title":"5.1. Permissions"}],"url":"https://w3c.github.io/permissions/#dfn-default-powerful-feature"},
+"ba556545": {"dfnID":"ba556545","dfnText":"NotAllowedError","external":true,"refSections":[{"refs":[{"id":"ref-for-notallowederror"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#notallowederror"},
+"bdbd19d1": {"dfnID":"bdbd19d1","dfnText":"Promise","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-promise"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-idl-promise\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"c2430fbb": {"dfnID":"c2430fbb","dfnText":"prompt the user to choose","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-prompt-the-user-to-choose"}],"title":"6.2. Font manager"}],"url":"https://w3c.github.io/permissions/#dfn-prompt-the-user-to-choose"},
+"c3b2d08c": {"dfnID":"c3b2d08c","dfnText":"task source","external":true,"refSections":[{"refs":[{"id":"ref-for-task-source"}],"title":"6.1. Font task source"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#task-source"},
+"c3e881ef": {"dfnID":"c3e881ef","dfnText":"SecurityError","external":true,"refSections":[{"refs":[{"id":"ref-for-securityerror"},{"id":"ref-for-securityerror\u2460"},{"id":"ref-for-securityerror\u2461"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#securityerror"},
+"cc890cc1": {"dfnID":"cc890cc1","dfnText":"policy-controlled feature","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-controlled-feature"}],"title":"5.2. Permissions policy"},{"refs":[{"id":"ref-for-policy-controlled-feature\u2460"}],"title":"6.2. Font manager"}],"url":"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature"},
+"d65d17df": {"dfnID":"d65d17df","dfnText":"font-family","external":true,"refSections":[{"refs":[{"id":"ref-for-propdef-font-family"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-propdef-font-family\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://drafts.csswg.org/css-fonts-4/#propdef-font-family"},
+"dacde8b5": {"dfnID":"dacde8b5","dfnText":"a new promise","external":true,"refSections":[{"refs":[{"id":"ref-for-a-new-promise"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-a-new-promise\u2460"}],"title":"6.3. The FontData interface"}],"url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"dca2de17": {"dfnID":"dca2de17","dfnText":"DOMException","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMException"},{"id":"ref-for-idl-DOMException\u2460"},{"id":"ref-for-idl-DOMException\u2461"},{"id":"ref-for-idl-DOMException\u2462"}],"title":"6.2. Font manager"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"dictdef-queryoptions": {"dfnID":"dictdef-queryoptions","dfnText":"QueryOptions","external":false,"refSections":[{"refs":[{"id":"ref-for-dictdef-queryoptions"}],"title":"6.2. Font manager"}],"url":"#dictdef-queryoptions"},
+"dom-fontdata-blob": {"dfnID":"dom-fontdata-blob","dfnText":"blob()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-fontdata-blob"},{"id":"ref-for-dom-fontdata-blob\u2460"}],"title":"6.3. The FontData interface"}],"url":"#dom-fontdata-blob"},
+"dom-fontdata-family": {"dfnID":"dom-fontdata-family","dfnText":"family","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-fontdata-family"},{"id":"ref-for-dom-fontdata-family\u2460"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-dom-fontdata-family\u2461"}],"title":"7.1. Font Names"}],"url":"#dom-fontdata-family"},
+"dom-fontdata-fullname": {"dfnID":"dom-fontdata-fullname","dfnText":"fullName","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-fontdata-fullname"},{"id":"ref-for-dom-fontdata-fullname\u2460"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-dom-fontdata-fullname\u2461"}],"title":"7.1. Font Names"}],"url":"#dom-fontdata-fullname"},
+"dom-fontdata-postscriptname": {"dfnID":"dom-fontdata-postscriptname","dfnText":"postscriptName","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-fontdata-postscriptname"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-dom-fontdata-postscriptname\u2460"},{"id":"ref-for-dom-fontdata-postscriptname\u2461"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-dom-fontdata-postscriptname\u2462"}],"title":"7.1. Font Names"}],"url":"#dom-fontdata-postscriptname"},
+"dom-fontdata-style": {"dfnID":"dom-fontdata-style","dfnText":"style","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-fontdata-style"},{"id":"ref-for-dom-fontdata-style\u2460"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-dom-fontdata-style\u2461"}],"title":"7.1. Font Names"}],"url":"#dom-fontdata-style"},
+"dom-permissionpolicy-local-fonts": {"dfnID":"dom-permissionpolicy-local-fonts","dfnText":"\"local-fonts\"","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-permissionpolicy-local-fonts"}],"title":"6.2. Font manager"}],"url":"#dom-permissionpolicy-local-fonts"},
+"dom-queryoptions-postscriptnames": {"dfnID":"dom-queryoptions-postscriptnames","dfnText":"postscriptNames","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-queryoptions-postscriptnames"},{"id":"ref-for-dom-queryoptions-postscriptnames\u2460"},{"id":"ref-for-dom-queryoptions-postscriptnames\u2461"},{"id":"ref-for-dom-queryoptions-postscriptnames\u2462"}],"title":"6.2. Font manager"}],"url":"#dom-queryoptions-postscriptnames"},
+"dom-window-querylocalfonts": {"dfnID":"dom-window-querylocalfonts","dfnText":"queryLocalFonts(options)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-window-querylocalfonts"}],"title":"5.1. Permissions"},{"refs":[{"id":"ref-for-dom-window-querylocalfonts\u2460"},{"id":"ref-for-dom-window-querylocalfonts\u2461"},{"id":"ref-for-dom-window-querylocalfonts\u2462"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-dom-window-querylocalfonts\u2463"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-dom-window-querylocalfonts\u2464"}],"title":"7.1. Font Names"}],"url":"#dom-window-querylocalfonts"},
+"dom-window-querylocalfonts-options-options": {"dfnID":"dom-window-querylocalfonts-options-options","dfnText":"options","external":false,"refSections":[],"url":"#dom-window-querylocalfonts-options-options"},
+"e303c02d": {"dfnID":"e303c02d","dfnText":"type","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-type"}],"title":"6.3. The FontData interface"}],"url":"https://w3c.github.io/FileAPI/#dfn-type"},
+"e740d7e5": {"dfnID":"e740d7e5","dfnText":"name (for powerful feature)","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-name"}],"title":"5.1. Permissions"}],"url":"https://w3c.github.io/permissions/#dfn-name"},
+"e99bd18e": {"dfnID":"e99bd18e","dfnText":"relevant global object","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-global"},{"id":"ref-for-concept-relevant-global\u2460"}],"title":"6.2. Font manager"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
+"ebb01253": {"dfnID":"ebb01253","dfnText":"PermissionDescriptor","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissiondescriptor"}],"title":"6.2. Font manager"}],"url":"https://w3c.github.io/permissions/#dom-permissiondescriptor"},
+"f937b7b6": {"dfnID":"f937b7b6","dfnText":"continue","external":true,"refSections":[{"refs":[{"id":"ref-for-iteration-continue"},{"id":"ref-for-iteration-continue\u2460"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-iteration-continue\u2461"}],"title":"6.2. Font manager"}],"url":"https://infra.spec.whatwg.org/#iteration-continue"},
+"font-representation": {"dfnID":"font-representation","dfnText":"font representation","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation"},{"id":"ref-for-font-representation\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation\u2461"},{"id":"ref-for-font-representation\u2462"},{"id":"ref-for-font-representation\u2463"},{"id":"ref-for-font-representation\u2464"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation\u2465"},{"id":"ref-for-font-representation\u2466"},{"id":"ref-for-font-representation\u2467"},{"id":"ref-for-font-representation\u2468"},{"id":"ref-for-font-representation\u2460\u24ea"}],"title":"6.3. The FontData interface"}],"url":"#font-representation"},
+"font-representation-data-bytes": {"dfnID":"font-representation-data-bytes","dfnText":"data bytes","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation-data-bytes"},{"id":"ref-for-font-representation-data-bytes\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation-data-bytes\u2461"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation-data-bytes\u2462"},{"id":"ref-for-font-representation-data-bytes\u2463"}],"title":"6.3. The FontData interface"}],"url":"#font-representation-data-bytes"},
+"font-representation-family-name": {"dfnID":"font-representation-family-name","dfnText":"family name","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation-family-name"},{"id":"ref-for-font-representation-family-name\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation-family-name\u2461"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation-family-name\u2462"}],"title":"6.3. The FontData interface"}],"url":"#font-representation-family-name"},
+"font-representation-full-name": {"dfnID":"font-representation-full-name","dfnText":"full name","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation-full-name"},{"id":"ref-for-font-representation-full-name\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation-full-name\u2461"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation-full-name\u2462"}],"title":"6.3. The FontData interface"}],"url":"#font-representation-full-name"},
+"font-representation-postscript-name": {"dfnID":"font-representation-postscript-name","dfnText":"PostScript name","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation-postscript-name"},{"id":"ref-for-font-representation-postscript-name\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation-postscript-name\u2461"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation-postscript-name\u2462"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-font-representation-postscript-name\u2463"}],"title":"6.3. The FontData interface"}],"url":"#font-representation-postscript-name"},
+"font-representation-style-name": {"dfnID":"font-representation-style-name","dfnText":"style name","external":false,"refSections":[{"refs":[{"id":"ref-for-font-representation-style-name"},{"id":"ref-for-font-representation-style-name\u2460"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-font-representation-style-name\u2461"}],"title":"4.2. System Fonts"},{"refs":[{"id":"ref-for-font-representation-style-name\u2462"}],"title":"6.3. The FontData interface"}],"url":"#font-representation-style-name"},
+"font-task-source": {"dfnID":"font-task-source","dfnText":"font task source","external":false,"refSections":[{"refs":[{"id":"ref-for-font-task-source"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-font-task-source\u2460"}],"title":"6.3. The FontData interface"}],"url":"#font-task-source"},
+"fontdata": {"dfnID":"fontdata","dfnText":"FontData","external":false,"refSections":[{"refs":[{"id":"ref-for-fontdata"},{"id":"ref-for-fontdata\u2460"},{"id":"ref-for-fontdata\u2461"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-fontdata\u2462"},{"id":"ref-for-fontdata\u2463"},{"id":"ref-for-fontdata\u2464"},{"id":"ref-for-fontdata\u2465"}],"title":"6.3. The FontData interface"},{"refs":[{"id":"ref-for-fontdata\u2466"}],"title":"7.1. Font Names"}],"url":"#fontdata"},
+"get-all-system-font-representations": {"dfnID":"get-all-system-font-representations","dfnText":"get all system font representations","external":false,"refSections":[{"refs":[{"id":"ref-for-get-all-system-font-representations"}],"title":"6.2. Font manager"}],"url":"#get-all-system-font-representations"},
+"permissiondef-local-fonts": {"dfnID":"permissiondef-local-fonts","dfnText":"local-fonts","external":false,"refSections":[{"refs":[{"id":"ref-for-permissiondef-local-fonts"}],"title":"6.2. Font manager"}],"url":"#permissiondef-local-fonts"},
+"read-as-a-font-representation": {"dfnID":"read-as-a-font-representation","dfnText":"read a system font as a font representation","external":false,"refSections":[{"refs":[{"id":"ref-for-read-as-a-font-representation"}],"title":"4.2. System Fonts"}],"url":"#read-as-a-font-representation"},
+"system-font": {"dfnID":"system-font","dfnText":"system font","external":false,"refSections":[{"refs":[{"id":"ref-for-system-font"},{"id":"ref-for-system-font\u2460"}],"title":"4.2. System Fonts"}],"url":"#system-font"},
+"user-language": {"dfnID":"user-language","dfnText":"user language","external":false,"refSections":[{"refs":[{"id":"ref-for-user-language"},{"id":"ref-for-user-language\u2460"},{"id":"ref-for-user-language\u2461"}],"title":"4.1. Font Representation"},{"refs":[{"id":"ref-for-user-language\u2462"}],"title":"7.1. Font Names"}],"url":"#user-language"},
+"valid-postscript-name": {"dfnID":"valid-postscript-name","dfnText":"valid PostScript name","external":false,"refSections":[{"refs":[{"id":"ref-for-valid-postscript-name"}],"title":"6.2. Font manager"},{"refs":[{"id":"ref-for-valid-postscript-name\u2460"}],"title":"6.3. The FontData interface"}],"url":"#valid-postscript-name"},
+};
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    genAllDfnPanels();
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+});
+
+window.addEventListener("resize", () => {
+    // Pin any visible dfn panel
+    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
+});
+
+function genAllDfnPanels() {
+    for(const panelData of Object.values(dfnPanelData)) {
+        const dfnID = panelData.dfnID;
+        const dfn = document.getElementById(dfnID);
+        if(!dfn) {
+            console.log(`Can't find dfn#${dfnID}.`, panelData);
+            continue;
+        }
+        dfn.panelData = panelData;
+        insertDfnPopupAction(dfn);
+    }
+}
+
+function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
+    const dfnPanel = mk.aside({
+        class: "dfn-panel on",
+        id: `infopanel-for-${dfnID}`,
+        "data-for": dfnID,
+        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        },
+        mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+            `Info about the '${dfnText}' ${external?"external":""} reference.`),
+        mk.a({href:url, class:"dfn-link"}, url),
+        refSections.length == 0 ? [] :
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({ href: `#${ref.id}` },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        genLinkingSyntaxes(dfn),
+    );
+
+    dfnPanel.addEventListener('click', (event) => {
+        if (event.target.nodeName == 'A') {
+            scrollToTargetAndHighlight(event);
+            pinDfnPanel(dfnPanel);
+        }
+        event.stopPropagation();
+        refocusOnTarget(event);
+    });
+    dfnPanel.addEventListener('keydown', (event) => {
+        if(event.keyCode == 27) { // Escape key
+            hideDfnPanel({dfnPanel});
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+
+    dfnPanel.dfn = dfn;
+    dfn.dfnPanel = dfnPanel;
+    return dfnPanel;
+}
+
+
+
+function hideAllDfnPanels() {
+    // Delete the currently-active dfn panel.
+    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
+}
+
+function showDfnPanel(dfn) {
+    hideAllDfnPanels(); // Only display one at a time.
+
+    dfn.setAttribute("aria-expanded", "true");
+
+    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
+
+    // Give the dfn a unique tabindex, and then
+    // give all the tabbable panel bits successive indexes.
+    let tabIndex = 100;
+    dfn.tabIndex = tabIndex++;
+    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
+    for (const el of tabbable) {
+        el.tabIndex = tabIndex++;
+    }
+
+    append(document.body, dfnPanel);
+    positionDfnPanel(dfnPanel);
+}
+
+function positionDfnPanel(dfnPanel) {
+    const dfn = dfnPanel.dfn;
+    const dfnPos = getBounds(dfn);
+    dfnPanel.style.top = dfnPos.bottom + "px";
+    dfnPanel.style.left = dfnPos.left + "px";
+
+    const panelPos = dfnPanel.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
+        dfnPanel.style.left = newLeft + "px";
+    }
+}
+
+function pinDfnPanel(dfnPanel) {
+    // Switch it to "activated" state, which pins it.
+    dfnPanel.classList.add("activated");
+    dfnPanel.style.position = "fixed";
+    dfnPanel.style.left = null;
+    dfnPanel.style.top = null;
+}
+
+function hideDfnPanel({dfn, dfnPanel}) {
+    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
+    if(!dfn) dfn = dfnPanel.dfn;
+    dfn.dfnPanel = undefined;
+    dfnPanel.dfn = undefined;
+    dfn.setAttribute("aria-expanded", "false");
+    dfn.tabIndex = undefined;
+    dfnPanel.remove()
+}
+
+function toggleDfnPanel(dfn) {
+    if(dfn.dfnPanel) {
+        hideDfnPanel(dfn);
+    } else {
+        showDfnPanel(dfn);
+    }
+}
+
+function insertDfnPopupAction(dfn) {
+    dfn.setAttribute('role', 'button');
+    dfn.setAttribute('aria-expanded', 'false')
+    dfn.tabIndex = 0;
+    dfn.classList.add('has-dfn-panel');
+    dfn.addEventListener('click', (event) => {
+        toggleDfnPanel(dfn);
+        event.stopPropagation();
+    });
+    dfn.addEventListener('keypress', (event) => {
+        const kc = event.keyCode;
+        // 32->Space, 13->Enter
+        if(kc == 32 || kc == 13) {
+            toggleDfnPanel(dfn);
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+}
+
+function refocusOnTarget(event) {
+    const target = event.target;
+    setTimeout(() => {
+        // Refocus on the event.target element.
+        // This is needed after browser scrolls to the destination.
+        target.focus();
+    });
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function scrollToTargetAndHighlight(event) {
+    let hash = event.target.hash;
+    if (hash) {
+        hash = decodeURIComponent(hash.substring(1));
+        const dest = document.getElementById(hash);
+        if (dest) {
+            dest.classList.add('highlighted');
+            setTimeout(() => dest.classList.remove('highlighted'), 1000);
+        }
+    }
+}
+
+// Functions, divided by link type, that wrap an autolink's
+// contents with the appropriate outer syntax.
+// Alternately, a string naming another type they format
+// the same as.
+function needsFor(type) {
+    switch(type) {
+        case "descriptor":
+        case "value":
+        case "element-attr":
+        case "attr-value":
+        case "element-state":
+        case "method":
+        case "constructor":
+        case "argument":
+        case "attribute":
+        case "const":
+        case "dict-member":
+        case "event":
+        case "enum-value":
+        case "stringifier":
+        case "serializer":
+        case "iterator":
+        case "maplike":
+        case "setlike":
+        case "state":
+        case "mode":
+        case "context":
+        case "facet": return true;
+
+        default: return false;
+    }
+}
+function refusesFor(type) {
+    switch(type) {
+        case "property":
+        case "element":
+        case "interface":
+        case "namespace":
+        case "callback":
+        case "dictionary":
+        case "enum":
+        case "exception":
+        case "typedef":
+        case "http-header":
+        case "permission": return true;
+
+        default: return false;
+    }
+}
+function linkFormatterFromType(type) {
+    switch(type) {
+        case 'scheme':
+        case 'permission':
+        case 'dfn': return (text) => `[=${text}=]`;
+
+        case 'abstract-op': return (text) => `[\$${text}\$]`;
+
+        case 'function':
+        case 'at-rule':
+        case 'selector':
+        case 'value': return (text) => `''${text}''`;
+
+        case 'http-header': return (text) => `[:${text}:]`;
+
+        case 'interface':
+        case 'constructor':
+        case 'method':
+        case 'argument':
+        case 'attribute':
+        case 'callback':
+        case 'dictionary':
+        case 'dict-member':
+        case 'enum':
+        case 'enum-value':
+        case 'exception':
+        case 'const':
+        case 'typedef':
+        case 'stringifier':
+        case 'serializer':
+        case 'iterator':
+        case 'maplike':
+        case 'setlike':
+        case 'extended-attribute':
+        case 'event':
+        case 'idl': return (text) => `{{${text}}}`;
+
+        case 'element-state':
+        case 'element-attr':
+        case 'attr-value':
+        case 'element': return (element) => `<{${element}}>`;
+
+        case 'grammar': return (text) => `${text} (within a <pre class=prod>)`;
+
+        case 'type': return (text)=> `<<${text}>>`;
+
+        case 'descriptor':
+        case 'property': return (text) => `'${text}'`;
+
+        default: return;
+    };
+};
+
+function genLinkingSyntaxes(dfn) {
+    if(dfn.tagName != "DFN") return;
+
+    const type = dfn.getAttribute('data-dfn-type');
+    if(!type) {
+        console.log(`<dfn> doesn't have a data-dfn-type:`, dfn);
+        return [];
+    }
+
+    // Return a function that wraps link text based on the type
+    const linkFormatter = linkFormatterFromType(type);
+    if(!linkFormatter) {
+        console.log(`<dfn> has an unknown data-dfn-type:`, dfn);
+        return [];
+    }
+
+    let ltAlts;
+    if(dfn.hasAttribute('data-lt')) {
+        ltAlts = dfn.getAttribute('data-lt')
+            .split("|")
+            .map(x=>x.trim());
+    } else {
+        ltAlts = [dfn.textContent.trim()];
+    }
+    if(type == "type") {
+        // lt of "<foo>", but "foo" is the interior;
+        // <<foo/bar>> is how you write it with a for,
+        // not <foo/<bar>> or whatever.
+        for(var i = 0; i < ltAlts.length; i++) {
+            const lt = ltAlts[i];
+            const match = /<(.*)>/.exec(lt);
+            if(match) { ltAlts[i] = match[1]; }
+        }
+    }
+
+    let forAlts;
+    if(dfn.hasAttribute('data-dfn-for')) {
+        forAlts = dfn.getAttribute('data-dfn-for')
+            .split(",")
+            .map(x=>x.trim());
+    } else {
+        forAlts = [''];
+    }
+
+    let linkingSyntaxes = [];
+    if(!needsFor(type)) {
+        for(const lt of ltAlts) {
+            linkingSyntaxes.push(linkFormatter(lt));
+        }
+    }
+    if(!refusesFor(type)) {
+        for(const f of forAlts) {
+            linkingSyntaxes.push(linkFormatter(`${f}/${ltAlts[0]}`))
+        }
+    }
+    return [
+        mk.b({}, 'Possible linking syntaxes:'),
+        mk.ul({},
+            ...linkingSyntaxes.map(link => {
+                const copyLink = async () =>
+                    await navigator.clipboard.writeText(link);
+                return mk.li({},
+                    mk.div({ class: 'link-item' },
+                        mk.button({
+                            class: 'copy-icon', title: 'Copy',
+                            type: 'button',
+                            _onclick: copyLink,
+                            tabindex: 0,
+                        }, mk.span({ class: 'icon' }) ),
+                        mk.span({}, link)
+                    )
+                );
+            })
+        )
+    ];
+}
+}
+</script>
+<script>/* Boilerplate: script-ref-hints */
+"use strict";
+{
+let refsData = {
+"#dictdef-queryoptions": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"QueryOptions","type":"dictionary","url":"#dictdef-queryoptions"},
+"#dom-fontdata-blob": {"export":true,"for_":["FontData"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"blob()","type":"method","url":"#dom-fontdata-blob"},
+"#dom-fontdata-family": {"export":true,"for_":["FontData"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"family","type":"attribute","url":"#dom-fontdata-family"},
+"#dom-fontdata-fullname": {"export":true,"for_":["FontData"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"fullName","type":"attribute","url":"#dom-fontdata-fullname"},
+"#dom-fontdata-postscriptname": {"export":true,"for_":["FontData"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"postscriptName","type":"attribute","url":"#dom-fontdata-postscriptname"},
+"#dom-fontdata-style": {"export":true,"for_":["FontData"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"style","type":"attribute","url":"#dom-fontdata-style"},
+"#dom-permissionpolicy-local-fonts": {"export":true,"for_":["PermissionPolicy"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"\"local-fonts\"","type":"enum-value","url":"#dom-permissionpolicy-local-fonts"},
+"#dom-queryoptions-postscriptnames": {"export":true,"for_":["QueryOptions"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"postscriptNames","type":"dict-member","url":"#dom-queryoptions-postscriptnames"},
+"#dom-window-querylocalfonts": {"export":true,"for_":["Window"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"queryLocalFonts()","type":"method","url":"#dom-window-querylocalfonts"},
+"#font-representation": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"font representation","type":"dfn","url":"#font-representation"},
+"#font-representation-data-bytes": {"export":true,"for_":["font representation"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"data bytes","type":"dfn","url":"#font-representation-data-bytes"},
+"#font-representation-family-name": {"export":true,"for_":["font representation"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"family name","type":"dfn","url":"#font-representation-family-name"},
+"#font-representation-full-name": {"export":true,"for_":["font representation"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"full name","type":"dfn","url":"#font-representation-full-name"},
+"#font-representation-postscript-name": {"export":true,"for_":["font representation"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"postscript name","type":"dfn","url":"#font-representation-postscript-name"},
+"#font-representation-style-name": {"export":true,"for_":["font representation"],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"style name","type":"dfn","url":"#font-representation-style-name"},
+"#font-task-source": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"font task source","type":"dfn","url":"#font-task-source"},
+"#fontdata": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"FontData","type":"interface","url":"#fontdata"},
+"#get-all-system-font-representations": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"get all system font representations","type":"dfn","url":"#get-all-system-font-representations"},
+"#permissiondef-local-fonts": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"local-fonts","type":"permission","url":"#permissiondef-local-fonts"},
+"#read-as-a-font-representation": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"read as a font representation","type":"dfn","url":"#read-as-a-font-representation"},
+"#system-font": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"system font","type":"dfn","url":"#system-font"},
+"#user-language": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"user language","type":"dfn","url":"#user-language"},
+"#valid-postscript-name": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"localfonts","spec":"localfonts-1","status":"local","text":"valid postscript name","type":"dfn","url":"#valid-postscript-name"},
+"https://drafts.csswg.org/css-fonts-4/#propdef-font-family": {"export":true,"for_":[],"level":"4","normative":true,"shortname":"css-fonts","spec":"css-fonts-4","status":"current","text":"font-family","type":"property","url":"https://drafts.csswg.org/css-fonts-4/#propdef-font-family"},
+"https://drafts.csswg.org/css-fonts-5/#at-font-face-rule": {"export":true,"for_":[],"level":"5","normative":true,"shortname":"css-fonts","spec":"css-fonts-5","status":"current","text":"@font-face","type":"at-rule","url":"https://drafts.csswg.org/css-fonts-5/#at-font-face-rule"},
+"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
+"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"opaque origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
+"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"allowed to use","type":"dfn","url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use"},
+"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"iframe","type":"element","url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element"},
+"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"in parallel","type":"dfn","url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
+"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"transient activation","type":"dfn","url":"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation"},
+"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"associated document","type":"dfn","url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window"},
+"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"Window","type":"interface","url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"serializable object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects"},
+"https://html.spec.whatwg.org/multipage/system-state.html#a-plausible-language": {"export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"a plausible language","type":"dfn","url":"https://html.spec.whatwg.org/multipage/system-state.html#a-plausible-language"},
+"https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language": {"export":true,"for_":["NavigatorLanguage"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"language","type":"attribute","url":"https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-language"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant global object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant realm","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"queue a task","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant settings object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#task-source": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"task source","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#task-source"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"WindowOrWorkerGlobalScope","type":"interface","url":"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"},
+"https://infra.spec.whatwg.org/#byte-sequence": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"byte sequence","type":"dfn","url":"https://infra.spec.whatwg.org/#byte-sequence"},
+"https://infra.spec.whatwg.org/#iteration-continue": {"export":true,"for_":["iteration"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"continue","type":"dfn","url":"https://infra.spec.whatwg.org/#iteration-continue"},
+"https://infra.spec.whatwg.org/#list": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
+"https://infra.spec.whatwg.org/#list-append": {"export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
+"https://infra.spec.whatwg.org/#list-contain": {"export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"contain","type":"dfn","url":"https://infra.spec.whatwg.org/#list-contain"},
+"https://infra.spec.whatwg.org/#list-iterate": {"export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"for each","type":"dfn","url":"https://infra.spec.whatwg.org/#list-iterate"},
+"https://infra.spec.whatwg.org/#list-sort-in-ascending-order": {"export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"sort in ascending order","type":"dfn","url":"https://infra.spec.whatwg.org/#list-sort-in-ascending-order"},
+"https://infra.spec.whatwg.org/#map-exists": {"export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"exist","type":"dfn","url":"https://infra.spec.whatwg.org/#map-exists"},
+"https://infra.spec.whatwg.org/#scalar-value-string": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"scalar value string","type":"dfn","url":"https://infra.spec.whatwg.org/#scalar-value-string"},
+"https://infra.spec.whatwg.org/#string-length": {"export":true,"for_":["string","JavaScript string","scalar value string"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"length","type":"dfn","url":"https://infra.spec.whatwg.org/#string-length"},
+"https://w3c.github.io/FileAPI/#dfn-Blob": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"fileapi","spec":"fileapi","status":"current","text":"Blob","type":"interface","url":"https://w3c.github.io/FileAPI/#dfn-Blob"},
+"https://w3c.github.io/FileAPI/#dfn-type": {"export":true,"for_":["Blob"],"level":"1","normative":true,"shortname":"fileapi","spec":"fileapi","status":"current","text":"type","type":"attribute","url":"https://w3c.github.io/FileAPI/#dfn-type"},
+"https://w3c.github.io/permissions/#dfn-default-powerful-feature": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"default powerful feature","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-default-powerful-feature"},
+"https://w3c.github.io/permissions/#dfn-name": {"export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"name","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-name"},
+"https://w3c.github.io/permissions/#dfn-prompt-the-user-to-choose": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"prompt the user to choose","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-prompt-the-user-to-choose"},
+"https://w3c.github.io/permissions/#dom-permissiondescriptor": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"PermissionDescriptor","type":"dictionary","url":"https://w3c.github.io/permissions/#dom-permissiondescriptor"},
+"https://w3c.github.io/permissions/#dom-permissiondescriptor-name": {"export":true,"for_":["PermissionDescriptor"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"name","type":"dict-member","url":"https://w3c.github.io/permissions/#dom-permissiondescriptor-name"},
+"https://w3c.github.io/permissions/#dom-permissionstate-denied": {"export":true,"for_":["PermissionState"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"denied","type":"enum-value","url":"https://w3c.github.io/permissions/#dom-permissionstate-denied"},
+"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions-policy","spec":"permissions-policy-1","status":"current","text":"policy-controlled feature","type":"dfn","url":"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature"},
+"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist": {"export":true,"for_":["policy-controlled feature"],"level":"1","normative":true,"shortname":"permissions-policy","spec":"permissions-policy-1","status":"current","text":"default allowlist","type":"dfn","url":"https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist"},
+"https://webidl.spec.whatwg.org/#Exposed": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Exposed","type":"extended-attribute","url":"https://webidl.spec.whatwg.org/#Exposed"},
+"https://webidl.spec.whatwg.org/#SecureContext": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"SecureContext","type":"extended-attribute","url":"https://webidl.spec.whatwg.org/#SecureContext"},
+"https://webidl.spec.whatwg.org/#a-new-promise": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"https://webidl.spec.whatwg.org/#idl-DOMException": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMException","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"https://webidl.spec.whatwg.org/#idl-DOMString": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
+"https://webidl.spec.whatwg.org/#idl-USVString": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"USVString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-USVString"},
+"https://webidl.spec.whatwg.org/#idl-promise": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Promise","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"https://webidl.spec.whatwg.org/#idl-sequence": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"sequence","type":"dfn","url":"https://webidl.spec.whatwg.org/#idl-sequence"},
+"https://webidl.spec.whatwg.org/#notallowederror": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"NotAllowedError","type":"exception","url":"https://webidl.spec.whatwg.org/#notallowederror"},
+"https://webidl.spec.whatwg.org/#reject": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"reject","type":"dfn","url":"https://webidl.spec.whatwg.org/#reject"},
+"https://webidl.spec.whatwg.org/#resolve": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"resolve","type":"dfn","url":"https://webidl.spec.whatwg.org/#resolve"},
+"https://webidl.spec.whatwg.org/#securityerror": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"SecurityError","type":"exception","url":"https://webidl.spec.whatwg.org/#securityerror"},
+"https://webidl.spec.whatwg.org/#this": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"this","type":"dfn","url":"https://webidl.spec.whatwg.org/#this"},
+};
+
+function mkRefHint(link, ref) {
+    const linkText = link.textContent;
+    let dfnTextElements = '';
+    if (ref.text != linkText) {
+        dfnTextElements =
+            mk.li({},
+                mk.b({}, "Term: "),
+                mk.span({}, ref.text)
+            );
+    }
+    const forList = ref.for_;
+    let forListElements;
+    if(forList.length == 0) {
+        forListElements = [];
+    } else if(forList.length == 1) {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.span({}, forList[0]),
+        );
+    } else {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.ul({},
+                ...forList.map(forItem =>
+                    mk.li({},
+                        mk.span({}, forItem)
+                    ),
+                ),
+            ),
+        );
+    }
+    const url = ref.url;
+    const safeUrl = encodeURIComponent(url);
+    const hintPanel = mk.aside({
+        class: "ref-hint",
+        id: `ref-hint-for-${safeUrl}`,
+        "data-for": url,
+        "aria-labelled-by": `ref-hint-for-${safeUrl}`,
+    },
+        mk.ul({},
+            dfnTextElements,
+            mk.li({},
+                mk.b({}, "URL: "),
+                mk.a({ href: url, class: "ref" }, url),
+            ),
+            mk.li({},
+                mk.b({}, "Type: "),
+                mk.span({}, `${ref.type}`),
+            ),
+            mk.li({},
+                mk.b({}, "Spec: "),
+                mk.span({}, `${ref.spec ? ref.spec : ''}`),
+            ),
+            forListElements
+        ),
+    );
+    hintPanel.forLink = link;
+    setupRefHintEventListeners(link, hintPanel);
+    return hintPanel;
+}
+
+function hideAllRefHints() {
+    queryAll(".ref-hint").forEach(el=>hideRefHint(el));
+}
+
+function hideRefHint(refHint) {
+    const link = refHint.forLink;
+    link.setAttribute("aria-expanded", "false");
+    if(refHint.teardownEventListeners) {
+        refHint.teardownEventListeners();
+    }
+    refHint.remove();
+}
+
+function showRefHint(link) {
+    if(link.classList.contains("dfn-link")) return;
+    const url = link.getAttribute("href");
+    const ref = refsData[url];
+    if(!ref) return;
+
+    hideAllRefHints(); // Only display one at this time.
+
+    const refHint = mkRefHint(link, ref);
+    append(document.body, refHint);
+    link.setAttribute("aria-expanded", "true");
+    positionRefHint(refHint);
+}
+
+function setupRefHintEventListeners(link, refHint) {
+    if (refHint.teardownEventListeners) return;
+    // Add event handlers to hide the refHint after the user moves away
+    // from both the link and refHint, if not hovering either within one second.
+    let timeout = null;
+    const startHidingRefHint = (event) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            hideRefHint(refHint);
+        }, 1000);
+    }
+    const resetHidingRefHint = (event) => {
+        if (timeout) clearTimeout(timeout);
+        timeout = null;
+    };
+    link.addEventListener("mouseleave", startHidingRefHint);
+    link.addEventListener("mouseenter", resetHidingRefHint);
+    link.addEventListener("blur", startHidingRefHint);
+    link.addEventListener("focus", resetHidingRefHint);
+    refHint.addEventListener("mouseleave", startHidingRefHint);
+    refHint.addEventListener("mouseenter", resetHidingRefHint);
+    refHint.addEventListener("blur", startHidingRefHint);
+    refHint.addEventListener("focus", resetHidingRefHint);
+
+    refHint.teardownEventListeners = () => {
+        // remove event listeners
+        resetHidingRefHint();
+        link.removeEventListener("mouseleave", startHidingRefHint);
+        link.removeEventListener("mouseenter", resetHidingRefHint);
+        link.removeEventListener("blur", startHidingRefHint);
+        link.removeEventListener("focus", resetHidingRefHint);
+        refHint.removeEventListener("mouseleave", startHidingRefHint);
+        refHint.removeEventListener("mouseenter", resetHidingRefHint);
+        refHint.removeEventListener("blur", startHidingRefHint);
+        refHint.removeEventListener("focus", resetHidingRefHint);
+    };
+}
+
+function positionRefHint(refHint) {
+    const link = refHint.forLink;
+    const linkPos = getBounds(link);
+    refHint.style.top = linkPos.bottom + "px";
+    refHint.style.left = linkPos.left + "px";
+
+    const panelPos = refHint.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, linkPos.left - overflowAmount);
+        refHint.style.left = newLeft + "px";
+    }
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function showRefHintListener(e) {
+    // If the target isn't in a link (or is a link),
+    // just ignore it.
+    let link = e.target.closest("a");
+    if(!link) return;
+
+    // If the target is in a ref-hint panel
+    // (aka a link in the already-open one),
+    // also just ignore it.
+    if(link.closest(".ref-hint")) return;
+
+    // Otherwise, show the panel for the link.
+    showRefHint(link);
+}
+
+function hideAllHintsListener(e) {
+    // If the click is inside a ref-hint panel, ignore it.
+    if(e.target.closest(".ref-hint")) return;
+    // Otherwise, close all the current panels.
+    hideAllRefHints();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("mousedown", showRefHintListener);
+    document.body.addEventListener("focus", showRefHintListener);
+
+    document.body.addEventListener("click", hideAllHintsListener);
+});
+
+window.addEventListener("resize", () => {
+    // Hide any open ref hint.
+    hideAllRefHints();
+});
 }
 </script>
 <script>/* Boilerplate: script-var-click-highlighting */
+"use strict";
+{
 /*
 Color-choosing design:
 
-Colors are ordered by goodness.
-Each color has a usage count (initially zero).
-Each variable has a last-used color.
-
-* If the var has a last-used color, and that color's usage is 0,
-    return that color.
-* Otherwise, return the lowest-indexed color with the lowest usage.
-    Increment the color's usage and set it as the last-used color
-    for that var.
-* On unclicking, decrement usage of the color.
+* Colors are ordered by goodness.
+* On clicking a var, give it the earliest color
+    with the lowest usage in the algorithm.
+* On re-clicking, re-use the var's most recent color
+    if that's not currently being used elsewhere.
 */
-"use strict";
-{
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
-    const indexCounts = new Map();
-    const indexNames = new Map();
-    function highlightSameAlgoVars(v) {
-        // Find the algorithm container.
-        let algoContainer = null;
-        let searchEl = v;
-        while(algoContainer == null && searchEl != document.body) {
-            searchEl = searchEl.parentNode;
-            if(searchEl.hasAttribute("data-algorithm")) {
-                algoContainer = searchEl;
-            }
-        }
 
-        // Not highlighting document-global vars,
-        // too likely to be unrelated.
-        if(algoContainer == null) return;
+const COLOR_COUNT = 7;
 
-        const algoName = algoContainer.getAttribute("data-algorithm");
-        const varName = getVarName(v);
-        const addClass = !v.classList.contains("selected");
-        let highlightClass = null;
-        if(addClass) {
-            const index = chooseHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] += 1;
-            indexNames.set(algoName+"///"+varName, index);
-            highlightClass = nameFromIndex(index);
-        } else {
-            const index = previousHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] -= 1;
-            highlightClass = nameFromIndex(index);
-        }
+document.addEventListener("click", e=>{
+    if(e.target.nodeName == "VAR") {
+        highlightSameAlgoVars(e.target);
+    }
+});
 
-        // Find all same-name vars, and toggle their class appropriately.
+function highlightSameAlgoVars(v) {
+    // Find the algorithm container.
+    let algoContainer = findAlgoContainer(v);
+
+    // Not highlighting document-global vars,
+    // too likely to be unrelated.
+    if(algoContainer == null) return;
+
+    const varName = nameFromVar(v);
+    if(!v.hasAttribute("data-var-color")) {
+        const newColor = chooseHighlightColor(algoContainer, v);
         for(const el of algoContainer.querySelectorAll("var")) {
-            if(getVarName(el) == varName) {
-                el.classList.toggle("selected", addClass);
-                el.classList.toggle(highlightClass, addClass);
+            if(nameFromVar(el) == varName) {
+                el.setAttribute("data-var-color", newColor);
+                el.setAttribute("data-var-last-color", newColor);
+            }
+        }
+    } else {
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(nameFromVar(el) == varName) {
+                el.removeAttribute("data-var-color");
             }
         }
     }
-    function getVarName(el) {
-        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+}
+function findAlgoContainer(el) {
+    while(el != document.body) {
+        if(el.hasAttribute("data-algorithm")) return el;
+        el = el.parentNode;
     }
-    function chooseHighlightIndex(algoName, varName) {
-        let indexes = null;
-        if(indexCounts.has(algoName)) {
-            indexes = indexCounts.get(algoName);
-        } else {
-            // 7 classes right now
-            indexes = [0,0,0,0,0,0,0];
-            indexCounts.set(algoName, indexes);
-        }
+    return null;
+}
+function nameFromVar(el) {
+    return el.textContent.replace(/(\s|\xa0)+/g, " ").trim();
+}
+function colorCountsFromContainer(container) {
+    const namesFromColor = Array.from({length:COLOR_COUNT}, x=>new Set());
+    for(let v of container.querySelectorAll("var[data-var-color]")) {
+        let color = +v.getAttribute("data-var-color");
+        namesFromColor[color].add(nameFromVar(v));
+    }
 
-        // If the element was recently unclicked,
-        // *and* that color is still unclaimed,
-        // give it back the same color.
-        const lastIndex = previousHighlightIndex(algoName, varName);
-        if(indexes[lastIndex] === 0) return lastIndex;
-
-        // Find the earliest index with the lowest count.
-        const minCount = Math.min.apply(null, indexes);
-        let index = null;
-        for(var i = 0; i < indexes.length; i++) {
-            if(indexes[i] == minCount) {
-                return i;
-            }
+    return namesFromColor.map(x=>x.size);
+}
+function leastUsedColor(colors) {
+    // Find the earliest color with the lowest count.
+    let minCount = Infinity;
+    let minColor = null;
+    for(var i = 0; i < colors.length; i++) {
+        if(colors[i] < minCount) {
+            minColor = i;
+            minCount = colors[i];
         }
     }
-    function previousHighlightIndex(algoName, varName) {
-        return indexNames.get(algoName+"///"+varName);
+    return minColor;
+}
+function chooseHighlightColor(container, v) {
+    const colorCounts = colorCountsFromContainer(container);
+    if(v.hasAttribute("data-var-last-color")) {
+        let color = +v.getAttribute("data-var-last-color");
+        if(colorCounts[color] == 0) return color;
     }
-    function nameFromIndex(index) {
-        return "selected" + index;
-    }
+    return leastUsedColor(colorCounts);
+}
 }
 </script>
