@@ -216,7 +216,7 @@ useLocalFontsButton.onclick = async function() {
   try {
     const array = await self.queryLocalFonts();
 
-    array.forEach(font => {
+    for (const font of array) {
       // blob() returns a Blob containing the bytes of the font.
       const bytes = await font.blob();
 
